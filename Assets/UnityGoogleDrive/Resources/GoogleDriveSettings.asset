@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eca7773dbc7f5b47878b382f321f62e, type: 3}
+  m_Name: GoogleDriveSettings
+  m_EditorClassIdentifier: 
+  genericClientCredentials:
+    client_id: 263474759045-npvbldfercpq4pgut31631p44a0i8k09.apps.googleusercontent.com
+    project_id: warm-tome-273912
+    auth_uri: https://accounts.google.com/o/oauth2/auth
+    token_uri: https://oauth2.googleapis.com/token
+    auth_provider_x509_cert_url: https://www.googleapis.com/oauth2/v1/certs
+    client_secret: ZGFFugEOwspri2JEAR-1l7-A
+    redirect_uris: []
+  uriSchemeClientCredentials:
+    clientId: 263474759045-h6k6bv0d75rcb0urs9efmgumt6d4e8mo.apps.googleusercontent.com
+    reversedClientId: com.googleusercontent.apps.263474759045-h6k6bv0d75rcb0urs9efmgumt6d4e8mo
+    plistVersion: 1
+    bundleId: com.animint.karutadrive
+  accessScopes:
+  - https://www.googleapis.com/auth/drive
+  - https://www.googleapis.com/auth/drive.appdata
+  loopbackUri: http://localhost
+  loopbackResponseHtml: <html><h1>Please return to the app.</h1></html>
+  accessTokenPrefsKey: GoogleDriveAccessToken
+  refreshTokenPrefsKey: GoogleDriveRefreshToken

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<linker>
+  <assembly fullname ="System">
+    <type fullname ="System.IO.DriveInfo" preserve="all"></type>
+  </assembly>
+
+  <assembly fullname ="Newtonsoft">
+    <type fullname ="Newtonsoft.Json" preserve="all"></type>
+  </assembly>
+  
+  <assembly fullname ="Google">
+    <type fullname ="Google.Apis" preserve="all"></type>
+    <type fullname ="Google.Apis.Auth" preserve="all"></type>
+    <type fullname ="Google.Apis.Core" preserve="all"></type>
+    <type fullname ="Google.Apis.Drive.v3" preserve="all"></type>
+  </assembly>
+
+</linker>
