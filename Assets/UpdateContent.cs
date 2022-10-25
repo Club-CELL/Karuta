@@ -11,13 +11,16 @@ using Google.Apis.Util.Store;
 using Google.Apis.Services;
 using UnityEngine.Networking;
 
+
+
+
 public class UpdateContent : MonoBehaviour
 {
 
     bool doneDecks = false;
     bool doneSongs = false;
     bool doneVisuals = false;
-
+    string progressText = "Connecting...";
     Text text;
     DriveService service;
 
@@ -32,11 +35,12 @@ public class UpdateContent : MonoBehaviour
 
     //Dictionary<Google.Apis.Drive.v3.Data.File, Coroutine> coroutines = new Dictionary<Google.Apis.Drive.v3.Data.File, Coroutine>();
 
-    int maxSimulateousDownloads = 10;
+    int maxSimulateousDownloads = 1;
     int currentNumberOfDownloads = 0;
 
     public ThemeLoaderMainMenu themeLoaderMainMenu;
 
+    bool finished = false;
 
     void Awake()
     {
@@ -44,7 +48,7 @@ public class UpdateContent : MonoBehaviour
         doneDecks = false;
         doneSongs = false;
         doneVisuals = false;
-        text.text = "Connecting...";
+        progressText = "Connecting...";
         service = AuthenticateServiceAccount(serviceEmail, serviceFile);
     }
     void OnEnable()
@@ -59,6 +63,18 @@ public class UpdateContent : MonoBehaviour
         filesHandled = 0;
 
     }
+    private void Update()
+    {
+        text.text = progressText;
+        if(finished)
+        {
+            finished = false;
+
+            progressText = "Finished !";
+            themeLoaderMainMenu.ReloadThemes();
+            Invoke("Close", 0.5f);
+        }
+    }
     IEnumerator OnEnableCoroutine()
     {
         if(service == null)
@@ -67,7 +83,7 @@ public class UpdateContent : MonoBehaviour
         }
         if(service != null)
         {
-            text.text = "Connected !";
+            progressText = "Connected !";
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             yield return new WaitForSeconds(0.5f);
             GetAllDecks();
@@ -81,7 +97,7 @@ public class UpdateContent : MonoBehaviour
         }
         else
         {
-            text.text = "<color=red>Could not connect :((</color>";
+            progressText = "<color=red>Could not connect :((</color>";
         }
         
     }
@@ -89,7 +105,7 @@ public class UpdateContent : MonoBehaviour
     private void GetAllDecks()
     {
 
-        text.text = "Starting to look for decks !";
+        progressText = "Starting to look for decks !";
         //Get Karuta id:
         if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Decks/")))
         {
@@ -108,7 +124,7 @@ public class UpdateContent : MonoBehaviour
         listRequest.PageSize = 1000;
         //request.ResponseData.NextPageToken
 
-        text.text = "Sending request for decks !";
+        progressText = "Sending request for decks !";
         IList<Google.Apis.Drive.v3.Data.File> files =null;
         try
         {
@@ -117,13 +133,13 @@ public class UpdateContent : MonoBehaviour
         }
         catch(System.Exception e)
         {
-            text.text = "<color=red>Exception : " + e.ToString() + "</color>";
+            progressText = "<color=red>Exception : " + e.ToString() + "</color>";
             return;//yield break;
         }
 
 
         Debug.Log(files.Count);
-        text.text = files.Count + " decks files found !";
+        progressText = files.Count + " decks files found !";
         numberOfFiles += files.Count;
         int i = 0;
 
@@ -157,23 +173,23 @@ public class UpdateContent : MonoBehaviour
                     if (request.isNetworkError)
                     {
                         Debug.LogError("Network error");
-                        text.text = "<color=red>Network error :(</color>";
+                        progressText = "<color=red>Network error :(</color>";
                     }
                     else if (request.isHttpError)
                     {
                         Debug.LogError("Http error");
-                        text.text = "<color=red>Http error :(</color>";
+                        progressText = "<color=red>Http error :(</color>";
                     }
                     else
                     {
                         File.WriteAllBytes(path, request.downloadHandler.data);
-                        text.text = "Downloaded " + onlineFile.Name + " !";
+                        progressText = "Downloaded " + onlineFile.Name + " !";
                     }
                 }
                 else
                 {
                     Debug.LogError("file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink");
-                    text.text = "<color=red>file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink</color>";
+                    progressText = "<color=red>file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink</color>";
                 }*/
             }
             else
@@ -245,23 +261,23 @@ public class UpdateContent : MonoBehaviour
                     if (request.isNetworkError)
                     {
                         Debug.LogError("Network error");
-                        text.text = "<color=red>file:Network error :(</color>";
+                        progressText = "<color=red>file:Network error :(</color>";
                     }
                     else if (request.isHttpError)
                     {
                         Debug.LogError("Http error");
-                        text.text = "<color=red>file:Http error :(</color>";
+                        progressText = "<color=red>file:Http error :(</color>";
                     }
                     else
                     {
                         File.WriteAllBytes(path, request.downloadHandler.data);
-                        text.text = "Downloaded " + onlineFile.Name + " !";
+                        progressText = "Downloaded " + onlineFile.Name + " !";
                     }
                 }
                 else
                 {
                     Debug.LogError("file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink");
-                    text.text = "<color=red>file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink</color>";
+                    progressText = "<color=red>file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink</color>";
                 }*/
             }
             else
@@ -331,23 +347,23 @@ public class UpdateContent : MonoBehaviour
                     if (request.isNetworkError)
                     {
                         Debug.LogError("Network error");
-                        text.text = "<color=red>file:Network error :(</color>";
+                        progressText = "<color=red>file:Network error :(</color>";
                     }
                     else if (request.isHttpError)
                     {
                         Debug.LogError("Http error");
-                        text.text = "<color=red>file:Http error :(</color>";
+                        progressText = "<color=red>file:Http error :(</color>";
                     }
                     else
                     {
                         File.WriteAllBytes(path, request.downloadHandler.data);
-                        text.text = "Downloaded " + onlineFile.Name + " !";
+                        progressText = "Downloaded " + onlineFile.Name + " !";
                     }
                 }
                 else
                 {
                     Debug.LogError("file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink");
-                    text.text = "<color=red>file: " + onlineFile.Name + " / " + onlineFile.Id + "had no webcontentlink" +"</color>";
+                    progressText = "<color=red>file: " + onlineFile.Name + " / " + onlineFile.Id + "had no webcontentlink" +"</color>";
                 }*/
             }
             else
@@ -417,23 +433,23 @@ public class UpdateContent : MonoBehaviour
                     if (request.isNetworkError)
                     {
                         Debug.LogError("Network error");
-                        text.text = "<color=red>file:Network error :(</color>";
+                        progressText = "<color=red>file:Network error :(</color>";
                     }
                     else if (request.isHttpError)
                     {
                         Debug.LogError("Http error");
-                        text.text = "<color=red>file:Http error :(</color>";
+                        progressText = "<color=red>file:Http error :(</color>";
                     }
                     else
                     {
                         File.WriteAllBytes(path, request.downloadHandler.data);
-                        text.text = "Downloaded " + onlineFile.Name + " !";
+                        progressText = "Downloaded " + onlineFile.Name + " !";
                     }
                 }
                 else
                 {
                     Debug.LogError("file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink");
-                    text.text = "<color=red>file: " + onlineFile.Name + " / " + onlineFile.Id + "had no webcontentlink" +"</color>";
+                    progressText = "<color=red>file: " + onlineFile.Name + " / " + onlineFile.Id + "had no webcontentlink" +"</color>";
                 }*/
             }
             else
@@ -473,7 +489,7 @@ public class UpdateContent : MonoBehaviour
                     yield return downloadRequest.Send();
                     UnityGoogleDrive.Data.File file = downloadRequest.ResponseData;
                     File.WriteAllBytes(Path.Combine(Application.persistentDataPath, "Son/" + onlineFile.Name), file.Content);
-                    text.text = "Downloaded " + onlineFile.Name + " !";
+                    progressText = "Downloaded " + onlineFile.Name + " !";
                 }
 
             }
@@ -509,7 +525,7 @@ public class UpdateContent : MonoBehaviour
                     UnityGoogleDrive.Data.File file = downloadRequest.ResponseData;
                     File.WriteAllBytes(Path.Combine(Application.persistentDataPath, "Visuels/" + onlineFile.Name), file.Content);
 
-                    text.text = "Downloaded " + onlineFile.Name + " !";
+                    progressText = "Downloaded " + onlineFile.Name + " !";
                 }
 
             }
@@ -521,20 +537,17 @@ public class UpdateContent : MonoBehaviour
     void CheckDone()
     {
         Debug.Log(filesHandled + "/" + numberOfFiles + " files handled");
-        text.text += "\n\n<color=yellow>" + filesHandled + "/" + numberOfFiles + " files handled</color>";
+        progressText += "\n\n<color=yellow>" + filesHandled + "/" + numberOfFiles + " files handled</color>";
         if (readyToFinish && filesHandled >= numberOfFiles)
         {
-            text.text = "Finished !";
-            CancelInvoke("Close");
-            Invoke("Close", 0.5f);
-            themeLoaderMainMenu.ReloadThemes();
+            finished = true;
         }
     }
     /* void CheckDone()
      {
          if(doneVisuals && doneDecks && doneSongs)
          {
-             text.text = "Finished !";
+             progressText = "Finished !";
              CancelInvoke("Close");
              Invoke("Close", 0.5f);
          }
@@ -555,7 +568,7 @@ public class UpdateContent : MonoBehaviour
         if (!File.Exists(keyFilePath))
         {
             Debug.Log("An Error occurred - Key file does not exist");
-            text.text = "<color=red>Error occurred - Key file does not exist </color>";
+            progressText = "<color=red>Error occurred - Key file does not exist </color>";
             return null;
         }*/
 
@@ -570,7 +583,7 @@ public class UpdateContent : MonoBehaviour
         //var certificate = new X509Certificate2(keyFilePath, "notasecret", X509KeyStorageFlags.Exportable);
 
         string jsonCredentials = Resources.Load<TextAsset>(resourcesServiceFile).text;
-        text.text = "Credentials: \n" + jsonCredentials;
+        progressText = "Credentials: \n" + jsonCredentials;
         GoogleCredential credential = null;
         try
         {
@@ -583,7 +596,7 @@ public class UpdateContent : MonoBehaviour
         }
         catch(System.Exception e)
         {
-            text.text = "<color=red>" +e.ToString()+"</color>";
+            progressText = "<color=red>" +e.ToString()+"</color>";
             return null;
         }
         
@@ -599,7 +612,7 @@ public class UpdateContent : MonoBehaviour
                                              DriveService.Scope.DriveReadonly,   // view files and documents on your drive
                                              DriveService.Scope.DriveScripts });  // modify your app scripts  
 */
-        text.text = "Got the certificate";
+        progressText = "Got the certificate";
         try
         {
             /*ServiceAccountCredential credential = new ServiceAccountCredential(
@@ -614,19 +627,105 @@ public class UpdateContent : MonoBehaviour
                 HttpClientInitializer = credential,
                 ApplicationName = "Daimto Drive API Sample",
             });
-            text.text = "Connected !";
+            progressText = "Connected !";
             return service;
         }
         catch (System.Exception ex)
         {
             Debug.Log(ex.InnerException);
-            text.text = "<color=red>Exception:" + ex.ToString() + " </color>";
+            progressText = "<color=red>Exception:" + ex.ToString() + " </color>";
             return null;
         }
 
 
     }
 
+    private void SaveStream(System.IO.MemoryStream stream, string path, long length, Google.Apis.Drive.v3.Data.File file)
+    {
+        Debug.LogWarning("Saving stream:" + file.Name);
+        using (System.IO.FileStream fileStream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write))
+        {
+            stream.WriteTo(fileStream);
+
+            if (length != fileStream.Length)
+            {
+                //Debug.Log("-----------------------------------Problem with:" + file.Name);
+                Debug.LogWarning("Problem with:" + file.Name + " " + length + "!=" + fileStream.Length);
+                //fileStream.Close();
+                File.Delete(path);
+                StartCoroutine(DownloadFile(file, path, Random.value * 10 + 10));
+            }
+            else
+            {
+                Debug.Log("Finished with:" + file.Name);
+                progressText = "Finished saving " + file.Name + " !";
+                filesHandled++;
+                CheckDone();
+            }
+            currentNumberOfDownloads--;
+        }
+        Debug.LogWarning("Saved stream:" + file.Name);
+    }
+    private IEnumerator DownloadFile(Google.Apis.Drive.v3.Data.File file, string path, float timeToWait=0)
+    {
+
+
+        Debug.Log("Waiting to download file " + file.Id);
+        yield return new WaitForSeconds(timeToWait);
+
+
+        while (currentNumberOfDownloads >= maxSimulateousDownloads)
+        {
+            yield return new WaitForSeconds(0.5f + 0.5f * Random.value);
+        }
+        Debug.Log("About to download file " + file.Id);
+
+        var request = service.Files.Get(file.Id);
+        var stream = new System.IO.MemoryStream();
+
+        currentNumberOfDownloads++;
+        // Add a handler which will be notified on progress changes.
+        // It will notify on each chunk download and when the
+        // download is completed or failed.
+        request.MediaDownloader.ProgressChanged += (Google.Apis.Download.IDownloadProgress progress) =>
+        {
+            switch (progress.Status)
+            {
+                case Google.Apis.Download.DownloadStatus.Downloading:
+                    {
+
+                        int percent = Mathf.RoundToInt((float)(progress.BytesDownloaded) / (float)(file.Size) * 100);
+                        progressText = "Downloading " + file.Name + " (" + percent  +"%) ";
+                        Debug.Log("Downloading file " + file.Id);
+                        break;
+                    }
+                case Google.Apis.Download.DownloadStatus.Completed:
+                    {
+                        Debug.Log("Downloaded file " + file.Id + " will save it at " + path);
+                        progressText = "Downloaded " + file.Name + "\n !";
+                        //currentNumberOfDownloads--;
+                        SaveStream(stream,path, file.Size ?? -1, file);
+                        //CheckDone();
+                        break;
+                    }
+                case Google.Apis.Download.DownloadStatus.Failed:
+                    {
+                        currentNumberOfDownloads--;
+                        Debug.LogError("Failed downloading file " + file.Id + "\n" + progress.Exception);
+                        CheckDone();
+                        progressText = "<color=red> failed to download " + file.Name + " !</color> : \n" + progress.Exception + "\n";
+                        StartCoroutine(DownloadFile(file, path, 5 + 0.5f * Random.value));
+                        break;
+                    }
+
+                   
+            }
+        };
+        request.DownloadAsync(stream);
+
+    }
+
+    /*
     public IEnumerator DownloadFile(Google.Apis.Drive.v3.Data.File file, string path)
     {
         Debug.Log("Tring to download " + file.Name);
@@ -662,27 +761,27 @@ public class UpdateContent : MonoBehaviour
                 Debug.LogWarning("Problem with:" + file.Name);
                 yield break;
             }
-            text.text = "Downloaded " + file.Name + " !";
+            progressText = "Downloaded " + file.Name + " !";
             if(request != null)
             {
                 request.Dispose();
                 request = null;
             }
             fileStream.Close();
-            /*
-            if (request.isNetworkError)
-            {
-                Debug.LogError("Network error");
-            }
-            else if (request.isHttpError)
-            {
-                Debug.LogError("Http error");
-            }
-            else
-            {
-                File.WriteAllBytes(path, request.downloadHandler.data);
-                text.text = "Downloaded " + file.Name + " !";
-            }*/
+            
+            //if (request.isNetworkError)
+            //{
+            //    Debug.LogError("Network error");
+            //}
+            //else if (request.isHttpError)
+            //{
+            //    Debug.LogError("Http error");
+            //}
+            //else
+            //{
+            //    File.WriteAllBytes(path, request.downloadHandler.data);
+            //    progressText = "Downloaded " + file.Name + " !";
+            //}
         }
         else
         {
@@ -690,8 +789,8 @@ public class UpdateContent : MonoBehaviour
         }
         filesHandled++;
         CheckDone();
-    }
-
+    }*/
+    
 
     /*
     public static DriveService AuthenticateServiceAccount(string serviceAccountEmail, string keyFilePath)
