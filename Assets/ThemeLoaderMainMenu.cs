@@ -440,7 +440,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             {
                 newIndicator.GetComponent<Image>().color = themesScroll.selectedColor;
             }
-            newIndicator.transform.parent = indicator.transform.parent;
+            newIndicator.transform.SetParent(indicator.transform.parent, false);
         }
         if (selected == 0)
         {
@@ -487,7 +487,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             if(isVideo)
             {
                 GameObject videoHolder = Instantiate(videoTheme);
-                videoHolder.transform.parent = imageTheme.transform.parent;
+                videoHolder.transform.SetParent(imageTheme.transform.parent, false);
                 videoHolder.GetComponentInChildren<VideoPlayer>().url = content;
                 videoHolder.GetComponentInChildren<Text>().text = theme.GetName();
                 videoHolder.SetActive(true);
@@ -501,7 +501,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             else
             {
                 GameObject imageHolder = Instantiate(imageTheme);
-                imageHolder.transform.parent = imageTheme.transform.parent;
+                imageHolder.transform.SetParent(imageTheme.transform.parent, false);
                 imageHolder.GetComponentInChildren<Text>().text = theme.GetName();
                 StartCoroutine(LoadImage(content, imageHolder.GetComponent<Image>()));
             }

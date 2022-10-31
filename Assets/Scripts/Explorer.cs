@@ -46,7 +46,7 @@ public class Explorer : MonoBehaviour
 
     public Vector2 swipeDetect()
     {
-        bool hasMoved;
+        //bool hasMoved;
         
         if (Input.touches.Length == 0)
         {
@@ -56,7 +56,7 @@ public class Explorer : MonoBehaviour
         {
             if (touch.phase == TouchPhase.Began)
             {
-                hasMoved = false;
+                //hasMoved = false;
                 fingerStart = touch.position;
                 fingerEnd = touch.position;
                 x_start_touch = transform.position.x;
@@ -65,7 +65,7 @@ public class Explorer : MonoBehaviour
             }
             if (touch.phase == TouchPhase.Moved)
             {
-                hasMoved = true;
+                //hasMoved = true;
                 fingerEnd = touch.position;
                 float delta_x = fingerEnd.x - fingerStart.x;
                 float delta_y = fingerEnd.y - fingerStart.y;
@@ -149,7 +149,7 @@ public class Explorer : MonoBehaviour
         {
             string[] folders = Directory.GetDirectories(path);
             string name;
-            string[] pathFolders;
+            //string[] pathFolders;
             int hh = Screen.height;
             int last = 0;
             if (Directory.GetParent(path) != null)

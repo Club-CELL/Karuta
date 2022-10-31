@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System;
@@ -616,7 +615,7 @@ public class HandlerEX : MonoBehaviour {
 		texture.filterMode = FilterMode.Trilinear;
         texture.LoadImage(bytes);
         return null;
-        return Sprite.Create(texture, new Rect(0,0,texture.width, texture.height), new Vector2(0.5f,0.0f), 1.0f);
+        //return Sprite.Create(texture, new Rect(0,0,texture.width, texture.height), new Vector2(0.5f,0.0f), 1.0f);
 
 
     }

@@ -111,7 +111,7 @@ public class UpdateContent : MonoBehaviour
         {
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Decks/"));
         }
-        string baseID = "";
+        //string baseID = "";
 
 
         FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
@@ -141,7 +141,6 @@ public class UpdateContent : MonoBehaviour
         Debug.Log(files.Count);
         progressText = files.Count + " decks files found !";
         numberOfFiles += files.Count;
-        int i = 0;
 
         foreach (var onlineFile in files)
         {
@@ -211,7 +210,7 @@ public class UpdateContent : MonoBehaviour
         {
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Son/"));
         }
-        string baseID = "";
+        //string baseID = "";
 
 
         FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
@@ -229,7 +228,7 @@ public class UpdateContent : MonoBehaviour
 
         Debug.Log(files.Count);
         numberOfFiles += files.Count;
-        int i = 0;
+        //int i = 0;
 
         foreach (var onlineFile in files)
         {
@@ -297,7 +296,7 @@ public class UpdateContent : MonoBehaviour
         {
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Visuels/"));
         }
-        string baseID = "";
+        //string baseID = "";
 
 
         FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
@@ -315,7 +314,6 @@ public class UpdateContent : MonoBehaviour
 
         Debug.Log(files.Count);
         numberOfFiles += files.Count;
-        int i = 0;
 
         foreach (var onlineFile in files)
         {
@@ -383,7 +381,7 @@ public class UpdateContent : MonoBehaviour
         {
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Themes/"));
         }
-        string baseID = "";
+        //string baseID = "";
 
 
         FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
@@ -401,7 +399,6 @@ public class UpdateContent : MonoBehaviour
 
         Debug.Log(files.Count);
         numberOfFiles += files.Count;
-        int i = 0;
 
         foreach (var onlineFile in files)
         {
@@ -642,7 +639,6 @@ public class UpdateContent : MonoBehaviour
 
     private void SaveStream(System.IO.MemoryStream stream, string path, long length, Google.Apis.Drive.v3.Data.File file)
     {
-        Debug.LogWarning("Saving stream:" + file.Name);
         using (System.IO.FileStream fileStream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write))
         {
             stream.WriteTo(fileStream);
@@ -664,7 +660,6 @@ public class UpdateContent : MonoBehaviour
             }
             currentNumberOfDownloads--;
         }
-        Debug.LogWarning("Saved stream:" + file.Name);
     }
     private IEnumerator DownloadFile(Google.Apis.Drive.v3.Data.File file, string path, float timeToWait=0)
     {
