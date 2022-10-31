@@ -101,8 +101,17 @@ public class BackgroundHandler : MonoBehaviour
                 fond.SetActive(false);
                 lastDeactivatedBackground = fond;
             }
-            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + path);
+
+            Debug.Log($"About to get texture for: {path}");
+            yield return null;
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
+            yield return null;
+            Debug.Log($"About to send web request for: {path}");
             yield return www.SendWebRequest();
+
+            Debug.Log($"Request for {path} is done ? {www.isDone} result: {www.result} error ? : {www.error ?? "null"} download handler done ? :{www.downloadHandler.isDone}");
+
+            yield return null;
 
 
             Texture2D texture = DownloadHandlerTexture.GetContent(www);
@@ -118,6 +127,8 @@ public class BackgroundHandler : MonoBehaviour
                 videoBackground.SetActive(false);
                 imageBackground.SetActive(true);
             }
+
+            www.Dispose();
         }
         else if(File.Exists(currentImagePath))
         {

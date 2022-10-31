@@ -563,7 +563,7 @@ public class HandlerEX : MonoBehaviour {
             
 
 
-        PlaySong (songPath);
+        PlaySong (songPath);////////////////
 		
 
 	}
@@ -622,9 +622,11 @@ public class HandlerEX : MonoBehaviour {
     IEnumerator LoadImage(string path, Image image)/*IEnumerator*/
     {
         image.sprite = null;
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + path);
-        Debug.Log("<color=yellow>file:///" + path+"</color>");
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
+        Debug.Log("<color=yellow>file://" + path+"</color>");
         yield return www.SendWebRequest();
+
+        Debug.Log($"Request for {path} is done ? {www.isDone} result: {www.result} error ? : {www.error ?? "null"} download handler done ? :{www.downloadHandler.isDone}");
 
         //((DownloadHandlerTexture)www.downloadHandler). = true;
 
@@ -635,6 +637,7 @@ public class HandlerEX : MonoBehaviour {
 
         image.sprite = sprite != null ? sprite : defaultSprite;
         carte.GetComponent<Image>().preserveAspect = true;
+        www.Dispose();
 
     }
 
@@ -690,7 +693,7 @@ public class HandlerEX : MonoBehaviour {
         yield return www.GetAudioClip(false, false);
         source.clip = www.GetAudioClip(false, false);
         */
-        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file:///" + path, AudioType.MPEG);
+        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + path, AudioType.MPEG);
 
         yield return www.SendWebRequest();
         
@@ -713,8 +716,10 @@ public class HandlerEX : MonoBehaviour {
             PauseClip();
             //PauseIcon.GetComponent<PlayPause>().playing = false;
         }
-        
-	}
+
+        www.Dispose();
+
+    }
 
 
     

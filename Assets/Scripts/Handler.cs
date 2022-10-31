@@ -691,7 +691,7 @@ public class Handler : MonoBehaviour {
             //PauseIcon.GetComponent<PlayPause>().playing = false;
         }
 
-
+		www.Dispose();
     }
 
 

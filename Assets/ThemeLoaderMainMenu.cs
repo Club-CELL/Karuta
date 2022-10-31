@@ -356,13 +356,19 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         classicSliderBackgroundColor = sensitivitySliderBackground.color;
         classicColorThemePanel = themesPanel.color;
         classicColorSelectedTheme = themesScroll.selectedColor;
+
+        Debug.Log("Theme Loader Main Menu Awake");
         //GetTheme();
     }
 
     public void Start()
     {
+        Debug.Log("Theme Loader Main Menu Start");
+        Debug.Log("GetThemes");
         GetThemes();
+        Debug.Log("LoadTheme");
         LoadTheme();
+        Debug.Log("LoadThemeSelection");
         LoadThemeSelection();
     }
 
@@ -397,7 +403,9 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     void GetThemes()
     {
         themes = new List<Theme>();
+        Debug.Log("Get theme files");
         string[] themeFiles = Directory.GetFiles(Path.Combine(Application.persistentDataPath, "Themes"), "*.json");
+        Debug.Log($"Got {themeFiles?.Length.ToString() ?? "null"} theme files");
         theme = null;
         Global.theme = null;
 
@@ -412,6 +420,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             string themeName = Path.GetFileName(themeFile);
             themeName = themeName.Substring(0, themeName.Length - 5);
             newTheme.SetName(themeName);
+            Debug.Log("PlayerPrefs GetString theme");
             Debug.Log(PlayerPrefs.GetString("theme"));
             Debug.Log(themeName);
             if(PlayerPrefs.GetString("theme") == themeName)
@@ -520,8 +529,16 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         if (File.Exists(path))
         {
 
-            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + path);
+            Debug.Log($"About to get texture for: {path}");
+            yield return null;
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
+            yield return null;
+            Debug.Log($"About to send web request for: {path}");
             yield return www.SendWebRequest();
+
+            Debug.Log($"Request for {path} is done ? {www.isDone} result: {www.result} error ? : {www.error ?? "null"} download handler done ? :{www.downloadHandler.isDone}");
+
+            yield return null;
 
 
             Texture2D texture = DownloadHandlerTexture.GetContent(www);
@@ -532,6 +549,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             {
                 image.sprite = sprite;
             }
+            www.Dispose();
         }
     }
 
