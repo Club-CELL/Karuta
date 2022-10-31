@@ -20,6 +20,19 @@ public class UpdateContent : MonoBehaviour
     bool doneDecks = false;
     bool doneSongs = false;
     bool doneVisuals = false;
+    public bool DoneDecks
+    {
+        get => doneDecks;
+    }
+    public bool DoneSongs
+    {
+        get => doneSongs;
+    }
+    public bool DoneVisuals
+    {
+        get => doneVisuals;
+    }
+
     string progressText = "Connecting...";
     Text text;
     DriveService service;

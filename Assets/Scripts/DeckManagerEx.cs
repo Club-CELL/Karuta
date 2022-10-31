@@ -53,7 +53,7 @@ public class DeckManagerEx : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("nbJoueurs:" + Global.nbJoueurs);
+        //Debug.Log("nbJoueurs:" + Global.nbJoueurs);
         swipeDetect();
     }
 

@@ -236,13 +236,9 @@ public class DriveTest: MonoBehaviour
 
             yield return request.SendWebRequest();
 
-            if(request.isNetworkError)
+            if(request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError("Network error");
-            }
-            else if(request.isHttpError)
-            {
-                Debug.LogError("Http error");
+                Debug.LogError($"Error: {request.error ?? "null"}");
             }
             else
             {

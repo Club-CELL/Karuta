@@ -92,6 +92,7 @@ public class Retour : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPoin
 			//DeckManager.joueur = 1;
 			Global.Restart ();
 			SceneManager.LoadScene ("ChoixJoueurs");
+			execution = false;
 		}
 	}
 }
