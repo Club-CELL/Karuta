@@ -66,17 +66,38 @@ public class HandlerEX : MonoBehaviour {
 
     public Sprite defaultSprite;
 
-    
+    Image carteImage;
+    Image carte2Image;
+    Image carte3Image;
+    Image flecheTrouveeImage;
+    Image flecheNonTrouveeImage;
 
-	void Start () {
+    Text flecheTrouveeText;
+    Text flecheNonTrouveeText;
+
+
+    void Start () {
+
+
+
+        carteImage = carte.GetComponent<Image>();
+        carte2Image = carte2.GetComponent<Image>();
+        carte3Image = carte3.GetComponent<Image>(); ;
+        flecheTrouveeImage = flecheTrouvee.GetComponent<Image>();
+        Debug.Log($"Fleche trouvee image is null ? {flecheTrouveeImage == null}");
+        flecheNonTrouveeImage = flecheNonTrouvee.GetComponent<Image>();
+        flecheTrouveeText = flecheTrouvee.GetComponentInChildren<Text>(true);
+        flecheNonTrouveeText = flecheNonTrouvee.GetComponentInChildren<Text>(true);
+
+        carteImage.enabled = false;
+        carte2Image.enabled = true;
+
         autoplay = PlayerPrefs.GetInt("autoplay", 1) == 1;
         playpause = PlayerPrefs.GetInt("playpause", 1) == 1;
 
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         flecheNonTrouvee.SetActive(true);
         flecheTrouvee.SetActive(true);
-        carte.GetComponent<Image>().enabled=false;
-		carte2.GetComponent<Image>().enabled=true;
 
 		x0 = carte.transform.position.x;
 		y0 = carte.transform.position.y;
@@ -92,7 +113,7 @@ public class HandlerEX : MonoBehaviour {
 		First ();
 		restantes.GetComponent<Text> ().text = "Cartes Restantes: " + nb.ToString ();
 
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -129,31 +150,31 @@ public class HandlerEX : MonoBehaviour {
 		
 		Vector2 pos = carte.transform.position;
 		if (pos.x >= x0) {
-			Color col = flecheTrouvee.GetComponent<Image> ().color;
-			flecheTrouvee.GetComponent<Image> ().color= new Color(col.r,col.g,col.b,Math.Min(1,(pos.x - x0)/validate_x));
-			col = flecheTrouvee.GetComponentInChildren<Text> ().color;
-			flecheTrouvee.GetComponentInChildren<Text> ().color = new Color(col.r,col.g,col.b,Math.Min(1,(pos.x - x0)/validate_x));
+			Color col = flecheTrouveeImage.color;
+			flecheTrouveeImage.color= new Color(col.r,col.g,col.b,Math.Min(1,(pos.x - x0)/validate_x));
+			col = flecheTrouveeText.color;
+			flecheTrouveeText.color = new Color(col.r,col.g,col.b,Math.Min(1,(pos.x - x0)/validate_x));
 
-			col = flecheNonTrouvee.GetComponent<Image> ().color;
-			flecheNonTrouvee.GetComponent<Image> ().color= new Color(col.r,col.g,col.b,0);
-			col = flecheNonTrouvee.GetComponentInChildren<Text> ().color;
-			flecheNonTrouvee.GetComponentInChildren<Text> ().color = new Color(col.r,col.g,col.b,0);
+			col = flecheNonTrouveeImage.color;
+			flecheNonTrouveeImage.color= new Color(col.r,col.g,col.b,0);
+			col = flecheNonTrouveeText.color;
+			flecheNonTrouveeText.color = new Color(col.r,col.g,col.b,0);
 
 		}
 		if (pos.x <= x0) {
-			Color col = flecheNonTrouvee.GetComponent<Image> ().color;
-			flecheNonTrouvee.GetComponent<Image> ().color= new Color(col.r,col.g,col.b,Math.Min(1,(x0-pos.x)/validate_x));
-			col = flecheNonTrouvee.GetComponentInChildren<Text> ().color;
-			flecheNonTrouvee.GetComponentInChildren<Text> ().color = new Color(col.r,col.g,col.b,Math.Min(1,(x0 - pos.x)/validate_x));
+			Color col = flecheNonTrouveeImage.color;
+			flecheNonTrouveeImage.color= new Color(col.r,col.g,col.b,Math.Min(1,(x0-pos.x)/validate_x));
+			col = flecheNonTrouveeText.color;
+			flecheNonTrouveeText.color = new Color(col.r,col.g,col.b,Math.Min(1,(x0 - pos.x)/validate_x));
 
-			col = flecheTrouvee.GetComponent<Image> ().color;
-			flecheTrouvee.GetComponent<Image> ().color= new Color(col.r,col.g,col.b,0);
-			col = flecheTrouvee.GetComponentInChildren<Text> ().color;
-			flecheTrouvee.GetComponentInChildren<Text> ().color = new Color(col.r,col.g,col.b,0);
+			col = flecheTrouveeImage.color;
+			flecheTrouveeImage.color= new Color(col.r,col.g,col.b,0);
+			col = flecheTrouveeText.color;
+			flecheTrouveeText.color = new Color(col.r,col.g,col.b,0);
 		}
 
 
-		if (carte3.GetComponent<Image> ().enabled) {
+		if (carte3Image.enabled) {
 			x3 = carte3.transform.position.x;
 			y3 = carte3.transform.position.y;
 			if (x3 < x0 && x3 > x0 - x3_thres || x3 >= x0 && x3 < x0 + x3_thres) {
@@ -164,7 +185,7 @@ public class HandlerEX : MonoBehaviour {
 
 
 			} else {
-				carte3.GetComponent<Image> ().enabled = false;
+				carte3Image.enabled = false;
 			}
 
 		}
@@ -255,22 +276,22 @@ public class HandlerEX : MonoBehaviour {
     IEnumerator SwapCardsCoroutine()
 	{
 
-		if (carte.GetComponent<Image> ().enabled) {
+		if (carteImage.enabled) {
 
 			Vector2 pos = carte.transform.position;
 
-			carte3.GetComponent<Image> ().enabled = true;
-			carte3.GetComponent<Image> ().preserveAspect = true;
-			carte3.GetComponent<Image> ().sprite = carte.GetComponent<Image> ().sprite;
+			carte3Image.enabled = true;
+			carte3Image.preserveAspect = true;
+			carte3Image.sprite = carteImage.sprite;
 			carte3.transform.position = new Vector2(pos.x,pos.y);
 			carte3.transform.rotation =Quaternion.Euler(new Vector3(0,0,carte.transform.rotation.z));
 
 
-			carte.GetComponent<Image> ().enabled = false;
+			carteImage.enabled = false;
 			carte.transform.position = new Vector2(x0,y0);
 			carte.transform.rotation =Quaternion.Euler(new Vector3(0,0,0));
 
-			carte2.GetComponent<Image> ().enabled = true;
+			carte2Image.enabled = true;
 			carte2.transform.position = new Vector2(x0,y0-y_diff_restart);
 			carte2.transform.rotation =Quaternion.Euler(new Vector3(0,0,0));
 
@@ -279,13 +300,17 @@ public class HandlerEX : MonoBehaviour {
 		carte = carte2;
 		carte2 = temp;
 
-        carte.GetComponent<Image>().enabled = false;
-        while (carte.GetComponent<Image>().sprite == null)
+        Image tempImage = carteImage;
+        carteImage = carte2Image;
+        carte2Image = tempImage;
+
+        carteImage.enabled = false;
+        while (carteImage.sprite == null)
         {
             yield return null;
         }
         carte.transform.position = new Vector2(x0, y0 - y_diff_restart);
-        carte.GetComponent<Image>().enabled = true;
+        carteImage.enabled = true;
 
 
         PauseIcon.transform.SetParent(carte.transform);
@@ -392,11 +417,11 @@ public class HandlerEX : MonoBehaviour {
 		for (int i = 0; i < cardName.Length; i++) {
 
 			char[] forbiddenChar = new char[] { ':', '/', '"', '*', '\\', '|', '?', '<', '>' };
-			int ind = hasIndex<char> (cardName [i],forbiddenChar);
+			int ind = HasIndex<char> (cardName [i],forbiddenChar);
 			if(ind != -1)
 			{
 				cardName = cardName.Substring (0, i) + "," + cardName.Substring (i+ 1, cardName.Length-i-1);
-				ind = hasIndex<char> (cardName [i], forbiddenChar);
+				ind = HasIndex<char> (cardName [i], forbiddenChar);
 
 			}
 
@@ -407,7 +432,7 @@ public class HandlerEX : MonoBehaviour {
 
 
 
-        StartCoroutine(LoadImage(imPath, carte2.GetComponent<Image>()));
+        StartCoroutine(LoadImage(imPath, carte2Image));
         
 		string songPath = Path.Combine(Main_Folder, "Son/" + cardName + ".mp3");
 
@@ -415,7 +440,7 @@ public class HandlerEX : MonoBehaviour {
         if (!autoplay)
         {
             paused = true;
-            if (carte2.GetComponent<Image>().enabled)
+            if (carte2Image.enabled)
             {
                 PauseIcon.transform.SetParent(carte2.transform);
             }
@@ -431,7 +456,7 @@ public class HandlerEX : MonoBehaviour {
         else
         {
             paused = false;
-            if (carte2.GetComponent<Image>().enabled)
+            if (carte2Image.enabled)
             {
                 PauseIcon.transform.SetParent(carte2.transform);
             }
@@ -459,9 +484,9 @@ public class HandlerEX : MonoBehaviour {
 	{
 		reponse.GetComponent<Text> ().text = "Partie terminee !";
 		restantes.GetComponent<Text> ().text = "Cartes Restantes: " + nb.ToString ();
-		carte.GetComponent<Image> ().enabled = false;
-		carte2.GetComponent<Image> ().enabled = false;
-		carte3.GetComponent<Image> ().enabled = false;
+		carteImage.enabled = false;
+		carte2Image.enabled = false;
+		carte3Image.enabled = false;
         flecheNonTrouvee.SetActive(false);
         flecheTrouvee.SetActive(false);
     }
@@ -473,39 +498,7 @@ public class HandlerEX : MonoBehaviour {
 	}
 
 
-
-
-
-	public Sprite imLoadResources(string path)
-	{
-		Debug.Log ("path image: " + path);
-		Sprite spr = (Sprite)Resources.Load (path, typeof(Sprite));
-		return spr;
-	
-	
-	}
-
-	public Sprite imLoad(string path)
-	{
-
-		Debug.Log ("Looking into " + path);
-		if (!File.Exists (path)) {
-            path = Path.Combine(Main_Folder, "Visuels/Animint.png");
-        }
-		
-		byte[] bytes = File.ReadAllBytes(path);
-
-
-
-		Texture2D texture = new Texture2D(1, 1);
-		texture.filterMode = FilterMode.Trilinear;
-        texture.LoadImage(bytes);
-        return null;
-        //return Sprite.Create(texture, new Rect(0,0,texture.width, texture.height), new Vector2(0.5f,0.0f), 1.0f);
-
-
-    }
-    IEnumerator LoadImage(string path, Image image)/*IEnumerator*/
+    IEnumerator LoadImage(string path, Image image)
     {
         image.sprite = null;
         UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
@@ -519,7 +512,7 @@ public class HandlerEX : MonoBehaviour {
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.0f), 1.0f);
 
         image.sprite = sprite != null ? sprite : defaultSprite;
-        carte.GetComponent<Image>().preserveAspect = true;
+        carteImage.preserveAspect = true;
         www.Dispose();
 
     }
@@ -571,7 +564,7 @@ public class HandlerEX : MonoBehaviour {
 
 
 
-    int hasIndex<T>(T value, T[] array)
+    int HasIndex<T>(T value, T[] array)
 	{
 		for (int i = 0; i < array.Length; i++) {
 			if (array [i].Equals(value)) {
@@ -588,7 +581,7 @@ public class HandlerEX : MonoBehaviour {
     {
         source.Pause();
         paused = true;
-        if (carte.GetComponent<Image>().enabled)
+        if (carteImage.enabled)
         {
             PauseIcon.transform.SetParent(carte.transform);
         }
@@ -605,7 +598,7 @@ public class HandlerEX : MonoBehaviour {
     {
         source.Play();
         paused = false;
-        if (carte.GetComponent<Image>().enabled)
+        if (carteImage.enabled)
         {
             PauseIcon.transform.SetParent(carte.transform);
         }
@@ -620,7 +613,7 @@ public class HandlerEX : MonoBehaviour {
     void PreparePlay()
     {
         paused = false;
-        if (carte.GetComponent<Image>().enabled)
+        if (carteImage.enabled)
         {
             PauseIcon.transform.SetParent(carte.transform);
         }
@@ -636,7 +629,7 @@ public class HandlerEX : MonoBehaviour {
     void PreparePause()
     {
         paused = true;
-        if (carte.GetComponent<Image>().enabled)
+        if (carteImage.enabled)
         {
             PauseIcon.transform.SetParent(carte.transform);
         }
