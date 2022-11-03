@@ -10,8 +10,6 @@ using UnityEngine.SceneManagement;
 public class Explorer : MonoBehaviour
 {
 
-
-
 	public string path;
 	public string startDirectory;
 	public GameObject folderObject;
@@ -46,8 +44,6 @@ public class Explorer : MonoBehaviour
 
     public Vector2 swipeDetect()
     {
-        //bool hasMoved;
-        
         if (Input.touches.Length == 0)
         {
             LetGo();
@@ -56,7 +52,6 @@ public class Explorer : MonoBehaviour
         {
             if (touch.phase == TouchPhase.Began)
             {
-                //hasMoved = false;
                 fingerStart = touch.position;
                 fingerEnd = touch.position;
                 x_start_touch = transform.position.x;
@@ -65,7 +60,6 @@ public class Explorer : MonoBehaviour
             }
             if (touch.phase == TouchPhase.Moved)
             {
-                //hasMoved = true;
                 fingerEnd = touch.position;
                 float delta_x = fingerEnd.x - fingerStart.x;
                 float delta_y = fingerEnd.y - fingerStart.y;
@@ -128,19 +122,12 @@ public class Explorer : MonoBehaviour
         //path = @"C:\RIDE";
         Debug.Log("Path: " + path);
         Debug.Log("Folder: " + folder);
-        //Debug.Log("Combine: " + Path.Combine(path, folder));
         if(folder == "<--")
         {
             path = Directory.GetParent(path).ToString();
         }
-        else if (path.EndsWith("/") || path.EndsWith("\\"))
-        {
-            //path += folder;
-            path=Path.Combine(path, folder);
-        }
         else
         {
-            //path = path + "\\" + folder;
             path = Path.Combine(path, folder);
         }
 		
@@ -149,20 +136,16 @@ public class Explorer : MonoBehaviour
         {
             string[] folders = Directory.GetDirectories(path);
             string name;
-            //string[] pathFolders;
             int hh = Screen.height;
             int last = 0;
             if (Directory.GetParent(path) != null)
             {
-                createFolderObject("<--", 0, 0);//createFolderObject("<--", 0, hh);
+                createFolderObject("<--", 0, 0);
                 last = 1;
 
             }
             for (int i = 0; i < folders.Length; i++)
             {
-                //pathFolders = folders[i].Split('/','\\');
-
-                //name = pathFolders[pathFolders.Length - 1];
                 name = Path.GetFileName(folders[i].TrimEnd(Path.DirectorySeparatorChar));
                 createFolderObject(name, 0,  - (i + last) * height);//createFolderObject(name, 0, hh - (i + last) * height);
 
@@ -172,9 +155,7 @@ public class Explorer : MonoBehaviour
                 if (folds[i].gameObject.GetInstanceID() != GetInstanceID())
                 {
                     Destroy(folds[i].gameObject);
-
                 }
-
             }
             GameObject choiceCopy = Instantiate(choicePanel) as GameObject;
             Destroy(choicePanel);
@@ -205,9 +186,9 @@ public class Explorer : MonoBehaviour
 	{
 		GameObject folderObj = Instantiate (folderObject) as GameObject;
 
-		folderObj.GetComponent<RectTransform> ().SetParent (this.GetComponent<RectTransform> (),false);
+		folderObj.transform.SetParent (this.transform,false);
 
-		folderObj.GetComponent<RectTransform> ().localPosition = new Vector3(x,y,0);
+		folderObj.transform.localPosition = new Vector3(x,y,0);
 
 		folderObj.GetComponentInChildren<Text> ().text= text;
 

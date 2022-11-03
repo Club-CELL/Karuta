@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using System.IO;
+
 public class ThemeLoaderDecksChoice : MonoBehaviour
 {
-
     public Theme theme;
 
 
@@ -46,8 +46,6 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
             }
 
             Camera.main.backgroundColor = GetColorFromString(theme.backgroundColorDecksChoice, Camera.main.backgroundColor);
-
-
 
             string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Themes"), theme.decksChoiceBackground);
 

@@ -46,8 +46,8 @@ public class Bouton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPoin
 
 	// Use this for initialization
 	public void Start () {
-		x0 = GetComponent<Transform> ().position.x;
-		startScale=GetComponent<Transform> ().localScale.x;
+		x0 = transform.position.x;
+		startScale=transform.localScale.x;
 	}
 	
 	// Update is called once per frame
@@ -66,28 +66,28 @@ public class Bouton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPoin
 
     void Activate()
 	{
-		scale=GetComponent<Transform> ().localScale.x;
+		scale=transform.localScale.x;
 		//Debug.Log (scale);
 		if (scale < scaleTouch) {
 			scale = Math.Min(scaleTouch,scale+scaleSpeed);
 		}
-		GetComponent<Transform> ().localScale = new Vector3(scale,scale,scale);
+		transform.localScale = new Vector3(scale,scale,scale);
 	}
     void Desactivate()
 	{
-		scale=GetComponent<Transform> ().localScale.x;
+		scale=transform.localScale.x;
 		if (scale > startScale) {
 			scale = Math.Max(startScale,scale-scaleSpeed);
 		}
-		GetComponent<Transform> ().localScale = new Vector3(scale,scale,scale);
+		transform.localScale = new Vector3(scale,scale,scale);
 	}
 	virtual public void Execute()
 	{
-		pos = GetComponent<Transform> ().position;
+		pos = transform.position;
 		if (pos.x - x0 < finX) {
 
 			pos = new Vector2 (pos.x + speedX, pos.y);
-			GetComponent<Transform> ().position = pos;
+			transform.position = pos;
 			
 		} else {
             Global.mainPath = PlayerPrefs.GetString("mainpath", Global.mainPath);

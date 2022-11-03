@@ -190,20 +190,6 @@ public class ThemeLoaderMainMenu : MonoBehaviour
 
             indicator.GetComponent<Image>().color = themesScroll.unselectedColor;
 
-            /*
-            var indicatorImages = indicator.transform.parent.GetComponentsInChildren<Image>();
-            for (int i = 0; i < indicatorImages.Length; i++)
-            {
-                if (themesScroll.PageIndex == i)
-                {
-                    indicatorImages[i].color = themesScroll.selectedColor;
-                }
-                else
-                {
-                    indicatorImages[i].color = themesScroll.unselectedColor;
-                }
-            }*/
-
             themesScroll.RefreshIndicators();
             Camera.main.backgroundColor = GetColorFromString(theme.backgroundColorMainMenu, Camera.main.backgroundColor);
 
@@ -308,23 +294,10 @@ public class ThemeLoaderMainMenu : MonoBehaviour
 
             themesScroll.selectedColor = classicColorSelectedTheme;
             themesScroll.unselectedColor = Color.white;
-            /*
-            var indicatorImages = indicator.transform.parent.GetComponentsInChildren<Image>();
-            for(int i=0;i<indicatorImages.Length;i++)
-            {
-                if(themesScroll.PageIndex == i)
-                {
-                    indicatorImages[i].color = themesScroll.selectedColor;
-                }
-                else
-                {
-                    indicatorImages[i].color = themesScroll.unselectedColor;
-                }
-            }*/
+
             themesScroll.RefreshIndicators();
             Camera.main.backgroundColor = classicMainColor;
             BackgroundHandler.DefaultBackground();
-            //SceneManager.LoadScene("ChoixJoueurs");
         }
     }
 

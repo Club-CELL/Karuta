@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -21,7 +20,7 @@ public class BackgroundHandler : MonoBehaviour
     GameObject lastDeactivatedBackground;
 
     public static BackgroundHandler instance = null;
-    // Start is called before the first frame update
+
     void Awake()
     {
         if(instance != null && instance != this)
@@ -85,10 +84,6 @@ public class BackgroundHandler : MonoBehaviour
         Debug.Log("It's a video: " + videoPath);
         instance.StartCoroutine(instance.LoadVideo(videoPath));
     }
-
-
-
-
 
     IEnumerator LoadImage(string path)
     {

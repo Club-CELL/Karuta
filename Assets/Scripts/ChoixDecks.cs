@@ -51,8 +51,8 @@ public class ChoixDecks : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
 
 	// Use this for initialization
 	void Start () {
-		x0 = GetComponent<Transform> ().position.x;
-		startScale=GetComponent<Transform> ().localScale.x;
+		x0 = transform.position.x;
+		startScale=transform.localScale.x;
 	}
 
 	// Update is called once per frame
@@ -71,20 +71,19 @@ public class ChoixDecks : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
 
 	void Activate()
 	{
-		scale=GetComponent<Transform> ().localScale.x;
-		Debug.Log (scale);
+		scale=transform.localScale.x;
 		if (scale < scaleTouch) {
 			scale = Math.Min(scaleTouch,scale+scaleSpeed);
 		}
-		GetComponent<Transform> ().localScale = new Vector3(scale,scale,scale);
+		transform.localScale = new Vector3(scale,scale,scale);
 	}
 	void Desactivate()
 	{
-		scale=GetComponent<Transform> ().localScale.x;
+		scale=transform.localScale.x;
 		if (scale > startScale) {
 			scale = Math.Max(startScale,scale-scaleSpeed);
 		}
-		GetComponent<Transform> ().localScale = new Vector3(scale,scale,scale);
+		transform.localScale = new Vector3(scale,scale,scale);
 	}
 	void Execute()
 	{
@@ -97,16 +96,16 @@ public class ChoixDecks : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
             added = true;
 		}
 
-		pos = GetComponent<Transform> ().position;
+		pos = transform.position;
 		if (pos.x - x0 < finX) {
 
 			pos = new Vector2 (pos.x + speedX, pos.y);
-			GetComponent<Transform> ().position = pos;
+			transform.position = pos;
 
 		} else {
 			if(PlayerPrefs.GetInt("mirror") != 0)
             {
-                GetComponent<Transform>().position = new Vector2(x0, pos.y);
+                transform.position = new Vector2(x0, pos.y);
             }
 			
 			added = false;

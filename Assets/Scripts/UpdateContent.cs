@@ -12,8 +12,6 @@ using Google.Apis.Services;
 using UnityEngine.Networking;
 
 
-
-
 public class UpdateContent : MonoBehaviour
 {
 
@@ -174,35 +172,6 @@ public class UpdateContent : MonoBehaviour
             if (!File.Exists(path))
             {
                 StartCoroutine(DownloadFile(onlineFile, path));
-                /*if (!string.IsNullOrEmpty(onlineFile.WebContentLink))
-                {
-                    UnityWebRequest request = new UnityWebRequest(onlineFile.WebContentLink);
-
-                    request.downloadHandler = new DownloadHandlerBuffer();
-
-                    yield return request.SendWebRequest();
-
-                    if (request.isNetworkError)
-                    {
-                        Debug.LogError("Network error");
-                        progressText = "<color=red>Network error :(</color>";
-                    }
-                    else if (request.isHttpError)
-                    {
-                        Debug.LogError("Http error");
-                        progressText = "<color=red>Http error :(</color>";
-                    }
-                    else
-                    {
-                        File.WriteAllBytes(path, request.downloadHandler.data);
-                        progressText = "Downloaded " + onlineFile.Name + " !";
-                    }
-                }
-                else
-                {
-                    Debug.LogError("file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink");
-                    progressText = "<color=red>file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink</color>";
-                }*/
             }
             else
             {
@@ -262,35 +231,6 @@ public class UpdateContent : MonoBehaviour
             if (!File.Exists(path))
             {
                 StartCoroutine( DownloadFile(onlineFile, path));
-               /*if (!string.IsNullOrEmpty(onlineFile.WebContentLink))
-                {
-                    UnityWebRequest request = new UnityWebRequest(onlineFile.WebContentLink);
-
-                    request.downloadHandler = new DownloadHandlerBuffer();
-
-                    yield return request.SendWebRequest();
-
-                    if (request.isNetworkError)
-                    {
-                        Debug.LogError("Network error");
-                        progressText = "<color=red>file:Network error :(</color>";
-                    }
-                    else if (request.isHttpError)
-                    {
-                        Debug.LogError("Http error");
-                        progressText = "<color=red>file:Http error :(</color>";
-                    }
-                    else
-                    {
-                        File.WriteAllBytes(path, request.downloadHandler.data);
-                        progressText = "Downloaded " + onlineFile.Name + " !";
-                    }
-                }
-                else
-                {
-                    Debug.LogError("file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink");
-                    progressText = "<color=red>file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink</color>";
-                }*/
             }
             else
             {
@@ -347,35 +287,6 @@ public class UpdateContent : MonoBehaviour
             if (!File.Exists(path))
             {
                 StartCoroutine( DownloadFile(onlineFile, path));
-                /*if (!string.IsNullOrEmpty(onlineFile.WebContentLink))
-                {
-                    UnityWebRequest request = new UnityWebRequest(onlineFile.WebContentLink);
-
-                    request.downloadHandler = new DownloadHandlerBuffer();
-
-                    yield return request.SendWebRequest();
-
-                    if (request.isNetworkError)
-                    {
-                        Debug.LogError("Network error");
-                        progressText = "<color=red>file:Network error :(</color>";
-                    }
-                    else if (request.isHttpError)
-                    {
-                        Debug.LogError("Http error");
-                        progressText = "<color=red>file:Http error :(</color>";
-                    }
-                    else
-                    {
-                        File.WriteAllBytes(path, request.downloadHandler.data);
-                        progressText = "Downloaded " + onlineFile.Name + " !";
-                    }
-                }
-                else
-                {
-                    Debug.LogError("file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink");
-                    progressText = "<color=red>file: " + onlineFile.Name + " / " + onlineFile.Id + "had no webcontentlink" +"</color>";
-                }*/
             }
             else
             {
@@ -432,35 +343,6 @@ public class UpdateContent : MonoBehaviour
             if (!File.Exists(path))
             {
                 StartCoroutine(DownloadFile(onlineFile, path));
-                /*if (!string.IsNullOrEmpty(onlineFile.WebContentLink))
-                {
-                    UnityWebRequest request = new UnityWebRequest(onlineFile.WebContentLink);
-
-                    request.downloadHandler = new DownloadHandlerBuffer();
-
-                    yield return request.SendWebRequest();
-
-                    if (request.isNetworkError)
-                    {
-                        Debug.LogError("Network error");
-                        progressText = "<color=red>file:Network error :(</color>";
-                    }
-                    else if (request.isHttpError)
-                    {
-                        Debug.LogError("Http error");
-                        progressText = "<color=red>file:Http error :(</color>";
-                    }
-                    else
-                    {
-                        File.WriteAllBytes(path, request.downloadHandler.data);
-                        progressText = "Downloaded " + onlineFile.Name + " !";
-                    }
-                }
-                else
-                {
-                    Debug.LogError("file: " + onlineFile.Name + "/" + onlineFile.Id + "had no webcontentlink");
-                    progressText = "<color=red>file: " + onlineFile.Name + " / " + onlineFile.Id + "had no webcontentlink" +"</color>";
-                }*/
             }
             else
             {
@@ -472,78 +354,6 @@ public class UpdateContent : MonoBehaviour
     }
 
 
-    /*
-        private IEnumerator GetAllSongs()
-        {
-            //Get Karuta id:
-            if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Son/")))
-            {
-                Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Son/"));
-            }
-            string baseID = "";
-            var request = new GoogleDriveFiles.ListRequest();
-            request.Fields = new List<string> { "files(id, name)" };
-            request.Q = $"'{"1eglmnT1k2xfYoU83LYpJ9EEx3Tchf9j7"}' in parents";
-            request.PageSize = 1000;
-            yield return request.Send();
-
-            Debug.Log(request.ResponseData.Files.Count);
-
-            int i = 0;
-
-            foreach (UnityGoogleDrive.Data.File onlineFile in request.ResponseData.Files)
-            {
-                if (!File.Exists(Path.Combine(Application.persistentDataPath, "Son/" + onlineFile.Name)))
-                {
-                    var downloadRequest = GoogleDriveFiles.Download(onlineFile.Id);
-                    yield return downloadRequest.Send();
-                    UnityGoogleDrive.Data.File file = downloadRequest.ResponseData;
-                    File.WriteAllBytes(Path.Combine(Application.persistentDataPath, "Son/" + onlineFile.Name), file.Content);
-                    progressText = "Downloaded " + onlineFile.Name + " !";
-                }
-
-            }
-
-            doneSongs = true;
-        }
-
-        private IEnumerator GetAllVisuals()
-        {
-            //Get Karuta id:
-            if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Visuels/")))
-            {
-                Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Visuels/"));
-            }
-
-            string baseID = "";
-            var request = new GoogleDriveFiles.ListRequest();
-            request.Fields = new List<string> { "files(id, name)" };
-            request.Q = $"'{"19eXJw8waPW1i4GxgMH68SXKW3O5mQvGY"}' in parents";
-            request.PageSize = 1000;
-            yield return request.Send();
-
-            Debug.Log(request.ResponseData.Files.Count);
-
-            int i = 0;
-
-            foreach (UnityGoogleDrive.Data.File onlineFile in request.ResponseData.Files)
-            {
-                if(!File.Exists(Path.Combine(Application.persistentDataPath, "Visuels/" + onlineFile.Name)))
-                {
-                    var downloadRequest = GoogleDriveFiles.Download(onlineFile.Id);
-                    yield return downloadRequest.Send();
-                    UnityGoogleDrive.Data.File file = downloadRequest.ResponseData;
-                    File.WriteAllBytes(Path.Combine(Application.persistentDataPath, "Visuels/" + onlineFile.Name), file.Content);
-
-                    progressText = "Downloaded " + onlineFile.Name + " !";
-                }
-
-            }
-
-            doneVisuals = true;
-            CheckDone();
-        }*/
-
     void CheckDone()
     {
         Debug.Log(filesHandled + "/" + numberOfFiles + " files handled");
@@ -553,23 +363,12 @@ public class UpdateContent : MonoBehaviour
             finished = true;
         }
     }
-    /* void CheckDone()
-     {
-         if(doneVisuals && doneDecks && doneSongs)
-         {
-             progressText = "Finished !";
-             CancelInvoke("Close");
-             Invoke("Close", 0.5f);
-         }
-     }*/
+
 
     void Close()
     {
         gameObject.SetActive(false);
     }
-
-
-
 
     public DriveService AuthenticateServiceAccount(string serviceAccountEmail, string keyFilePath)
     {
@@ -733,118 +532,6 @@ public class UpdateContent : MonoBehaviour
 
     }
 
-    /*
-    public IEnumerator DownloadFile(Google.Apis.Drive.v3.Data.File file, string path)
-    {
-        Debug.Log("Tring to download " + file.Name);
-        
-        if (!string.IsNullOrEmpty(file.WebContentLink))
-        {
-            UnityWebRequest request = new UnityWebRequest(file.WebContentLink);
-
-            //request.downloadHandler = new DownloadHandlerBuffer();
-            request.downloadHandler = new DownloadHandlerFile(path);
-
-            while(currentNumberOfDownloads >= maxSimulateousDownloads)
-            {
-                yield return new WaitForSeconds(0.5f + 0.5f*Random.value);
-            }
-            currentNumberOfDownloads++;
-            yield return request.SendWebRequest();
-            currentNumberOfDownloads--;
-            if (request.error != null)
-            {
-                Debug.LogError("<color=red>" + request.error + "</color>");
-            }
-                var fileStream = File.Open(path, FileMode.Open);
-            //if (fileStream.Length == 0)
-            if(file.Size != fileStream.Length)
-            {
-                fileStream.Close();
-                request.Dispose();
-                request = null;
-                File.Delete(path);
-                yield return new WaitForSeconds(Random.value * 10 + 10);
-                StartCoroutine(DownloadFile(file, path));
-                Debug.LogWarning("Problem with:" + file.Name);
-                yield break;
-            }
-            progressText = "Downloaded " + file.Name + " !";
-            if(request != null)
-            {
-                request.Dispose();
-                request = null;
-            }
-            fileStream.Close();
-            
-            //if (request.isNetworkError)
-            //{
-            //    Debug.LogError("Network error");
-            //}
-            //else if (request.isHttpError)
-            //{
-            //    Debug.LogError("Http error");
-            //}
-            //else
-            //{
-            //    File.WriteAllBytes(path, request.downloadHandler.data);
-            //    progressText = "Downloaded " + file.Name + " !";
-            //}
-        }
-        else
-        {
-            Debug.LogError("file: " + file.Name + "/" + file.Id + "had no webcontentlink");
-        }
-        filesHandled++;
-        CheckDone();
-    }*/
-    
-
-    /*
-    public static DriveService AuthenticateServiceAccount(string serviceAccountEmail, string keyFilePath)
-    {
-
-        // check the file exists
-        if (!File.Exists(keyFilePath))
-        {
-            Console.WriteLine("An Error occurred - Key file does not exist");
-            return null;
-        }
-
-        //Google Drive scopes Documentation:   https://developers.google.com/drive/web/scopes
-        string[] scopes = new string[] { DriveService.Scope.Drive,  // view and manage your files and documents
-                                             DriveService.Scope.DriveAppdata,  // view and manage its own configuration data
-                                             DriveService.Scope.DriveAppsReadonly,   // view your drive apps
-                                             DriveService.Scope.DriveFile,   // view and manage files created by this app
-                                             DriveService.Scope.DriveMetadataReadonly,   // view metadata for files
-                                             DriveService.Scope.DriveReadonly,   // view files and documents on your drive
-                                             DriveService.Scope.DriveScripts };  // modify your app scripts     
-
-        var certificate = new X509Certificate2(keyFilePath, "notasecret", X509KeyStorageFlags.Exportable);
-        try
-        {
-            ServiceAccountCredential credential = new ServiceAccountCredential(
-                new ServiceAccountCredential.Initializer(serviceAccountEmail)
-                {
-                    Scopes = scopes
-                }.FromCertificate(certificate));
-
-            // Create the service.
-            DriveService service = new DriveService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Daimto Drive API Sample",
-            });
-            return service;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.InnerException);
-            return null;
-
-        }
-    }
-}*/
 //22mn 42s 58
 
 }

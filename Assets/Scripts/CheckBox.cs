@@ -28,11 +28,6 @@ public class CheckBox : Bouton {
         text.GetComponent<Outline>().enabled = state;
     }
 
-    // Update is called once per frame
-   /* void Update () {
-       
-    }*/
-    
     public override void Execute()
     {
         state = !state;

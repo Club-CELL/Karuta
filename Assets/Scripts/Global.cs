@@ -12,33 +12,19 @@ public class Global : MonoBehaviour {
 	public static int entries;
 
     public static Theme theme = null;
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
 	public static void AddTabInDeck(string[] T)
 	{
 		for (int i = 0; i < T.Length; i++) {
 			Deck [entries] = T [i];
 			entries++;
-
 		}
-
 	}
+
 	public static void Restart()
 	{
         DeckManager.joueur = 1;//Int
-
-
-
 		entries = 0;
-
 	}
 
 }

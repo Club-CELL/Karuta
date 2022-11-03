@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class ScreenResize : MonoBehaviour
 {
-
     void Awake()
     {
         int wPadding = 0;
@@ -23,10 +21,8 @@ public class ScreenResize : MonoBehaviour
         Invoke("ChangeScene", 0.5f);
     }
 
-
     void ChangeScene()
     {
-
         SceneManager.LoadScene("ChoixJoueurs");
     }
 

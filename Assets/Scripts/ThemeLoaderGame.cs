@@ -95,7 +95,6 @@ public class ThemeLoaderGame : MonoBehaviour
         theme = Global.theme;
     }
 
-    
 }
 
 

@@ -1,14 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class TextOption : MonoBehaviour, IPointerUpHandler, IPointerExitHandler, IPointerDownHandler
 {
-
-
     public GameObject Box;
-
     CheckBox checkbox;
 
     void Start()
@@ -22,12 +17,10 @@ public class TextOption : MonoBehaviour, IPointerUpHandler, IPointerExitHandler,
     }
     public void OnPointerExit(PointerEventData eventdata)
     {
-
         if (!checkbox.execution)
         {
             checkbox.activated = false;
         }
-
     }
     public void OnPointerUp(PointerEventData eventdata)
     {
@@ -36,13 +29,4 @@ public class TextOption : MonoBehaviour, IPointerUpHandler, IPointerExitHandler,
             checkbox.execution = true;
         }
     }
-    /*
-    // Use this for initialization
-    
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-    */
 }

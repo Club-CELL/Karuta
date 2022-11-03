@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
@@ -11,10 +9,6 @@ public class Folder : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, IPo
     public Color colorSelected;
     public Color colorNeutral;
     public bool activated;
-	// Use this for initialization
-	void Start () {
-		
-	}
 
     public void OnPointerUp(PointerEventData eventdata)
     {
@@ -39,7 +33,7 @@ public class Folder : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, IPo
         explorer.GetComponent<Explorer>().ChangeDirectory(GetComponentInChildren<Text>().text);
     }
 
-    // Update is called once per frame
+
     void Update () {
 		if(activated)
         {

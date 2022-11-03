@@ -1,11 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 
 public class Handler : MonoBehaviour {
 
@@ -47,7 +43,6 @@ public class Handler : MonoBehaviour {
 	float x3;
 	public float x3_thres;
 	float y3;
-	bool a;
 	Vector2 fingerStart = new Vector2(0,0);
 	Vector2 fingerEnd = new Vector2 (0,0);
 	AudioSource source;
@@ -59,8 +54,11 @@ public class Handler : MonoBehaviour {
     bool startedPlaying;
     bool songLoaded;
 
+	public bool StartedPlaying
+    {
+		get => startedPlaying;
+    }
 
-    // Use this for initialization
     
 
     void Start () {
@@ -72,8 +70,8 @@ public class Handler : MonoBehaviour {
         carte.GetComponent<Image>().enabled=true;
 		carte2.GetComponent<Image>().enabled=false;
 
-		x0 = carte.GetComponent<RectTransform> ().position.x;
-		y0 = carte.GetComponent<RectTransform> ().position.y;
+		x0 = carte.transform.position.x;
+		y0 = carte.transform.position.y;
 		source = GetComponent<AudioSource> ();
 		Main_Folder = "";//Application.dataPath;
 
@@ -114,17 +112,12 @@ public class Handler : MonoBehaviour {
 
         }
 
-        /*if (source.clip.loadState == AudioDataLoadState.Loaded && !paused && !source.isPlaying)
-        {
-            PlayClip();
-        }*/
 
         swipeDetect ();
-		//carte.GetComponent<RectTransform> ().rotation.Set(0,0,(carte.GetComponent<Transform> ().position.x-x0)*turn_ratio,0);
-		carte.GetComponent<RectTransform> ().rotation=Quaternion.Euler(new Vector3(0,0,carte.GetComponent<Transform> ().position.x-x0)*turn_ratio);
+		carte.transform.rotation=Quaternion.Euler(new Vector3(0,0,carte.transform.position.x-x0)*turn_ratio);
 
 
-		Vector2 pos = carte.GetComponent<Transform> ().position;
+		Vector2 pos = carte.transform.position;
 		if (pos.x >= x0) {
 			Color col = flecheTrouvee.GetComponent<Image> ().color;
 			flecheTrouvee.GetComponent<Image> ().color= new Color(col.r,col.g,col.b,Math.Min(1,(pos.x - x0)/validate_x));
@@ -151,14 +144,13 @@ public class Handler : MonoBehaviour {
 
 
 		if (carte3.GetComponent<Image> ().enabled) {
-			x3 = carte3.GetComponent<RectTransform> ().position.x;
-			y3 = carte3.GetComponent<RectTransform> ().position.y;
+			x3 = carte3.transform.position.x;
+			y3 = carte3.transform.position.y;
 			if (x3 < x0 && x3 > x0 - x3_thres || x3 >= x0 && x3 < x0 + x3_thres) {
 
 
-				carte3.GetComponent<RectTransform> ().position = new Vector2 (x3 + (x3 - x0) * back_speed_x, y3);
-				carte3.GetComponent<RectTransform> ().rotation=Quaternion.Euler(new Vector3(0,0,carte3.GetComponent<Transform> ().position.x-x0)*turn_ratio);
-
+				carte3.transform.position = new Vector2 (x3 + (x3 - x0) * back_speed_x, y3);
+				carte3.transform.rotation=Quaternion.Euler(new Vector3(0,0,carte3.transform.position.x-x0)*turn_ratio);
 
 			} else {
 				carte3.GetComponent<Image> ().enabled = false;
@@ -176,92 +168,6 @@ public class Handler : MonoBehaviour {
 		return Input.touchCount>0 &&Input.GetTouch (0).phase == TouchPhase.Ended && swipeDetect ().x < threshold;
 	}
 
-    /*public Vector2 swipeDetect()
-	{
-
-		if (Input.touches.Length == 0) {
-
-			LetCard ();
-
-		}
-		foreach (Touch touch in Input.touches)
-		{
-			if (touch.phase == TouchPhase.Began) 
-			{
-                hasMoved = false;
-                fingerStart = touch.position;
-				fingerEnd  = touch.position;
-				x_start_touch=carte.GetComponent<Transform> ().position.x;
-				y_start_touch=carte.GetComponent<Transform> ().position.y;
-
-			}
-			if (touch.phase == TouchPhase.Moved )	
-			{
-                hasMoved = true;
-                fingerEnd = touch.position;
-				float delta_x=fingerEnd.x-fingerStart.x;
-				float delta_y=fingerEnd.y-fingerStart.y;
-				HoldCard (delta_x, delta_y);
-			}
-			if(touch.phase == TouchPhase.Ended)	
-			{
-				float delta_x=fingerStart.x-fingerEnd.x;
-				float delta_y=fingerStart.y-fingerEnd.y;
-
-                float distance = Vector2.Distance(fingerStart, fingerEnd);
-                if(distance<10*PlayerPrefs.GetFloat("pausesensitivity", 50))
-                {
-                    hasMoved = false;
-                }
-				LetCard ();
-
-                if (!hasMoved)
-                {
-                    
-                    if (songLoaded) //
-                    {
-                        
-                        if (source.isPlaying && playpause)
-                        {
-                            //source.Pause();
-                            PauseClip();
-
-                        }
-                        else if(paused)
-                        {
-                            PlayClip();
-                        }
-                        else
-                        {
-                            if (source.clip.loadState == AudioDataLoadState.Loaded && !source.isPlaying)
-                            {
-                                //source.Play();
-                                PlayClip();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!paused && playpause)
-                        {
-                            //source.Pause();
-
-                            PreparePause();
-                        }
-                        if (paused)
-                        {
-
-                            PreparePlay();
-                        }
-                    }
-
-                }
-
-            }
-		}
-		return new Vector2(0,0);
-	}*/
-
     public Vector2 swipeDetect()
     {
         if(Input.GetMouseButtonDown(0)) //Start touch
@@ -269,14 +175,11 @@ public class Handler : MonoBehaviour {
             hasMoved = false;
             fingerStart = Input.mousePosition;
             fingerEnd = Input.mousePosition;
-            x_start_touch = carte.GetComponent<Transform>().position.x;
-            y_start_touch = carte.GetComponent<Transform>().position.y;
+            x_start_touch = carte.transform.position.x;
+            y_start_touch = carte.transform.position.y;
         }
         else if(Input.GetMouseButtonUp(0)) //End touch
         {
-            float delta_x = fingerStart.x - fingerEnd.x;
-            float delta_y = fingerStart.y - fingerEnd.y;
-
             float distance = Vector2.Distance(fingerStart, fingerEnd);
             if (distance <= 10 * PlayerPrefs.GetFloat("pausesensitivity", 50))
             {
@@ -331,30 +234,28 @@ public class Handler : MonoBehaviour {
         {
             LetCard();
         }
-        return new Vector2(0, 0);
+        return Vector2.zero;
     }
     void SwapCards()
 	{
 		if (carte.GetComponent<Image> ().enabled) {
 
-			Vector2 pos = carte.GetComponent<Transform> ().position;
+			Vector2 pos = carte.transform.position;
 
 			carte3.GetComponent<Image> ().enabled = true;
 			carte3.GetComponent<Image> ().preserveAspect = true;
 			carte3.GetComponent<Image> ().sprite = carte.GetComponent<Image> ().sprite;
-			carte3.GetComponent<Transform> ().position = new Vector2(pos.x,pos.y);
-			carte3.GetComponent<Transform> ().rotation =Quaternion.Euler(new Vector3(0,0,carte.GetComponent<Transform> ().rotation.z));
+			carte3.transform.position = new Vector2(pos.x,pos.y);
+			carte3.transform.rotation =Quaternion.Euler(new Vector3(0,0,carte.transform.rotation.z));
 
 
 			carte.GetComponent<Image> ().enabled = false;
-			carte.GetComponent<Transform> ().position = new Vector2(x0,y0);
-			carte.GetComponent<Transform> ().rotation =Quaternion.Euler(new Vector3(0,0,0));
+			carte.transform.position = new Vector2(x0,y0);
+			carte.transform.rotation =Quaternion.Euler(new Vector3(0,0,0));
 
 			carte2.GetComponent<Image> ().enabled = true;
-			carte2.GetComponent<Transform> ().position = new Vector2(x0,y0-y_diff_restart);
-			carte2.GetComponent<Transform> ().rotation =Quaternion.Euler(new Vector3(0,0,0));
-
-
+			carte2.transform.position = new Vector2(x0,y0-y_diff_restart);
+			carte2.transform.rotation =Quaternion.Euler(new Vector3(0,0,0));
 
 		}
 
@@ -368,21 +269,14 @@ public class Handler : MonoBehaviour {
 	}
 	void HoldCard(float d_x, float d_y)
 	{
-		
-		Vector2 pos = carte.GetComponent<RectTransform> ().position;
+		Vector2 pos = carte.transform.position;
 		pos = new Vector2 (x_start_touch + d_x, y_start_touch + d_y);
-		carte.GetComponent<RectTransform> ().position=pos;
-		//carte.GetComponent<RectTransform> ().position = new Vector2 ();
-
-
-
-		
-
+		carte.transform.position=pos;
 	}
 
 	void LetCard()
 	{
-		Vector2 pos = carte.GetComponent<RectTransform> ().position;
+		Vector2 pos = carte.transform.position;
 		float dx=0;
 		float dy=0;
 
@@ -399,12 +293,12 @@ public class Handler : MonoBehaviour {
 			dy = Math.Max (tresh_y, (y0-pos.y)*back_speed_y);
 		}
 		pos = new Vector2 (pos.x + dx, pos.y + dy);
-		carte.GetComponent<RectTransform> ().position=pos;
+		carte.transform.position=pos;
 
-		if (carte.GetComponent<RectTransform> ().position.x > x0 + validate_x) { //Card found
+		if (carte.transform.position.x > x0 + validate_x) { //Card found
 			Trouvee();
 		}
-		if (carte.GetComponent<RectTransform> ().position.x < x0 - validate_x) { //Card found
+		if (carte.transform.position.x < x0 - validate_x) { //Card found
 			Next();
 		}
 
@@ -413,62 +307,8 @@ public class Handler : MonoBehaviour {
 		
 	void ReadDecks()
 	{
-		/*
-		Deck[0]="Ano Hana";
-		Deck[1]="Barakamon";
-		Deck[2]="Boku no Hero Academia";
-		Deck[3]="Chuunikoi";
-		Deck[4]="Dagashi Kashi";
-		Deck[5]="God Only Knows";
-		Deck[6]="Gurren Lagann";
-		Deck[7]="Haifuri";
-		Deck[8]="Hibike Euphonium";
-		Deck[9]="Initial D";
-		Deck[10]="Joshiraku";
-		Deck[11]="Kancolle";
-		Deck[12]="Kiznaiver";
-		Deck[13]="K-ON";
-		Deck[14]="Konosuba";
-		Deck[15]="Love Hina";
-		Deck[16]="Mawaru Penguindrum";
-		Deck[17]="Mikakunin";
-		Deck[18]="Nagi no Asukara";
-		Deck[19]="New Game";
-		Deck[20]="Nisekoi";
-		Deck[21]="Non Non Biyori";
-		Deck[22]="Oban Star Racers";
-		Deck[23]="Re Zero";
-		Deck[24]="Slayers";
-		Deck[25]="Sword Art Online";
-		Deck[26]="Tamako Love Story";
-		Deck[27]="Tatami Galaxy";
-		Deck[28]="Watamote";
-		Deck[29]="Yuri on Ice";
-		nb = 30;
-		*/
-		//TextAsset[] Decks=Resources.LoadAll<TextAsset>("Decks");
-
 		Deck = Global.Deck;
 		nb = Global.entries;
-		//Deck = Decks [0].text.Split (new char[] { '\n' });
-
-		/*char excessChar = Deck [0] [Deck [0].Length - 1];
-		for (int i = 0; i < Deck.Length; i++) {
-			Deck [i] = Deck [i].TrimEnd (excessChar);
-		}*/
-
-
-		//Deck[0]="Ano Hana";
-		//Deck[1]="Barakamon";
-		//nb = Deck.Length;
-		//nb = Deck.Length;
-
-
-		/*
-		Debug.Log (Deck[0].Length);
-		for (int i = 0; i < Deck [2].Length; i++) {
-			Debug.Log (i.ToString () + ": char:" + Deck [2] [i]);// + Deck[2][i].Equals("Boku no Hero Academia"[i]).ToString());
-		}*/
 	}
 
 	void Trouvee()
@@ -541,25 +381,15 @@ public class Handler : MonoBehaviour {
 
 			carte.GetComponent<Image> ().sprite = imLoad (imPath);
 			carte.GetComponent<Image> ().preserveAspect = true;
-			//Debug.Log ("Pas de sprite :(");
 		}
 
 		string songPath = Main_Folder + "Son/" + cardName;
 
-
-		//songPath = "Son/Pokemon Bleu";
 		Debug.Log(songPath);
 		AudioClip clp = SongLoad (songPath);
 		if (clp != null) {
             source.Stop();
             source.clip = clp;
-            /*if(!paused)
-            {
-                source.Play();
-            }*/
-            
-            
-
 		}
 
         if (!autoplay)
@@ -599,11 +429,6 @@ public class Handler : MonoBehaviour {
             PauseIcon.transform.localPosition = Vector3.zero;
             PauseIcon.transform.localRotation = Quaternion.identity;
         }
-
-
-        //PlaySong (songPath);
-
-
     }
 
 
@@ -631,69 +456,16 @@ public class Handler : MonoBehaviour {
 		Debug.Log ("path image: " + path);
 		Sprite spr = (Sprite)Resources.Load (path, typeof(Sprite));
 		return spr;
-	
-	
 	}
 
 	public Sprite imLoad2(string path)
 	{
-		
 		byte[] bytes = File.ReadAllBytes(path);
 		Texture2D texture = new Texture2D(1, 1);
 		texture.filterMode = FilterMode.Trilinear;
 		texture.LoadImage(bytes);
 		return Sprite.Create(texture, new Rect(0,0,texture.width, texture.height), new Vector2(0.5f,0.0f), 1.0f);
-	
 	}
-
-	
-
-
-
-	public void PlaySong(string path)
-	{
-        songLoaded = false;
-        //AudioSource source = GetComponent<AudioSource> ();
-
-        LoadSong (path);
-		Debug.Log (path);
-		//source.clip = LoadSong (path);
-
-
-	}
-
-	void LoadSong(string path)/*IEnumerator*/
-	{
-		Debug.Log (path);
-		string path2 = Main_Folder + "/son/Pokemon Bleu.wav";
-		WWW www = new WWW("file://" + path2);
-
-		/*while(!www.isDone)
-			yield return www;*/
-
-
-		source.clip = www.GetAudioClip(false, false);
-
-
-
-        if (source.clip.loadState == AudioDataLoadState.Loaded && !paused)
-        {
-            //source.Play ();
-            //PauseIcon.GetComponent<PlayPause>().playing = true;
-            
-            PlayClip();
-        }
-        else if (source.clip.loadState == AudioDataLoadState.Loaded && paused) //!autoplay && !source.isPlaying)
-        {
-            //source.Pause();
-            songLoaded = true;
-            PauseClip();
-            //PauseIcon.GetComponent<PlayPause>().playing = false;
-        }
-
-		www.Dispose();
-    }
-
 
 	int hasIndex<T>(T value, T[] array)
 	{
@@ -705,13 +477,10 @@ public class Handler : MonoBehaviour {
 
 		}
 		return -1;
-
 	}
-
 
     void PauseClip()
     {
-        
         Debug.Log("Pausing");
         source.Pause();
         paused = true;
@@ -800,9 +569,9 @@ streaming à partir de la v0.7
 ok
 Remarques: 2 cartes à la fin
 ok
-
 On peut sélectionner 2 fois le même deck: permettre de choisir de bloquer ça
 ok
+
 Menu de départ qui ne ressort pas assez
 
 Rendre flou/baisser la saturation de l'image de fond durant le jeu
@@ -812,9 +581,9 @@ choix des Decks: Random deck
 S'assurer que cartes restante et retour ne se chevauchent pas (max 1/2)
 ok
 bug carte trouvée/non trouvée à la fin
+ok?
 
 S'assurer du non chevauchement d'éléments sur d'autres écrans
-
 
 try catch pour déplacement dans l'explorer
 ok

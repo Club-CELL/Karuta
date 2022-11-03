@@ -1,15 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using System.IO;
 using System;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+
 public class HandlerEX : MonoBehaviour {
-
-
 
 	public string[] Deck = new string[1000];
 
@@ -47,13 +43,10 @@ public class HandlerEX : MonoBehaviour {
 	float x3;
 	public float x3_thres;
 	float y3;
-	bool a;
 	bool songLoaded;
-	string loadingSongPath;
 	Vector2 fingerStart = new Vector2(0,0);
 	Vector2 fingerEnd = new Vector2 (0,0);
     IEnumerator coroutine;
-    bool CR_running;
     bool hasMoved=false;
 	AudioSource source;
     bool paused;
@@ -61,10 +54,19 @@ public class HandlerEX : MonoBehaviour {
     bool autoplay;
     bool playpause;
     bool startedPlaying;
-    // Use this for initialization
+    public bool StartedPlaying
+    {
+        get => startedPlaying;
+    }
+    string loadingSongPath;
+    public string LoadingSongPath
+    {
+        get => loadingSongPath;
+    }
 
     public Sprite defaultSprite;
 
+    
 
 	void Start () {
         autoplay = PlayerPrefs.GetInt("autoplay", 1) == 1;
@@ -76,8 +78,8 @@ public class HandlerEX : MonoBehaviour {
         carte.GetComponent<Image>().enabled=false;
 		carte2.GetComponent<Image>().enabled=true;
 
-		x0 = carte.GetComponent<RectTransform> ().position.x;
-		y0 = carte.GetComponent<RectTransform> ().position.y;
+		x0 = carte.transform.position.x;
+		y0 = carte.transform.position.y;
 		source = GetComponent<AudioSource> ();
 
         Main_Folder = Global.mainPath;
@@ -89,7 +91,6 @@ public class HandlerEX : MonoBehaviour {
 		ReadDecks ();
 		First ();
 		restantes.GetComponent<Text> ().text = "Cartes Restantes: " + nb.ToString ();
-
 
 	}
 	
@@ -123,11 +124,10 @@ public class HandlerEX : MonoBehaviour {
             
         }
 		swipeDetect ();
-		//carte.GetComponent<RectTransform> ().rotation.Set(0,0,(carte.GetComponent<Transform> ().position.x-x0)*turn_ratio,0);
-		carte.GetComponent<RectTransform> ().rotation=Quaternion.Euler(new Vector3(0,0,carte.GetComponent<Transform> ().position.x-x0)*turn_ratio);
+		carte.transform.rotation=Quaternion.Euler(new Vector3(0,0,carte.transform.position.x-x0)*turn_ratio);
 
 		
-		Vector2 pos = carte.GetComponent<Transform> ().position;
+		Vector2 pos = carte.transform.position;
 		if (pos.x >= x0) {
 			Color col = flecheTrouvee.GetComponent<Image> ().color;
 			flecheTrouvee.GetComponent<Image> ().color= new Color(col.r,col.g,col.b,Math.Min(1,(pos.x - x0)/validate_x));
@@ -154,13 +154,13 @@ public class HandlerEX : MonoBehaviour {
 
 
 		if (carte3.GetComponent<Image> ().enabled) {
-			x3 = carte3.GetComponent<RectTransform> ().position.x;
-			y3 = carte3.GetComponent<RectTransform> ().position.y;
+			x3 = carte3.transform.position.x;
+			y3 = carte3.transform.position.y;
 			if (x3 < x0 && x3 > x0 - x3_thres || x3 >= x0 && x3 < x0 + x3_thres) {
 
 
-				carte3.GetComponent<RectTransform> ().position = new Vector2 (x3 + (x3 - x0) * back_speed_x, y3);
-				carte3.GetComponent<RectTransform> ().rotation=Quaternion.Euler(new Vector3(0,0,carte3.GetComponent<Transform> ().position.x-x0)*turn_ratio);
+				carte3.transform.position = new Vector2 (x3 + (x3 - x0) * back_speed_x, y3);
+				carte3.transform.rotation=Quaternion.Euler(new Vector3(0,0,carte3.transform.position.x-x0)*turn_ratio);
 
 
 			} else {
@@ -173,11 +173,7 @@ public class HandlerEX : MonoBehaviour {
 		
 
 	}
-    /*
-	public bool pushDetect()
-	{
-		return Input.touchCount>0 &&Input.GetTouch (0).phase == TouchPhase.Ended && swipeDetect ().x < threshold;
-	}*/
+
 
     public Vector2 swipeDetect()
     {
@@ -186,8 +182,8 @@ public class HandlerEX : MonoBehaviour {
             hasMoved = false;
             fingerStart = Input.mousePosition;
             fingerEnd = Input.mousePosition;
-            x_start_touch = carte.GetComponent<Transform>().position.x;
-            y_start_touch = carte.GetComponent<Transform>().position.y;
+            x_start_touch = carte.transform.position.x;
+            y_start_touch = carte.transform.position.y;
         }
         else if (Input.GetMouseButtonUp(0)) //End touch
         {
@@ -252,82 +248,6 @@ public class HandlerEX : MonoBehaviour {
         return new Vector2(0, 0);
     }
 
-
-    /*
-	public Vector2 swipeDetect()
-	{
-
-		if (Input.touches.Length == 0) {
-
-			LetCard ();
-
-		}
-		foreach (Touch touch in Input.touches)
-		{
-			if (touch.phase == TouchPhase.Began) 
-			{
-                hasMoved = false;
-				fingerStart = touch.position;
-				fingerEnd  = touch.position;
-				x_start_touch=carte.GetComponent<Transform> ().position.x;
-				y_start_touch=carte.GetComponent<Transform> ().position.y;
-
-			}
-			if (touch.phase == TouchPhase.Moved )	
-			{
-                hasMoved = true;
-                fingerEnd = touch.position;
-				float delta_x=fingerEnd.x-fingerStart.x;
-				float delta_y=fingerEnd.y-fingerStart.y;
-				HoldCard (delta_x, delta_y);
-			}
-			if(touch.phase == TouchPhase.Ended)	
-			{
-				float delta_x=fingerStart.x-fingerEnd.x;
-				float delta_y=fingerStart.y-fingerEnd.y;
-
-				LetCard ();
-                if(!hasMoved)
-                {
-                    if(songLoaded)
-                    {
-                        if (source.isPlaying && playpause)
-                        {
-                            //source.Pause();
-                            PauseClip();
-                            
-                        }
-                        else
-                        {
-                            if (source.clip.loadState == AudioDataLoadState.Loaded && !source.isPlaying)
-                            {
-                                //source.Play();
-                                PlayClip();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!paused && playpause)
-                        {
-                            //source.Pause();
-                            
-                            PreparePause();
-                        }
-                        if(paused)
-                        {
-                            
-                            PreparePlay();
-                        }
-                    }
-                    
-                }
-
-			}
-		}
-		return new Vector2(0,0);
-	}
-    */
     void SwapCards()
     {
         StartCoroutine(SwapCardsCoroutine());
@@ -337,22 +257,22 @@ public class HandlerEX : MonoBehaviour {
 
 		if (carte.GetComponent<Image> ().enabled) {
 
-			Vector2 pos = carte.GetComponent<Transform> ().position;
+			Vector2 pos = carte.transform.position;
 
 			carte3.GetComponent<Image> ().enabled = true;
 			carte3.GetComponent<Image> ().preserveAspect = true;
 			carte3.GetComponent<Image> ().sprite = carte.GetComponent<Image> ().sprite;
-			carte3.GetComponent<Transform> ().position = new Vector2(pos.x,pos.y);
-			carte3.GetComponent<Transform> ().rotation =Quaternion.Euler(new Vector3(0,0,carte.GetComponent<Transform> ().rotation.z));
+			carte3.transform.position = new Vector2(pos.x,pos.y);
+			carte3.transform.rotation =Quaternion.Euler(new Vector3(0,0,carte.transform.rotation.z));
 
 
 			carte.GetComponent<Image> ().enabled = false;
-			carte.GetComponent<Transform> ().position = new Vector2(x0,y0);
-			carte.GetComponent<Transform> ().rotation =Quaternion.Euler(new Vector3(0,0,0));
+			carte.transform.position = new Vector2(x0,y0);
+			carte.transform.rotation =Quaternion.Euler(new Vector3(0,0,0));
 
 			carte2.GetComponent<Image> ().enabled = true;
-			carte2.GetComponent<Transform> ().position = new Vector2(x0,y0-y_diff_restart);
-			carte2.GetComponent<Transform> ().rotation =Quaternion.Euler(new Vector3(0,0,0));
+			carte2.transform.position = new Vector2(x0,y0-y_diff_restart);
+			carte2.transform.rotation =Quaternion.Euler(new Vector3(0,0,0));
 
 		}
 		GameObject temp=carte;
@@ -377,16 +297,15 @@ public class HandlerEX : MonoBehaviour {
 	void HoldCard(float d_x, float d_y)
 	{
 		
-		Vector2 pos = carte.GetComponent<RectTransform> ().position;
+		Vector2 pos = carte.transform.position;
 		pos = new Vector2 (x_start_touch + d_x, y_start_touch + d_y);
-		carte.GetComponent<RectTransform> ().position=pos;
-		//carte.GetComponent<RectTransform> ().position = new Vector2 ();
+		carte.transform.position=pos;
 
 	}
 
 	bool LetCard()//returns if when to another card
 	{
-		Vector2 pos = carte.GetComponent<RectTransform> ().position;
+		Vector2 pos = carte.transform.position;
 		float dx=0;
 		float dy=0;
 
@@ -403,13 +322,13 @@ public class HandlerEX : MonoBehaviour {
 			dy = Math.Max (tresh_y, (y0-pos.y)*back_speed_y);
 		}
 		pos = new Vector2 (pos.x + dx, pos.y + dy);
-		carte.GetComponent<RectTransform> ().position=pos;
+		carte.transform.position=pos;
 
-		if (carte.GetComponent<RectTransform> ().position.x > x0 + validate_x) { //Card found
+		if (carte.transform.position.x > x0 + validate_x) { //Card found
 			Trouvee();
             return true;
 		}
-		if (carte.GetComponent<RectTransform> ().position.x < x0 - validate_x) { //Card found
+		if (carte.transform.position.x < x0 - validate_x) { //Card found
 			Next();
             return true;
         }
@@ -489,43 +408,10 @@ public class HandlerEX : MonoBehaviour {
 
 
         StartCoroutine(LoadImage(imPath, carte2.GetComponent<Image>()));
-        /*
-		Sprite spr = imLoad (imPath);
-
-
-
-		if (spr != null) {
-			carte.GetComponent<Image> ().sprite = spr;
-			carte.GetComponent<Image> ().preserveAspect = true;
-		} else {
-			
-			imPath = Path.Combine(Main_Folder , "Visuels/Animint.png");
-
-            carte.GetComponent<Image>().sprite = imLoad(imPath);
-			carte.GetComponent<Image> ().preserveAspect = true;
-			//Debug.Log ("Pas de sprite :(");
-		}*/
         
 		string songPath = Path.Combine(Main_Folder, "Son/" + cardName + ".mp3");
 
-
-		//songPath = "Son/Pokemon Bleu";
 		Debug.Log(songPath);
-        /*
-		AudioClip clp = SongLoad (songPath);
-		if (clp != null) {
-			Debug.Log ("Sound loading ?");
-			source.clip = clp;
-			source.Play ();
-
-		} else {
-			Debug.Log ("No sound loaded !");
-
-		}*/
-
-        //paused = !autoplay;
-
-        ////////////////////////////////////////////////////////PLAYPAUSEGLITCH
         if (!autoplay)
         {
             paused = true;
@@ -628,9 +514,6 @@ public class HandlerEX : MonoBehaviour {
 
         Debug.Log($"Request for {path} is done ? {www.isDone} result: {www.result} error ? : {www.error ?? "null"} download handler done ? :{www.downloadHandler.isDone}");
 
-        //((DownloadHandlerTexture)www.downloadHandler). = true;
-
-
         Texture2D texture = DownloadHandlerTexture.GetContent(www);
 
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.0f), 1.0f);
@@ -646,13 +529,8 @@ public class HandlerEX : MonoBehaviour {
 
     public void PlaySong(string path)
 	{
-		
-		//AudioSource source = GetComponent<AudioSource> ();
 		songLoaded=false;
 		loadingSongPath = path;
-        //www = new WWW("file://" + path);
-        
-
         
         if(coroutine != null)
         {
@@ -662,37 +540,10 @@ public class HandlerEX : MonoBehaviour {
 
         coroutine = LoadSong(path);
         StartCoroutine(coroutine);
-		//source.clip = LoadSong (path);
 
 	}
-
-	/*public AudioClip SongLoad(string path)
-	{
-
-		//path = Main_Folder + "son/Pokemon Bleu.wav";
-		Debug.Log ("Looking for song at " + path);
-
-
-        //www = new WWW("file://" + path);
-        //www = new WWW("file:///" + path);
-        AudioClip clip = www.GetAudioClip(false, false);
-
-		return www.GetAudioClip(false, false);
-
-		//return clp;
-	}*/
-
 	IEnumerator LoadSong(string path)/*IEnumerator*/
 	{
-        //Debug.Log (path);
-        //www = new WWW("file://" + loadingSongPath);
-
-
-        /*
-        WWW www = new WWW("file:///" + path);
-        yield return www.GetAudioClip(false, false);
-        source.clip = www.GetAudioClip(false, false);
-        */
         UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + path, AudioType.MPEG);
 
         yield return www.SendWebRequest();
@@ -702,19 +553,13 @@ public class HandlerEX : MonoBehaviour {
 
         source.clip = DownloadHandlerAudioClip.GetContent(www);
         
-        //source.clip = www.GetAudioClip(false, false);
         songLoaded = true;
-        //source.clip = www.GetAudioClip(false, false);
 		if (source.clip.loadState==AudioDataLoadState.Loaded && !paused) {
-			//source.Play ();
-            //PauseIcon.GetComponent<PlayPause>().playing = true;
             PlayClip();
 		}
         else if(source.clip.loadState == AudioDataLoadState.Loaded && paused) //!autoplay && !source.isPlaying)
         {
-            //source.Pause();
             PauseClip();
-            //PauseIcon.GetComponent<PlayPause>().playing = false;
         }
 
         www.Dispose();
