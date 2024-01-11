@@ -35,10 +35,10 @@ public class UpdateContent : MonoBehaviour
     Text text;
     DriveService service;
 
-    string serviceEmail = "quickstartservicetest@quickstart-1586701334354.iam.gserviceaccount.com";
+    //string serviceEmail = "quickstartservicetest@quickstart-1586701334354.iam.gserviceaccount.com";
     //string serviceFile = "quickstart-1586701334354-8a6f0582acc2.p12";
-    string serviceFile = "quickstart-1586701334354-266efb641b89.json";
-    string resourcesServiceFile = "Credentials/quickstart-1586701334354-266efb641b89";
+    //string serviceFile = "quickstart-1586701334354-266efb641b89.json";
+    string resourcesServiceFile = "Credentials/karuta-1586701267510-b741ce4b318b";//"Credentials/quickstart-1586701334354-266efb641b89";
 
     int numberOfFiles = 0;
     int filesHandled = 0;
@@ -60,7 +60,7 @@ public class UpdateContent : MonoBehaviour
         doneSongs = false;
         doneVisuals = false;
         progressText = "Connecting...";
-        service = AuthenticateServiceAccount(serviceEmail, serviceFile);
+        service = AuthenticateServiceAccount();
     }
     void OnEnable()
     {
@@ -370,7 +370,7 @@ public class UpdateContent : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public DriveService AuthenticateServiceAccount(string serviceAccountEmail, string keyFilePath)
+    public DriveService AuthenticateServiceAccount()
     {
         /*
         // check the file exists
