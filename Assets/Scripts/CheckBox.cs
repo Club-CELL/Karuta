@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CheckBox : Bouton {
+public class CheckBox : ScaleMoveButton {
 
     public Sprite boxOn;
     public Sprite boxOff;
@@ -30,6 +30,7 @@ public class CheckBox : Bouton {
 
     public override void Execute()
     {
+        base.Execute();
         state = !state;
 
         if(state)

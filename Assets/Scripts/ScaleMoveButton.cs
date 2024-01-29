@@ -5,37 +5,41 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using UnityEngine.Events;
 
-public class Bouton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPointerDownHandler {
+public class ScaleMoveButton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPointerDownHandler {
 
-
-	public float scaleTouch;
-
+	[Header("Button state")]
 	public bool activated;
+	public bool execution = false;
 
-	float scale;
+
+	[Header("Animation parameters")]
+	public float scaleTouch;
 	public float scaleSpeed;
+	protected float startScale;
+	protected float scale;
 
-	float startScale;
-
-	public bool execution=false;
 
 	public float finX;
 	public float speedX;
-	float x0;
-	Vector2 pos;
-	public GameObject choix;
+	protected float x0;
+	protected Vector2 pos;
+
+
+	[Header("Callbacks")]
+	public UnityEvent onExecute;
+
+
 	public void OnPointerDown(PointerEventData eventdata)
 	{
 		activated = true;
 	}
 	public void OnPointerExit(PointerEventData eventdata)
 	{
-
 		if (!execution) {
 			activated = false;
 		}
-
 	}
 	public void OnPointerUp(PointerEventData eventdata)
 	{
@@ -45,26 +49,25 @@ public class Bouton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPoin
 	}
 
 	// Use this for initialization
-	public void Start () {
+	protected void Start () {
 		x0 = transform.position.x;
 		startScale=transform.localScale.x;
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
+	protected void Update () {
 		if (activated) {
 			Activate ();
 		} else {
 			Desactivate ();
 		}
 		if (execution) {
-			Execute ();
+			LaunchExecution();
 		}
 	}
 
 
-
-    void Activate()
+    protected void Activate()
 	{
 		scale=transform.localScale.x;
 		//Debug.Log (scale);
@@ -73,7 +76,8 @@ public class Bouton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPoin
 		}
 		transform.localScale = new Vector3(scale,scale,scale);
 	}
-    void Desactivate()
+
+	protected void Desactivate()
 	{
 		scale=transform.localScale.x;
 		if (scale > startScale) {
@@ -81,7 +85,10 @@ public class Bouton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPoin
 		}
 		transform.localScale = new Vector3(scale,scale,scale);
 	}
-	virtual public void Execute()
+
+
+
+	public void LaunchExecution()
 	{
 		pos = transform.position;
 		if (pos.x - x0 < finX) {
@@ -90,9 +97,14 @@ public class Bouton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPoin
 			transform.position = pos;
 			
 		} else {
-            Global.mainPath = PlayerPrefs.GetString("mainpath", Global.mainPath);
-			Global.nbJoueurs = choix.GetComponent<ChoixNbJoueurs> ().nbJoueurs;
-			SceneManager.LoadScene ("ChoixDecks");
+			Execute();
 		}
 	}
+
+	virtual public void Execute()
+	{
+		onExecute.Invoke();
+		execution = false;
+	}
+
 }
