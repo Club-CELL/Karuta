@@ -37,18 +37,30 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
             Text arrowText = arrow.GetComponentInChildren<Text>();
             arrowText.color = GetColorFromString(theme.colorDeckArrowText, arrowText.color);
 
-            foreach (Image deckArrow in arrowParent.GetComponentsInChildren<Image>())
+
+
+            foreach (ChoixDecks choixDeck in arrowParent.GetComponentsInChildren<ChoixDecks>())
             {
-                deckArrow.sprite = arrowBW;
-                deckArrow.color = GetColorFromString(theme.colorDeckArrow, deckArrow.color);
-                Text deckArrowText = deckArrow.GetComponentInChildren<Text>();
+                var image = choixDeck.GetComponent<Image>();
+                image.sprite = arrowBW;
+                image.color = GetColorFromString(theme.colorDeckArrow, image.color);
+                Text deckArrowText = image.GetComponentInChildren<Text>();
                 deckArrowText.color = GetColorFromString(theme.colorDeckArrowText, arrowText.color);
             }
 
+            //foreach (Image deckArrow in arrowParent.GetComponentsInChildren<Image>())
+            //{
+            //    deckArrow.sprite = arrowBW;
+            //    deckArrow.color = GetColorFromString(theme.colorDeckArrow, deckArrow.color);
+            //    Text deckArrowText = deckArrow.GetComponentInChildren<Text>();
+            //    deckArrowText.color = GetColorFromString(theme.colorDeckArrowText, arrowText.color);
+            //}
+
             Camera.main.backgroundColor = GetColorFromString(theme.backgroundColorDecksChoice, Camera.main.backgroundColor);
 
-            string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Themes"), theme.decksChoiceBackground);
+            //string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Themes"), theme.decksChoiceBackground);
 
+            string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Packs", theme.packId ?? "", "Themes"), theme.decksChoiceBackground);
             BackgroundHandler.UseAsBackground(path);
             if (!string.IsNullOrEmpty(theme.decksChoiceBackground) && File.Exists(theme.decksChoiceBackground))
             {

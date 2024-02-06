@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
-using UnityEngine.SceneManagement;
+using TMPro;
+
 public class ThemeLoaderMainMenu : MonoBehaviour
 {
 
@@ -67,6 +68,24 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     public Text themesTextImage;
     public Text themesTextVideo;
 
+    public Image packButton;
+    public Image addPackButton;
+    public Text packButtonText;
+    public Text addPackButtonText;
+    public Image newPackButton;
+    public Text newPackButtonText;
+    public Image packsTitleBackground;
+    public Text packTitleText;
+    public Image packBackButton;
+    public Text packBackButtonText;
+
+    public Image newPackFolderInputBackground;
+    public TMP_Text newPackFolderInputText;
+    public TMP_Text newPackFolderInputPlaceholderText;
+    public TMP_Text newPackFolderCreateInstructionsLink;
+    public TMP_Text newPackFolderAddInstructionsText;
+    
+
 
     List<Theme> themes = new List<Theme>();
 
@@ -92,6 +111,15 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     Color classicSliderBackgroundColor;
     Color classicColorThemePanel;
     Color classicColorSelectedTheme;
+    Color newPackFolderInputBackgroundColor;
+    Color newPackFolderInputPlaceholderTextColor;
+    Color newPackFolderCreateInstructionsLinkColor;
+
+
+
+
+    string currentThemePackId;
+    string currentTheme;
 
     public void LoadTheme()
     {
@@ -101,7 +129,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             foreach(CheckBox checkbox in checkboxes)
             {
                 Image checkBoxImage = checkbox.GetComponent<Image>();
-                if (checkbox.activated)
+                if (checkbox.State)
                 {
                     checkBoxImage.sprite = checkBoxOnBW;
                 }
@@ -180,21 +208,60 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             themesTextImage.color = GetColorFromString(theme.colorThemesTitleText, themesTextImage.color);
             themesTextVideo.color = GetColorFromString(theme.colorThemesTitleText, themesTextVideo.color);
 
-            foreach (Text text in contentHolder.GetComponentsInChildren<Text>())
-            {
-                text.color = GetColorFromString(theme.colorThemesTitleText, text.color);
-            }
-
             themesScroll.selectedColor = GetColorFromString(theme.colorThemeSelectedIndicator, themesScroll.selectedColor);
             themesScroll.unselectedColor = GetColorFromString(theme.colorThemeUnselectedIndicator, themesScroll.unselectedColor);
 
             indicator.GetComponent<Image>().color = themesScroll.unselectedColor;
 
             themesScroll.RefreshIndicators();
+
+
+
+            packButton.sprite = optionButtonBW;
+            addPackButton.sprite = optionButtonBW;
+            newPackButton.sprite = optionButtonBW;
+            packBackButton.sprite = optionButtonBW;
+
+            packButton.color = GetColorFromString(theme.colorPackButton, packButton.color);
+            addPackButton.color = GetColorFromString(theme.colorAddPackButton, addPackButton.color);
+            packButtonText.color = GetColorFromString(theme.colorPackButtonText, packButtonText.color);
+            addPackButtonText.color = GetColorFromString(theme.colorAddPackButtonText, addPackButtonText.color);
+            newPackButton.color = GetColorFromString(theme.colorNewPackButton, newPackButton.color);
+            newPackButtonText.color = GetColorFromString(theme.colorNewPackButtonText, newPackButtonText.color);
+            packsTitleBackground.color = GetColorFromString(theme.colorPacksTitleBackground, packsTitleBackground.color);
+            packTitleText.color = GetColorFromString(theme.colorPacksTitleText, packTitleText.color);
+            packBackButton.color = GetColorFromString(theme.colorPackBackButton, packBackButton.color);
+            packBackButtonText.color = GetColorFromString(theme.colorPackBackButtonText, packBackButtonText.color);
+
+            newPackFolderInputBackground.color = GetColorFromString(theme.colorNewPackFolderInputBackground, packBackButtonText.color);
+            newPackFolderInputText.color = GetColorFromString(theme.colorNewPackFolderInputText, packBackButtonText.color);
+            newPackFolderInputPlaceholderText.color = GetColorFromString(theme.colorNewPackFolderInputPlaceholderText, packBackButtonText.color);
+            newPackFolderCreateInstructionsLink.color = GetColorFromString(theme.colorNewPackFolderCreateInstructionsLink, packBackButtonText.color);
+            newPackFolderAddInstructionsText.color = GetColorFromString(theme.colorNewPackFolderAddInstructionsText, packBackButtonText.color);
+
+
+            PackControl.bannerBackgroundColor = GetColorFromString(theme.colorPackBannerBackground, PackControl.bannerBackgroundColor);
+            PackControl.bannerTextColor = GetColorFromString(theme.colorPackBannerText, PackControl.bannerTextColor);
+            PackControl.updateButtonColor = GetColorFromString(theme.colorUpdateButton, PackControl.updateButtonColor);
+            PackControl.updateButtonTextColor = GetColorFromString(theme.colorUpdateButtonText, PackControl.updateButtonTextColor);
+
+            foreach (Text text in contentHolder.GetComponentsInChildren<Text>())
+            {
+                text.color = GetColorFromString(theme.colorThemesTitleText, text.color);
+            }
+
+            foreach (var packControl in contentHolder.GetComponentsInChildren<PackControl>())
+            {
+                packControl.bannerBackground.color = GetColorFromString(theme.colorPackBannerBackground, packControl.bannerBackground.color);
+                packControl.nameText.color = GetColorFromString(theme.colorPackBannerText, packControl.nameText.color);
+            }
+
+
+
             Camera.main.backgroundColor = GetColorFromString(theme.backgroundColorMainMenu, Camera.main.backgroundColor);
 
 
-            string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Themes"), theme.mainMenuBackground);
+            string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Packs", theme.packId ?? "","Themes"), theme.mainMenuBackground);
             BackgroundHandler.UseAsBackground(path);
             if (!string.IsNullOrEmpty(theme.mainMenuBackground) && File.Exists(path))
             {
@@ -207,7 +274,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             foreach (CheckBox checkbox in checkboxes)
             {
                 Image checkBoxImage = checkbox.GetComponent<Image>();
-                if (checkbox.activated)
+                if (checkbox.State)
                 {
                     checkBoxImage.sprite = checkBoxOnColor;
                 }
@@ -289,13 +356,51 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             }
 
 
-
             indicator.GetComponent<Image>().color = themesScroll.selectedColor;
 
             themesScroll.selectedColor = classicColorSelectedTheme;
             themesScroll.unselectedColor = Color.white;
 
             themesScroll.RefreshIndicators();
+
+
+            packButton.sprite = optionButtonColor;
+            addPackButton.sprite = optionButtonColor;
+            newPackButton.sprite = optionButtonColor;
+            packBackButton.sprite = optionButtonColor;
+
+            packButton.color = Color.white;
+            addPackButton.color = Color.white;
+            packButtonText.color = Color.white;
+            addPackButtonText.color = Color.white;
+            newPackButton.color = Color.white;
+            newPackButtonText.color = Color.white;
+            packsTitleBackground.color = Color.black;
+            packTitleText.color = Color.white;
+            packBackButton.color = Color.white;
+            packBackButtonText.color = Color.white;
+
+
+            newPackFolderInputBackground.color = newPackFolderInputBackgroundColor;
+            newPackFolderInputText.color = Color.white;
+            newPackFolderInputPlaceholderText.color = newPackFolderInputPlaceholderTextColor;
+            newPackFolderCreateInstructionsLink.color = newPackFolderCreateInstructionsLinkColor;
+            newPackFolderAddInstructionsText.color = Color.white;
+
+
+
+            PackControl.bannerBackgroundColor = Color.black;
+            PackControl.bannerTextColor = classicOptionPanelColor;
+            PackControl.updateButtonColor = Color.white;
+            PackControl.updateButtonTextColor = Color.white;
+
+            foreach (var packControl in contentHolder.GetComponentsInChildren<PackControl>())
+            {
+                packControl.bannerBackground.color = Color.black;
+                packControl.nameText.color = Color.white;
+            }
+
+
             Camera.main.backgroundColor = classicMainColor;
             BackgroundHandler.DefaultBackground();
         }
@@ -316,8 +421,6 @@ public class ThemeLoaderMainMenu : MonoBehaviour
 
     public void Awake()
     {
-        //SerializeTheme();
-
         classicMainColor = Camera.main.backgroundColor;
         classicOptionPanelColor = optionsMenuPanel.color;
         classicOptionBorderColor = optionsMenuBorder.color;
@@ -330,8 +433,13 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         classicColorThemePanel = themesPanel.color;
         classicColorSelectedTheme = themesScroll.selectedColor;
 
+
+        newPackFolderInputBackgroundColor = newPackFolderInputBackground.color;
+        newPackFolderInputPlaceholderTextColor = newPackFolderInputPlaceholderText.color;
+        newPackFolderCreateInstructionsLinkColor = newPackFolderCreateInstructionsLink.color;
+
+
         Debug.Log("Theme Loader Main Menu Awake");
-        //GetTheme();
     }
 
     public void Start()
@@ -349,6 +457,15 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     {
         GetThemes();
         LoadThemeSelection();
+        for(int i=0;i<themes.Count;i++)
+        {
+            var theme = themes[i];
+            if(theme.GetName() == currentTheme && theme.packId == currentThemePackId)
+            {
+                LoadThemeAtIndex(i + 1);
+                break;
+            }
+        }
     }
     public void SerializeTheme()
     {
@@ -364,29 +481,41 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         newTheme.Check();
         JsonSerialization.WriteToJsonResource<Theme>("theme", newTheme);
     }
-    /*public void GetTheme()
-    {
-        //theme = JsonSerialization.ReadFromJsonResource<Theme>("themeSakura");
-        theme = JsonSerialization.ReadFromJson<Theme>(Path.Combine(Application.persistentDataPath, "Themes/themeSakura.json"));
 
-        theme.Check();
-
-        Global.theme = theme;
-    }*/
     void GetThemes()
     {
         themes = new List<Theme>();
-        Debug.Log("Get theme files");
-        string[] themeFiles = Directory.GetFiles(Path.Combine(Application.persistentDataPath, "Themes"), "*.json");
-        Debug.Log($"Got {themeFiles?.Length.ToString() ?? "null"} theme files");
+        Debug.Log("Getting theme files");
+
+        List<string> themeFiles = new List<string>();
+        var packDirectories = Directory.GetDirectories(Path.Combine(Application.persistentDataPath, "Packs"));
+        foreach(var packDirectory in packDirectories)
+        {
+            Debug.Log($"Pack: {packDirectory}");
+            var packThemeDirectory = Path.Combine(packDirectory, "Themes");
+            if (!Directory.Exists(packThemeDirectory))
+            {
+                Debug.Log($"Pack: {packDirectory} does not exist");
+                continue;
+            }
+            string[] packThemeFiles = Directory.GetFiles(packThemeDirectory, "*.json");
+            Debug.Log($"Pack: {packDirectory} has {packThemeFiles.Length} theme files");
+            foreach (var themeFile in packThemeFiles)
+            {
+                themeFiles.Add(themeFile);
+            }
+        }
+        Debug.Log($"Got {themeFiles?.Count.ToString() ?? "null"} theme files");
         theme = null;
         Global.theme = null;
 
         int selected = 0;
-        for (int i=0;i<themeFiles.Length;i++)
+        for (int i=0;i<themeFiles.Count;i++)
         {
             string themeFile = themeFiles[i];
             Theme newTheme = JsonSerialization.ReadFromJson<Theme>(themeFile);
+            newTheme.packId = new DirectoryInfo(new FileInfo(themeFile).DirectoryName).Parent.Name;
+            Debug.Log("Theme Pack id: " + newTheme.packId);
             newTheme.Check();
             themes.Add(newTheme);
 
@@ -396,13 +525,17 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             Debug.Log("PlayerPrefs GetString theme");
             Debug.Log(PlayerPrefs.GetString("theme"));
             Debug.Log(themeName);
-            if(PlayerPrefs.GetString("theme") == themeName)
+            Debug.Log($"Selected theme : [{PlayerPrefs.GetString("theme")}/{PlayerPrefs.GetString("themePackId")}]");
+            Debug.Log($"Comparing to theme : [{themeName}/{theme?.packId ?? "null"}]");
+            if (PlayerPrefs.GetString("theme") == themeName && PlayerPrefs.GetString("themePackId") == newTheme?.packId)
             {
                 newTheme.Check();
                 Global.theme = newTheme;
                 theme = newTheme;
                 themesScroll.startingPage = i + 1;
                 selected = i + 1;
+                currentTheme = themeName;
+                currentThemePackId = theme.packId;
             }
         }
 
@@ -432,7 +565,6 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     
     void LoadThemeSelection()
     {
-
         foreach(Transform otherContent in contentHolder.GetComponentsInChildren<Transform>())
         {
             if(otherContent.GetInstanceID() != imageTheme.transform.GetInstanceID() &&
@@ -443,15 +575,16 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         }
         foreach(Theme theme in themes)
         {
-            string content = Path.Combine(Path.Combine(Application.persistentDataPath, "Themes"), 
-                theme.mainMenuBackground);
+            string themeDirectory = Path.Combine(Application.persistentDataPath,"Packs",theme.packId, "Themes");
+            string content = Path.Combine(themeDirectory, theme.mainMenuBackground);
+
             Debug.Log("content:" + content);
             if (string.IsNullOrEmpty(content) || !File.Exists(content))
             {
-                content = theme.decksChoiceBackground;
+                content = Path.Combine(themeDirectory, theme.decksChoiceBackground);
                 if (string.IsNullOrEmpty(content) || !File.Exists(content))
                 {
-                    content = theme.gameBackground;
+                    content = Path.Combine(themeDirectory, theme.decksChoiceBackground); //theme.gameBackground;
                 }
             }
 
@@ -461,7 +594,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             bool isVideo = false;
             foreach (string s in videoFormats)
             {
-                isVideo = isVideo || content.EndsWith(s);
+                isVideo = isVideo || content.ToUpper().EndsWith(s.ToUpper());
             }
             isVideo = isVideo && File.Exists(content);
 
@@ -472,9 +605,19 @@ public class ThemeLoaderMainMenu : MonoBehaviour
                 videoHolder.transform.SetParent(imageTheme.transform.parent, false);
                 videoHolder.GetComponentInChildren<VideoPlayer>().url = content;
                 videoHolder.GetComponentInChildren<Text>().text = theme.GetName();
+
+
                 videoHolder.SetActive(true);
 
-                if(videoHolder.activeInHierarchy)
+                PackControl packControl = videoHolder.GetComponentInChildren<PackControl>(true);
+                if (packControl && PackLoader.packPerId.ContainsKey(theme.packId))
+                {
+                    packControl.pack = PackLoader.packPerId[theme.packId];
+                    packControl.Setup();
+                    packControl.gameObject.SetActive(true);
+                }
+
+                if (videoHolder.activeInHierarchy)
                 {
                     videoHolder.GetComponentInChildren<PlayVideo>().LoadVideo();
                 }
@@ -485,6 +628,14 @@ public class ThemeLoaderMainMenu : MonoBehaviour
                 GameObject imageHolder = Instantiate(imageTheme);
                 imageHolder.transform.SetParent(imageTheme.transform.parent, false);
                 imageHolder.GetComponentInChildren<Text>().text = theme.GetName();
+                PackControl packControl = imageHolder.GetComponentInChildren<PackControl>(true);
+                if (packControl && PackLoader.packPerId.ContainsKey(theme.packId))
+                {
+                    packControl.pack = PackLoader.packPerId[theme.packId];
+                    packControl.Setup();
+                    packControl.gameObject.SetActive(true);
+                }
+
                 StartCoroutine(LoadImage(content, imageHolder.GetComponent<Image>()));
             }
 
@@ -522,12 +673,20 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             {
                 image.sprite = sprite;
             }
+            var aspectRatioFitter = image.GetComponentInChildren<AspectRatioFitter>();
+            if (image.GetComponentInChildren<AspectRatioFitter>())
+            {
+                aspectRatioFitter.aspectRatio = (float)texture.width / (float)texture.height;
+            }
+
             www.Dispose();
         }
     }
 
     public void LoadThemeAtIndex(int index)
     {
+        currentTheme = theme?.GetName();
+        currentThemePackId = theme?.packId;
         BackgroundHandler.ResetValues();
         if (index==0)
         {
@@ -535,6 +694,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             theme = null;
             Global.theme = null;
             PlayerPrefs.SetString("theme", null);
+            PlayerPrefs.SetString("themePackId", null);
             LoadTheme();
             Debug.Log("back to normal !");
         }
@@ -543,10 +703,12 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             if(index-1<themes.Count)
             {
                 theme = themes[index - 1];
+                PlayerPrefs.SetString("themePackId", theme.packId);
                 PlayerPrefs.SetString("theme", theme.GetName());
                 Global.theme = themes[index - 1];
                 LoadTheme();
             }
+            Debug.Log($"Loaded theme {theme.GetName()}");
         }
     }
 }

@@ -2,6 +2,8 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
+
 public class DeckManager : MonoBehaviour {
 
 	TextAsset[] DecksFiles;
@@ -165,8 +167,14 @@ public class DeckManager : MonoBehaviour {
 		for (int i = 0; i < DecksFiles.Length; i++) {
 
 			GameObject Deck = createButton (DecksFiles [i].name, x0, y0 - i * sep_y);
-			Deck.GetComponent<ChoixDecks> ().Deck = Decks [i];
-			Deck.GetComponent<ChoixDecks> ().nomDeck = DecksFiles [i].name;
+
+			List<string> deck = new List<string>();
+			foreach(var s in Decks[i])
+            {
+				deck.Add(s);
+            }
+			Deck.GetComponent<ChoixDecks> ().deck = new Deck(null, deck);
+			Deck.GetComponent<ChoixDecks> ().deckName = DecksFiles [i].name;
 		}
 			
 	}

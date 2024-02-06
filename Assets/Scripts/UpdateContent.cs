@@ -11,13 +11,12 @@ using Google.Apis.Util.Store;
 using Google.Apis.Services;
 using UnityEngine.Networking;
 
-
 public class UpdateContent : MonoBehaviour
 {
-
     bool doneDecks = false;
     bool doneSongs = false;
     bool doneVisuals = false;
+    bool doneThemes = false;
     public bool DoneDecks
     {
         get => doneDecks;
@@ -30,28 +29,44 @@ public class UpdateContent : MonoBehaviour
     {
         get => doneVisuals;
     }
+    public bool DoneThemes
+    {
+        get => doneThemes;
+    }
 
     string progressText = "Connecting...";
     Text text;
     DriveService service;
 
-    //string serviceEmail = "quickstartservicetest@quickstart-1586701334354.iam.gserviceaccount.com";
-    //string serviceFile = "quickstart-1586701334354-8a6f0582acc2.p12";
-    //string serviceFile = "quickstart-1586701334354-266efb641b89.json";
-    string resourcesServiceFile = "Credentials/karuta-1586701267510-b741ce4b318b";//"Credentials/quickstart-1586701334354-266efb641b89";
+    string resourcesServiceFile = "Credentials/credentials";
+    
+    string mainFolderId = "";
+
+    string decksFolderId = "";
+    string visualsFolderId = "";
+    string soundsFolderId = "";
+    string themesFolderId = "";
 
     int numberOfFiles = 0;
     int filesHandled = 0;
     bool readyToFinish = false;
 
-    //Dictionary<Google.Apis.Drive.v3.Data.File, Coroutine> coroutines = new Dictionary<Google.Apis.Drive.v3.Data.File, Coroutine>();
-
-    int maxSimulateousDownloads = 1;
+    public int maxSimulateousDownloads = 20;
     int currentNumberOfDownloads = 0;
+
+    string MainFolder
+    {
+        get
+        {
+            return pack != null ? Path.Combine(Application.persistentDataPath, "Packs", pack.driveFolderId) : Application.persistentDataPath;
+        }
+    }
 
     public ThemeLoaderMainMenu themeLoaderMainMenu;
 
     bool finished = false;
+
+    public DeckPack pack;
 
     void Awake()
     {
@@ -60,11 +75,25 @@ public class UpdateContent : MonoBehaviour
         doneSongs = false;
         doneVisuals = false;
         progressText = "Connecting...";
-        service = AuthenticateServiceAccount();
+        if(service==null)
+        {
+            service = AuthenticateServiceAccount();
+        }
     }
-    void OnEnable()
+    private void OnEnable()
     {
-        StartCoroutine(OnEnableCoroutine());
+        progressText = "";
+        text.text = "";
+    }
+    private void OnDisable()
+    {
+        progressText = "";
+        text.text = "";
+    }
+    public void UpdatePackContent()
+    {
+        Debug.Log($"<b>Started download at: {Time.time} </b>");
+        StartCoroutine(UpdatePackContentCoroutine());
 
         ThreadPool.SetMinThreads(100, 4);
 
@@ -72,13 +101,18 @@ public class UpdateContent : MonoBehaviour
 
         numberOfFiles = 0;
         filesHandled = 0;
-
+        doneDecks = false;
+        doneSongs = false;
+        doneVisuals = false;
+        doneThemes = false;
+        readyToFinish = false;
     }
     private void Update()
     {
         text.text = progressText;
         if(finished)
         {
+            Debug.Log($"<b>Finished download at: {Time.time} </b>");
             finished = false;
 
             progressText = "Finished !";
@@ -86,7 +120,7 @@ public class UpdateContent : MonoBehaviour
             Invoke("Close", 0.5f);
         }
     }
-    IEnumerator OnEnableCoroutine()
+    IEnumerator UpdatePackContentCoroutine()
     {
         if(service == null)
         {
@@ -96,12 +130,51 @@ public class UpdateContent : MonoBehaviour
         {
             progressText = "Connected !";
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-            yield return new WaitForSeconds(0.5f);
-            GetAllDecks();
-            yield return new WaitForSeconds(0.5f);
-            GetAllSongs();
-            GetAllVisuals();
-            GetAllThemes();
+
+
+            GetSubFoldersIDs();
+            yield return new WaitForSeconds(0.25f);
+            if(!string.IsNullOrEmpty(decksFolderId))
+            {
+                GetAllDecks();
+            }
+            else
+            {
+                Debug.LogError("[UpdateContent] - Not found deck subfolder");
+                progressText = "<color=red> Did not find 'Decks' folder</color>";
+            }
+            yield return new WaitForSeconds(0.25f);
+
+
+            if (!string.IsNullOrEmpty(soundsFolderId))
+            {
+                GetAllSongs();
+            }
+            else
+            {
+                Debug.LogError("[UpdateContent] - Not found sounds subfolder");
+                progressText = "<color=red> Did not find 'Sounds' folder</color>";
+            }
+
+            if (!string.IsNullOrEmpty(visualsFolderId))
+            {
+                GetAllVisuals();
+            }
+            else
+            {
+                Debug.LogError("[UpdateContent] - Not found visuals subfolder");
+                progressText = "<color=yellow> Did not find 'Visuals' folder</color>";
+            }
+
+            if (!string.IsNullOrEmpty(themesFolderId))
+            {
+                GetAllThemes();
+            }
+            else
+            {
+                Debug.LogError("[UpdateContent] - Not found themes subfolder");
+            }
+
             readyToFinish = true;
             CheckDone();
             Debug.Log(filesHandled + "/" + numberOfFiles + " files done");
@@ -109,8 +182,243 @@ public class UpdateContent : MonoBehaviour
         else
         {
             progressText = "<color=red>Could not connect :((</color>";
+            StartCoroutine(DeactivateInSeconds(3));
         }
         
+    }
+
+    IEnumerator DeactivateInSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        gameObject.SetActive(false);
+    }
+
+
+    public void GetPack(string folderId, System.Action<SerializedDeckPack> handlePack, System.Action<string> log)
+    {
+        StartCoroutine(GetPackCoroutine(folderId, handlePack, log));
+    }
+
+    IEnumerator GetPackCoroutine(string folderId, System.Action<SerializedDeckPack> handlePack, System.Action<string> log)
+    {
+
+        progressText = "";
+        if (service == null)
+        {
+            Awake();
+        }
+        DeckPack pack = null;
+
+
+        FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
+        listRequest.PageSize = 1000;
+        listRequest.Fields = "nextPageToken, files(id, name, webContentLink, size)";
+        listRequest.Q = $"'{folderId}' in parents and mimeType='application/vnd.google-apps.folder'";
+
+
+
+
+        IList<Google.Apis.Drive.v3.Data.File> files = null;
+        try
+        {
+            files = listRequest.Execute().Files;
+        }
+        catch(System.Exception e)
+        {
+            log($"<color=red>Could not check the pack :'(\n\nError:<color=red>{e.Message}</color>");
+            yield break;
+        }
+
+        bool foundDecks = false;
+        bool foundSounds = false;
+        bool foundVisuals = false;
+
+        foreach (var onlineFile in files)
+        {
+            if (onlineFile.Name.ToUpper() == "DECKS")
+            {
+                foundDecks = true;
+            }
+            if (onlineFile.Name.ToUpper() == "VISUALS")
+            {
+                foundVisuals = true;
+            }
+            if (onlineFile.Name.ToUpper() == "SOUNDS")
+            {
+                foundSounds = true;
+            }
+        }
+        string s = "";
+        s += foundDecks ? "<color=green>Found 'Decks' folder !</color>\n" : "<color=red>Did not find any 'Decks' folder !</color>\n";
+        s += foundSounds ? "<color=green>Found 'Sounds' folder !</color>\n" : "<color=red>Did not find any 'Sounds' folder !</color>>\n";
+        s += foundVisuals ? "<color=green>Found 'Visuals' folder !</color>\n" : "<color=yellow>Did not find any 'Visuals' folder !</color>\n";
+        
+        //log(s);
+        progressText = s;
+        yield return null;
+
+
+        listRequest = new FilesResource.ListRequest(service);//service.Files.List();
+        listRequest.PageSize = 1000;
+        listRequest.Fields = "nextPageToken, files(id, name, webContentLink, size)";
+        listRequest.Q = $"'{folderId}' in parents and mimeType!='application/vnd.google-apps.folder'";//(mimeType='application/vnd.google-apps.file' or mimeType='application/vnd.google-apps.document')";
+        files = listRequest.Execute().Files;
+
+        string bannerImage = "banner.png";
+        bool foundPackInfo = false;
+        string packDirectory = Path.Combine(Application.persistentDataPath, "Packs", folderId);
+        string infoFilePath = Path.Combine(packDirectory, "pack.json");
+        foreach (var onlineFile in files)
+        {
+            if (onlineFile.Name.ToUpper() == "PACK.JSON")
+            {
+                var request = service.Files.Get(onlineFile.Id);
+
+                if(!Directory.Exists(packDirectory))
+                {
+                    Directory.CreateDirectory(packDirectory);
+                }
+                var stream = new FileStream(infoFilePath, FileMode.Create);
+                request.Download(stream);
+                foundPackInfo = true;
+                stream.Close();
+                break;
+            }
+            else if (onlineFile.Name.ToUpper() == "PACK")
+            {
+                var request = service.Files.Export(onlineFile.Id, "text/plain");
+                if (!Directory.Exists(packDirectory))
+                {
+                    Directory.CreateDirectory(packDirectory);
+                }
+                var stream = new FileStream(infoFilePath, FileMode.Create);
+                request.Download(stream);
+                foundPackInfo = true;
+                stream.Close();
+                break;
+            }
+        }
+        s += (foundPackInfo ? "<color=green>Found pack info</color>\n" : "<color=red>Did not find pack info</color>\n");
+
+        progressText = s;
+        text.text = s;
+
+
+
+        if (!foundPackInfo || !foundDecks || !foundSounds)
+        {
+            s += "<color=red>Did not get pack.</color>";
+            log(s);
+            handlePack(null);
+            yield break;
+        }
+
+        //log(s);
+
+        yield return null;
+
+        SerializedDeckPack serializedPack = null;
+        try
+        {
+            serializedPack = JsonSerialization.ReadFromJson<SerializedDeckPack>(infoFilePath);
+        }
+        catch (System.Exception e)
+        {
+            s = $"<color=red>Could not read the info from the info file (pack json) {e.Message}</color>";
+            log(s);
+            Debug.LogError(s);
+            handlePack(null);
+            yield break;
+        }
+
+        serializedPack.driveFolderId = folderId;
+
+        JsonSerialization.WriteToJson<SerializedDeckPack>(infoFilePath, serializedPack);
+
+        if(serializedPack==null)
+        {
+            s = "<color=red>Could not read the info from the info file (pack json)</color>";
+            log(s);
+            handlePack(null);
+            yield break;
+        }
+
+        if (!string.IsNullOrEmpty(serializedPack.banner))
+        {
+            bannerImage = serializedPack.banner;
+        }
+
+        //bool foundBanner = false;
+        foreach (var onlineFile in files)
+        {
+            Debug.Log($"In folder: {onlineFile.Name} [{onlineFile.MimeType}]");
+            if (onlineFile.Name.ToUpper() == bannerImage.ToUpper())
+            {
+                var request = service.Files.Get(onlineFile.Id);
+
+                if (!Directory.Exists(packDirectory))
+                {
+                    Directory.CreateDirectory(packDirectory);
+                }
+                var stream = new FileStream(Path.Combine(Application.persistentDataPath,"Packs", folderId, onlineFile.Name), FileMode.Create);
+                request.Download(stream);
+                stream.Close();
+                break;
+            }
+        }
+
+        s = "<color=green>Found pack !</color>\n";
+        log(s);
+        serializedPack.driveFolderId = folderId;
+        handlePack(serializedPack);
+
+
+    }
+
+
+
+    void GetSubFoldersIDs()
+    {
+        if(pack == null)
+        {
+            Debug.LogError("Pack is null");
+            progressText = "<color=red>Error with pack :((</color>";
+            StartCoroutine(DeactivateInSeconds(3));
+            return;
+        }
+        //DeckPack animintPack = Resources.Load<DeckPack>("Packs/Anim'INT");
+        mainFolderId = pack.driveFolderId;
+
+        FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
+        listRequest.PageSize = 1000;
+        listRequest.Fields = "nextPageToken, files(id, name, webContentLink, size)";
+        listRequest.Q = $"'{mainFolderId}' in parents and mimeType='application/vnd.google-apps.folder'";
+        IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
+
+        decksFolderId = "";
+        visualsFolderId = "";
+        soundsFolderId = "";
+        foreach (var onlineFile in files)
+        {
+            if(onlineFile.Name.ToUpper() == "DECKS")
+            {
+                decksFolderId = onlineFile.Id;
+            }
+            if (onlineFile.Name.ToUpper() == "VISUALS")
+            {
+                visualsFolderId = onlineFile.Id;
+            }
+            if (onlineFile.Name.ToUpper() == "SOUNDS")
+            {
+                soundsFolderId = onlineFile.Id;
+            }
+            if (onlineFile.Name.ToUpper() == "THEMES")
+            {
+                themesFolderId = onlineFile.Id;
+            }
+        }
+
+
     }
 
     private void GetAllDecks()
@@ -118,9 +426,9 @@ public class UpdateContent : MonoBehaviour
 
         progressText = "Starting to look for decks !";
         //Get Karuta id:
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Decks/")))
+        if (!Directory.Exists(Path.Combine(MainFolder, "Decks")))
         {
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Decks/"));
+            Directory.CreateDirectory(Path.Combine(MainFolder, "Decks"));
         }
         //string baseID = "";
 
@@ -128,7 +436,7 @@ public class UpdateContent : MonoBehaviour
         FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
         listRequest.PageSize = 1000;
         listRequest.Fields = "nextPageToken, files(id, name, webContentLink, size)";
-        listRequest.Q = $"'{"1M0WGFWXYq8A0shk2NrUVpYbZN-CsB8qs"}' in parents";
+        listRequest.Q = $"'{decksFolderId}' in parents";
 
 
 
@@ -155,7 +463,7 @@ public class UpdateContent : MonoBehaviour
 
         foreach (var onlineFile in files)
         {
-            string path = Path.Combine(Application.persistentDataPath, "Decks/" + onlineFile.Name);
+            string path = Path.Combine(MainFolder, "Decks", onlineFile.Name);
             if (File.Exists(path))
             {
                 FileStream fileStream = File.Open(path, FileMode.Open);
@@ -188,9 +496,9 @@ public class UpdateContent : MonoBehaviour
     private void GetAllSongs()
     {
         //Get Karuta id:
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Son/")))
+        if (!Directory.Exists(Path.Combine(MainFolder, "Sounds")))
         {
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Son/"));
+            Directory.CreateDirectory(Path.Combine(MainFolder, "Sounds"));
         }
         //string baseID = "";
 
@@ -198,7 +506,7 @@ public class UpdateContent : MonoBehaviour
         FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
         listRequest.PageSize = 1000;
         listRequest.Fields = "nextPageToken, files(id, name, webContentLink, size)";
-        listRequest.Q = $"'{"1qbrCPZlH1BxABNf5BlvFO9gDzRCYNzBy"}' in parents";
+        listRequest.Q = $"'{soundsFolderId}' in parents";
 
 
 
@@ -206,7 +514,7 @@ public class UpdateContent : MonoBehaviour
         //request.ResponseData.NextPageToken
 
         IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
-
+        
 
         Debug.Log(files.Count);
         numberOfFiles += files.Count;
@@ -214,7 +522,7 @@ public class UpdateContent : MonoBehaviour
 
         foreach (var onlineFile in files)
         {
-            string path = Path.Combine(Application.persistentDataPath, "Son/" + onlineFile.Name);
+            string path = Path.Combine(MainFolder, "Sounds", onlineFile.Name);
             if (File.Exists(path))
             {
                 FileStream fileStream = File.Open(path, FileMode.Open);
@@ -245,9 +553,9 @@ public class UpdateContent : MonoBehaviour
     private void GetAllVisuals()
     {
         //Get Karuta id:
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Visuels/")))
+        if (!Directory.Exists(Path.Combine(MainFolder, "Visuals")))
         {
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Visuels/"));
+            Directory.CreateDirectory(Path.Combine(MainFolder, "Visuals"));
         }
         //string baseID = "";
 
@@ -255,7 +563,7 @@ public class UpdateContent : MonoBehaviour
         FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
         listRequest.PageSize = 1000;
         listRequest.Fields = "nextPageToken, files(id, name, webContentLink, size)";
-        listRequest.Q = $"'{"1ELySPLkGydDzrc6SZml05xbDoey188TQ"}' in parents";
+        listRequest.Q = $"'{visualsFolderId}' in parents";
 
 
 
@@ -270,7 +578,7 @@ public class UpdateContent : MonoBehaviour
 
         foreach (var onlineFile in files)
         {
-            string path = Path.Combine(Application.persistentDataPath, "Visuels/" + onlineFile.Name);
+            string path = Path.Combine(MainFolder, "Visuals", onlineFile.Name);
             if (File.Exists(path))
             {
                 FileStream fileStream = File.Open(path, FileMode.Open);
@@ -301,9 +609,9 @@ public class UpdateContent : MonoBehaviour
     private void GetAllThemes()
     {
         //Get Karuta id:
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Themes/")))
+        if (!Directory.Exists(Path.Combine(MainFolder, "Themes")))
         {
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Themes/"));
+            Directory.CreateDirectory(Path.Combine(MainFolder, "Themes"));
         }
         //string baseID = "";
 
@@ -311,7 +619,7 @@ public class UpdateContent : MonoBehaviour
         FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
         listRequest.PageSize = 1000;
         listRequest.Fields = "nextPageToken, files(id, name, webContentLink, size)";
-        listRequest.Q = $"'{"1fMxu63shjuiUnfeddIbjOavvyiiziE1b"}' in parents";
+        listRequest.Q = $"'{themesFolderId}' in parents";
 
 
 
@@ -326,7 +634,7 @@ public class UpdateContent : MonoBehaviour
 
         foreach (var onlineFile in files)
         {
-            string path = Path.Combine(Application.persistentDataPath, "Themes/" + onlineFile.Name);
+            string path = Path.Combine(MainFolder, "Themes", onlineFile.Name);
             if (File.Exists(path))
             {
                 FileStream fileStream = File.Open(path, FileMode.Open);
@@ -349,7 +657,7 @@ public class UpdateContent : MonoBehaviour
                 filesHandled++;
             }
         }
-        doneVisuals = true;
+        doneThemes = true;
         //CheckDone();
     }
 
@@ -357,10 +665,13 @@ public class UpdateContent : MonoBehaviour
     void CheckDone()
     {
         Debug.Log(filesHandled + "/" + numberOfFiles + " files handled");
-        progressText += "\n\n<color=yellow>" + filesHandled + "/" + numberOfFiles + " files handled</color>";
-        if (readyToFinish && filesHandled >= numberOfFiles)
+
+        bool doneRequests = doneDecks && doneThemes && doneVisuals && doneSongs;
+        progressText += $"\n\n<color=yellow>{filesHandled}/{(doneRequests ? $"{numberOfFiles}" : $"???")}</color>";
+        if (doneRequests && readyToFinish && filesHandled >= numberOfFiles)
         {
             finished = true;
+            Debug.Log($"<b>Finished update with {filesHandled} files handled</b>");
         }
     }
 
@@ -483,7 +794,7 @@ public class UpdateContent : MonoBehaviour
 
         while (currentNumberOfDownloads >= maxSimulateousDownloads)
         {
-            yield return new WaitForSeconds(0.5f + 0.5f * Random.value);
+            yield return null;// new WaitForSeconds(0.5f + 0.5f * Random.value);
         }
         Debug.Log("About to download file " + file.Id);
 
@@ -528,8 +839,13 @@ public class UpdateContent : MonoBehaviour
                    
             }
         };
-        request.DownloadAsync(stream);
-
+        var task = request.DownloadAsync(stream);
+        
+        while(!task.IsCompleted)
+        {
+            yield return null;
+        }
+        stream.Close();
     }
 
 //22mn 42s 58

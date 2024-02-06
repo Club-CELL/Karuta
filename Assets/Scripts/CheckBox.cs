@@ -8,6 +8,10 @@ public class CheckBox : ScaleMoveButton {
     public Sprite boxOn;
     public Sprite boxOff;
     bool state;
+    public bool State
+    {
+        get => state;
+    }
     public string variable;
     public GameObject text;
     // Use this for initialization

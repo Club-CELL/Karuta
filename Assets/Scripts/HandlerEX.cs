@@ -4,10 +4,11 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public class HandlerEX : MonoBehaviour {
 
-	public string[] Deck = new string[1000];
+	public List<Card> deck = new List<Card>();
 
 	public int nb;
 	public int card;
@@ -363,15 +364,22 @@ public class HandlerEX : MonoBehaviour {
 		
 	void ReadDecks()
 	{
-		Deck = Global.Deck;
-		nb = Global.entries;
+        deck.Clear();
+        
+        foreach(var s in Global.deck)
+        {
+            deck.Add(s);
+        }
+		nb = deck.Count;
 	}
 
 
 	void Trouvee()
 	{
 		if (nb > 0) {
-			Deck [card] = Deck [nb - 1];
+
+            deck.RemoveAt(card);
+			//Deck [card] = Deck [nb - 1];
 			nb--;
 		}
 
@@ -412,31 +420,50 @@ public class HandlerEX : MonoBehaviour {
 
 	void Playcard(int c)
 	{
-		string cardName = Deck [c];
+        Card cardInfo = deck[c];
 
-		for (int i = 0; i < cardName.Length; i++) {
+        string cardName = cardInfo.name;
 
-			char[] forbiddenChar = new char[] { ':', '/', '"', '*', '\\', '|', '?', '<', '>' };
-			int ind = HasIndex<char> (cardName [i],forbiddenChar);
-			if(ind != -1)
-			{
-				cardName = cardName.Substring (0, i) + "," + cardName.Substring (i+ 1, cardName.Length-i-1);
-				ind = HasIndex<char> (cardName [i], forbiddenChar);
+        Debug.Log($"Playing card: {cardName}");
 
-			}
+        char[] forbiddenChar = new char[] { ':', '/', '"', '*', '\\', '|', '?', '<', '>' };
+        foreach (var character in forbiddenChar)
+        {
+            cardName = cardName.Replace(character, ',');
+        }
 
-		}
-		string imPath = Path.Combine(Main_Folder , "Visuels/" + cardName +".png");
+        //for (int i = 0; i < cardName.Length; i++) {
+        //
+        //	char[] forbiddenChar = new char[] { ':', '/', '"', '*', '\\', '|', '?', '<', '>' };
+        //    foreach(var character in forbiddenChar)
+        //    {
+        //        cardName = cardName.Replace(character, ',');
+        //    }
+        //	int ind = HasIndex<char> (cardName [i],forbiddenChar);
+        //	if(ind != -1)
+        //	{
+        //		cardName = cardName.Substring (0, i) + "," + cardName.Substring (i+ 1, cardName.Length-i-1);
+        //		ind = HasIndex<char> (cardName [i], forbiddenChar);
+        //
+        //	}
+        //
+        //}
 
-		reponse.GetComponent<Text> ().text = cardName;
+        //string imPath = Path.Combine(Main_Folder , "Visuels/" + cardName +".png");
+        Debug.Log($"imPath: {Main_Folder}{Path.DirectorySeparatorChar}Packs{cardInfo.packId}Visuals{cardName +  ".png"}");
+        string imPath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName +  ".png");
+        Debug.Log($"imPath: {imPath}");
+
+        reponse.GetComponent<Text> ().text = cardName;
 
 
 
         StartCoroutine(LoadImage(imPath, carte2Image));
-        
-		string songPath = Path.Combine(Main_Folder, "Son/" + cardName + ".mp3");
 
-		Debug.Log(songPath);
+        //string songPath = Path.Combine(Main_Folder, "Son/" + cardName + ".mp3");
+        string soundPath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Sounds", cardName + ".mp3");
+
+        Debug.Log(soundPath);
         if (!autoplay)
         {
             paused = true;
@@ -473,8 +500,13 @@ public class HandlerEX : MonoBehaviour {
         }
             
 
-
-        PlaySong (songPath);////////////////
+        if(!File.Exists(soundPath))
+        {
+            reponse.GetComponent<Text>().text = cardName + "\n<color=red>Sound not found</color>";
+            Debug.LogError($"Did not find sound at: {soundPath}");
+            return;
+        }
+        PlaySong (soundPath);////////////////
 		
 
 	}
@@ -500,6 +532,12 @@ public class HandlerEX : MonoBehaviour {
 
     IEnumerator LoadImage(string path, Image image)
     {
+        if(!File.Exists(path))
+        {
+            image.sprite = defaultSprite;
+            image.preserveAspect = true;
+            yield break;
+        }
         image.sprite = null;
         UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
         Debug.Log("<color=yellow>file://" + path+"</color>");
@@ -512,7 +550,8 @@ public class HandlerEX : MonoBehaviour {
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.0f), 1.0f);
 
         image.sprite = sprite != null ? sprite : defaultSprite;
-        carteImage.preserveAspect = true;
+        image.preserveAspect = true;
+        //carteImage.preserveAspect = true;
         www.Dispose();
 
     }

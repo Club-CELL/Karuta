@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class Theme
 {
-
+    public string packId;
     string name;
     public void SetName(string name)
     {
@@ -54,6 +55,27 @@ public class Theme
     public string colorUpdateButton;//
     public string colorUpdateButtonText;//
 
+    //<Packs
+    public string colorPackBannerBackground;//
+    public string colorPackBannerText;//
+    public string colorPackButton;//
+    public string colorPackButtonText;//
+    public string colorAddPackButton;
+    public string colorAddPackButtonText;//
+    public string colorNewPackButton;
+    public string colorNewPackButtonText;
+    public string colorPacksTitleText;
+    public string colorPacksTitleBackground;
+    public string colorPackBackButton;
+    public string colorPackBackButtonText;
+
+    public string colorNewPackFolderInputBackground;
+    public string colorNewPackFolderInputText;
+    public string colorNewPackFolderInputPlaceholderText;
+    public string colorNewPackFolderCreateInstructionsLink;
+    public string colorNewPackFolderAddInstructionsText;
+
+    //Packs>
 
 
     public string colorContinueArrow;//
@@ -106,10 +128,25 @@ public class Theme
         DefaultToColorString(ref colorUpdateButtonText, mainTextColor);
         DefaultToColorString(ref colorNumberOfCardsLeft, mainTextColor);
         DefaultToColorString(ref colorAnimeTitle, mainTextColor);
+        DefaultToColorString(ref colorPackBannerText, mainTextColor);
+        DefaultToColorString(ref colorPackButtonText, mainTextColor);
+        DefaultToColorString(ref colorAddPackButtonText, mainTextColor);
+        DefaultToColorString(ref colorNewPackButtonText, mainTextColor);
+        DefaultToColorString(ref colorPacksTitleText, mainTextColor);
+        DefaultToColorString(ref colorPackBackButtonText, mainTextColor);
 
-        
-        //Main Color
-        DefaultToColorString(ref colorOptionButton, mainColor);
+
+        DefaultToColorString(ref colorNewPackFolderInputText, mainTextColor);
+        DefaultToColorString(ref colorNewPackFolderInputPlaceholderText, mainTextColor);
+        DefaultToColorString(ref colorNewPackFolderCreateInstructionsLink, mainTextColor);
+        DefaultToColorString(ref colorNewPackFolderAddInstructionsText, mainTextColor);
+
+
+
+
+
+    //Main Color
+    DefaultToColorString(ref colorOptionButton, mainColor);
         DefaultToColorString(ref colorQuitButton, mainColor);
         DefaultToColorString(ref colorPlayPause, mainColor);
         DefaultToColorString(ref colorPanelNumberPlayersQuestion, mainColor, panelAlpha);
@@ -130,11 +167,19 @@ public class Theme
         DefaultToColorString(ref colorThemesQuitButton, mainColor);
         DefaultToColorString(ref colorThemesButton, mainColor);
 
+        DefaultToColorString(ref colorPackButton, mainColor);
+        DefaultToColorString(ref colorAddPackButton, mainColor);
+        DefaultToColorString(ref colorPackBannerBackground, mainColor);
+        DefaultToColorString(ref colorNewPackButton, mainColor);
+        DefaultToColorString(ref colorPackBackButton, mainColor);
+        DefaultToColorString(ref colorNewPackFolderInputBackground, mainColor);
 
 
 
-        //SecondaryColor
-        DefaultToColorString(ref colorCentralPanelNumberPlayers, secondaryColor, panelAlpha);
+
+
+    //SecondaryColor
+    DefaultToColorString(ref colorCentralPanelNumberPlayers, secondaryColor, panelAlpha);
         DefaultToColorString(ref colorOptionPanel, secondaryColor);
         DefaultToColorString(ref colorThemesPanel, secondaryColor, 0.9f);
         
@@ -142,9 +187,11 @@ public class Theme
         DefaultToColorString(ref colorSliderBackground, "white", 0.5f);
         DefaultToColorString(ref colorThemeUnselectedIndicator, "white");
         DefaultToColorString(ref colorPanelNumberPlayers, "black", panelAlpha);
+        DefaultToColorString(ref colorPacksTitleBackground, "black", panelAlpha);
 
 
-    }
+
+}
 
     public void DefaultToColorString(ref string s, string defaultString, float alpha=1)
     {

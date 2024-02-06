@@ -23,9 +23,10 @@ public class ChoixDecks : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
 	public float finX;
 	public float speedX;
 
-	public string nomDeck;
+	public string deckName;
 	public bool added=false;
-	public string[] Deck=new string[1000];
+	//public string[] Deck=new string[1000];
+	public Deck deck;
 
 
 	float x0;
@@ -89,7 +90,7 @@ public class ChoixDecks : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
 	{
 
 		if (!added) {
-			Global.AddTabInDeck (Deck);
+			Global.AddDeck(deck);
 
             //DeckManager.NextJoueur (); //Int
             DeckManagerEx.NextJoueur(); //Ex

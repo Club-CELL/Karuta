@@ -111,17 +111,25 @@ public class BackgroundHandler : MonoBehaviour
 
             Texture2D texture = DownloadHandlerTexture.GetContent(www);
 
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.0f), 1.0f);
+            imageBackground.GetComponent<RawImage>().texture = texture;
 
-            if (sprite != null)
-            {
-                currentImagePath = path;
-                imageBackground.GetComponent<Image>().sprite = sprite;
-                imageBackground.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
-                
-                videoBackground.SetActive(false);
-                imageBackground.SetActive(true);
-            }
+            currentImagePath = path;
+            videoBackground.SetActive(false);
+            imageBackground.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
+            imageBackground.SetActive(true);
+
+            //
+            //Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.0f), 1.0f);
+            //
+            //if (sprite != null)
+            //{
+            //    currentImagePath = path;
+            //    imageBackground.GetComponent<Image>().sprite = sprite;
+            //    imageBackground.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
+            //    
+            //    videoBackground.SetActive(false);
+            //    imageBackground.SetActive(true);
+            //}
 
             www.Dispose();
         }

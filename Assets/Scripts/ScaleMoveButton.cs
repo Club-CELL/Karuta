@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.Events;
 
-public class ScaleMoveButton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPointerDownHandler {
+public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler,IPointerExitHandler,IPointerDownHandler {
 
 	[Header("Button state")]
 	public bool activated;
@@ -41,7 +41,7 @@ public class ScaleMoveButton : MonoBehaviour, IPointerUpHandler,IPointerExitHand
 			activated = false;
 		}
 	}
-	public void OnPointerUp(PointerEventData eventdata)
+	public void OnPointerClick(PointerEventData eventdata)
 	{
 		if (activated) {
 			execution = true;

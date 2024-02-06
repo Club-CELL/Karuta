@@ -61,8 +61,8 @@ public class JsonSerialization
     {
         StreamReader streamReader = new StreamReader(filepath);
         string s = streamReader.ReadToEnd();
-        T obj = JsonUtility.FromJson<T>(s);
         streamReader.Close();
+        T obj = JsonUtility.FromJson<T>(s);
         return obj;
     }
 

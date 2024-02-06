@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 public class Handler : MonoBehaviour {
 
@@ -307,8 +308,13 @@ public class Handler : MonoBehaviour {
 		
 	void ReadDecks()
 	{
-		Deck = Global.Deck;
-		nb = Global.entries;
+		List<string> deckList = new List<string>();
+		foreach(var card in Global.deck)
+        {
+			deckList.Add(card.name);
+        }
+		Deck = deckList.ToArray();
+		nb = Global.deck.Count;
 	}
 
 	void Trouvee()
