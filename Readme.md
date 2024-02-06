@@ -75,7 +75,7 @@ It should be already added to the list when anyone installs the app. Note that y
 
 ### Credits
 
-- The **arrow** image in the app comes from the anime [***Jojo's Bizarre adventure***](https://drive.google.com/drive/folders/1tHgOOtA-GQlIEd9xkNp-6vQd7uzoqVVF)
+- The **arrow** image in the app comes from the anime [***Jojo's Bizarre adventure***](https://jojo-animation.com/)
 - The main **font** used in the app is [***Anime Ace***](https://www.1001fonts.com/anime-ace-font.html)
 - [**Mi-eau**](https://mi-eau.carrd.co/) for the drawing of **Momocom** on the main menu (the character on the main menu background when using the classic theme)
 - [**Shingo Hayasa**](https://www.deviantart.com/shingo-hayasa) for the drawing of **Momocom** on the game screen
