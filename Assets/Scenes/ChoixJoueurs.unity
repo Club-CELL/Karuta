@@ -365,7 +365,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Sensibilite pause:'
+  m_Text: 'Pause sensitivity:'
 --- !u!222 &13172826
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1353,7 +1353,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Permettre matchs mirroirs
+  m_Text: Allow mirror matches
 --- !u!222 &221333448
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4727,7 +4727,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Nombre de joueurs ?
+  m_Text: Player count ?
 --- !u!222 &615454476
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5375,7 +5375,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Permettre matchs mirroirs
+  m_Text: Allow mirror matches
 --- !u!222 &756907675
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10439,14 +10439,14 @@ MonoBehaviour:
   optionButtonBW: {fileID: 21300000, guid: 2d0d03a3239647044ba20a37aff3b56e, type: 3}
   playButtonBW: {fileID: 21300000, guid: b1183ddbbdbe6944e93d473bb6174adb, type: 3}
   pauseButtonBW: {fileID: 21300000, guid: e367a8ba8d06f394689ee71e07642c84, type: 3}
-  continueArrowBW: {fileID: 21300000, guid: 5f08653bfad8f0e499c7135c906c9624, type: 3}
+  continueArrowBW: {fileID: 21300000, guid: 04d6cc4e370ead64f8be99edf1aedb7d, type: 3}
   checkBoxColor: {fileID: 21300000, guid: 64f9ce6a2008b834ea33948af6cd6e4b, type: 3}
   checkBoxOnColor: {fileID: 21300000, guid: 26193b57b8db98d43b6185c01a00d8b2, type: 3}
   quitButtonColor: {fileID: 21300000, guid: 962333833fcbab14089e6cb1dc87345c, type: 3}
   optionButtonColor: {fileID: 21300000, guid: eaf26a782532d5948be4db2a672c2154, type: 3}
   playButtonColor: {fileID: 21300000, guid: 58e1f48e8b2f399429d4201602b77260, type: 3}
   pauseButtonColor: {fileID: 21300000, guid: e367a8ba8d06f394689ee71e07642c84, type: 3}
-  continueArrowColor: {fileID: 21300000, guid: c9cf6a6a66415ba40b52d2c2d70fbf48, type: 3}
+  continueArrowColor: {fileID: 21300000, guid: c7b9747b200612a4e98b3360eac557cb, type: 3}
   checkboxes:
   - {fileID: 964071044}
   - {fileID: 149743453}
@@ -11151,7 +11151,7 @@ GameObject:
   - component: {fileID: 1980105850}
   - component: {fileID: 1980105853}
   m_Layer: 0
-  m_Name: Continuer
+  m_Name: Continue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11219,7 +11219,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c9cf6a6a66415ba40b52d2c2d70fbf48, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c7b9747b200612a4e98b3360eac557cb, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
