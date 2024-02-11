@@ -30,7 +30,7 @@ If one of the players taps on the right card, they get this card and the card is
 
 ## Compiling the app
 
-If you want to compile the app yourself, you will need to create a **google service account**. Download the **json key** corresponding to this account.
+If you want to compile the app yourself, you will need to create a **google service account**. Here is a [step by step tutorial](https://docs.google.com/document/d/12QXZd3Mx1vfYl01hFiYyAt3YCLnMrHFted1_7m6b7w0) on how to do this. Download the **json key** corresponding to this account.
 
 Then, save the json key, and copy it to the ***Resources/Credentials*** folder. Rename it to ***credentials.json***. Do **not** commit this file to version control.
 
