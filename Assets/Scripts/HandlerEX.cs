@@ -514,7 +514,7 @@ public class HandlerEX : MonoBehaviour {
 
 	void Finish()
 	{
-		answer.GetComponent<Text> ().text = "Partie terminee !";
+		answer.GetComponent<Text> ().text = "Finished !";
 		remaining.text = "Remaining: " + nb.ToString ();
 		carteImage.enabled = false;
 		carte2Image.enabled = false;
