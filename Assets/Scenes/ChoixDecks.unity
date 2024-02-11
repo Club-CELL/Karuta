@@ -370,6 +370,7 @@ MonoBehaviour:
   - 
   sep_y: 110
   back_speed: 0.05
+  titre: {fileID: 1223753766}
   decalageDebut: -400
   marginUp: 150
   marginDown: 150
@@ -429,6 +430,7 @@ MonoBehaviour:
   - 
   sep_y: 110
   back_speed: 0.05
+  title: {fileID: 1223753766}
   decalageDebut: -400
   marginUp: 150
   marginDown: 150

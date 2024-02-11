@@ -30,7 +30,7 @@ public class DeckManagerEx : MonoBehaviour
     public static int joueur = 1;
     public float sep_y;
     public float back_speed;
-    public static GameObject title;
+    public GameObject title;
     float x0;
     float y0;
     public float decalageDebut;
@@ -44,12 +44,13 @@ public class DeckManagerEx : MonoBehaviour
     float y_start_touch;
     float localY0;
     float height;
+    static DeckManagerEx instance;
     // Use this for initialization
     void Start()
     {
+        instance = this;
         Global.mainPath = Application.persistentDataPath;
         joueur = 1;
-        title = GameObject.Find("Titre");
         x0 = arrow.transform.position.x;
         y0 = arrow.transform.position.y;
         localY0 = arrow.GetComponent<RectTransform>().localPosition.y;
@@ -182,12 +183,11 @@ public class DeckManagerEx : MonoBehaviour
         joueur++;
         if (joueur <= Global.nbJoueurs)
         {
-            title.GetComponent<Text>().text = "Player " + joueur.ToString();
+            instance.title.GetComponent<Text>().text = "Player " + joueur.ToString();
 
         }
         else
         {
-
             SceneManager.LoadScene("Game");
         }
 
