@@ -129,6 +129,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7312389449948153965, guid: 8e68278e98af2bc46b36df6ac014537c,
         type: 3}
+      propertyPath: pack
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7312389449948153965, guid: 8e68278e98af2bc46b36df6ac014537c,
+        type: 3}
       propertyPath: updateButtonText
       value: 
       objectReference: {fileID: 6089997609454181830}

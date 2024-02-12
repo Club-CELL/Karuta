@@ -67,6 +67,11 @@ public class PackControl : MonoBehaviour
     }
     public void Setup()
     {
+        if(!pack)
+        {
+            return;
+        }
+
         nameText.text = pack.title;
         Debug.Log($"Setting up banner for pack {pack.title} and banner is {(pack.banner == null ? "null" : "not null" ) }", this);
 
