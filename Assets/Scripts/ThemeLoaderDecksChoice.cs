@@ -58,9 +58,9 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
 
             Camera.main.backgroundColor = GetColorFromString(theme.backgroundColorDecksChoice, Camera.main.backgroundColor);
 
-            //string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Themes"), theme.decksChoiceBackground);
+            //string path = Path.Combine(Path.Combine(PathManager.MainPath, "Themes"), theme.decksChoiceBackground);
 
-            string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Packs", theme.packId ?? "", "Themes"), theme.decksChoiceBackground);
+            string path = Path.Combine(Path.Combine(PathManager.MainPath, "Packs", theme.packId ?? "", "Themes"), theme.decksChoiceBackground);
             BackgroundHandler.UseAsBackground(path);
             if (!string.IsNullOrEmpty(theme.decksChoiceBackground) && File.Exists(theme.decksChoiceBackground))
             {

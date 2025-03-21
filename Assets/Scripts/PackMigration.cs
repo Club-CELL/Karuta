@@ -17,16 +17,16 @@ public class PackMigration : MonoBehaviour
         DeckPack pack = Resources.Load<DeckPack>(Path.Combine("Packs", resourcePack));
         string id = pack.driveFolderId;
 
-        string packDirectory = Path.Combine(Application.persistentDataPath, "Packs", id);
+        string packDirectory = Path.Combine(PathManager.MainPath, "Packs", id);
         if (Directory.Exists(packDirectory))
         {
             return;
         }
         Directory.CreateDirectory(packDirectory);
-        string oldVisualsDirectory = Path.Combine(Application.persistentDataPath, "Visuels");
-        string oldSoundsDirectory = Path.Combine(Application.persistentDataPath, "Son");
-        string oldDecksDirectory = Path.Combine(Application.persistentDataPath, "Decks");
-        string oldThemesDirectory = Path.Combine(Application.persistentDataPath, "Themes");
+        string oldVisualsDirectory = Path.Combine(PathManager.MainPath, "Visuels");
+        string oldSoundsDirectory = Path.Combine(PathManager.MainPath, "Son");
+        string oldDecksDirectory = Path.Combine(PathManager.MainPath, "Decks");
+        string oldThemesDirectory = Path.Combine(PathManager.MainPath, "Themes");
         if (Directory.Exists(oldVisualsDirectory))
         {
             Directory.Move(oldVisualsDirectory, Path.Combine(packDirectory, "Visuals"));

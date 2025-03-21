@@ -261,7 +261,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             Camera.main.backgroundColor = GetColorFromString(theme.backgroundColorMainMenu, Camera.main.backgroundColor);
 
 
-            string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Packs", theme.packId ?? "","Themes"), theme.mainMenuBackground);
+            string path = Path.Combine(Path.Combine(PathManager.MainPath, "Packs", theme.packId ?? "","Themes"), theme.mainMenuBackground);
             BackgroundHandler.UseAsBackground(path);
             if (!string.IsNullOrEmpty(theme.mainMenuBackground) && File.Exists(path))
             {
@@ -488,7 +488,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         Debug.Log("Getting theme files");
 
         List<string> themeFiles = new List<string>();
-        var packDirectories = Directory.GetDirectories(Path.Combine(Application.persistentDataPath, "Packs"));
+        var packDirectories = Directory.GetDirectories(Path.Combine(PathManager.MainPath, "Packs"));
         foreach(var packDirectory in packDirectories)
         {
             Debug.Log($"Pack: {packDirectory}");
@@ -575,7 +575,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         }
         foreach(Theme theme in themes)
         {
-            string themeDirectory = Path.Combine(Application.persistentDataPath,"Packs",theme.packId, "Themes");
+            string themeDirectory = Path.Combine(PathManager.MainPath,"Packs",theme.packId, "Themes");
             string content = Path.Combine(themeDirectory, theme.mainMenuBackground);
 
             Debug.Log("content:" + content);

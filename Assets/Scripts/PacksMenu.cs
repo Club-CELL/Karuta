@@ -30,7 +30,7 @@ public class PacksMenu : MonoBehaviour
         }
     
     
-        //string packsFolder = Path.Combine(Application.persistentDataPath, "Packs");
+        //string packsFolder = Path.Combine(PathManager.MainPath, "Packs");
         //
         //if(!Directory.Exists(packsFolder))
         //{
@@ -99,7 +99,7 @@ public class PacksMenu : MonoBehaviour
         {
             Debug.LogError($"No deck pack after AddSerializedPack id: {serializedPack.driveFolderId}");
         }
-        //StartCoroutine(LoadBannerTexture(Path.Combine(Application.persistentDataPath,"Packs", serializedPack.driveFolderId, serializedPack.banner), packControl));
+        //StartCoroutine(LoadBannerTexture(Path.Combine(PathManager.MainPath,"Packs", serializedPack.driveFolderId, serializedPack.banner), packControl));
     }
     //IEnumerator LoadBannerTexture(string path, PackControl packControl)
     //{

@@ -49,7 +49,7 @@ public class DeckManagerEx : MonoBehaviour
     void Start()
     {
         instance = this;
-        Global.mainPath = Application.persistentDataPath;
+        Global.mainPath = PathManager.MainPath;
         joueur = 1;
         x0 = arrow.transform.position.x;
         y0 = arrow.transform.position.y;

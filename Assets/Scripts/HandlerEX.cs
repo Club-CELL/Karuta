@@ -106,7 +106,7 @@ public class HandlerEX : MonoBehaviour {
 
         Main_Folder = Global.mainPath;
 
-        Main_Folder =  Application.persistentDataPath;
+        Main_Folder =  PathManager.MainPath;
         
 
 

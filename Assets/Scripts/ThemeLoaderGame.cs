@@ -51,9 +51,9 @@ public class ThemeLoaderGame : MonoBehaviour
 
             Camera.main.backgroundColor = GetColorFromString(theme.backgroundColorGame, Camera.main.backgroundColor);
 
-            //string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Themes"), theme.gameBackground);
+            //string path = Path.Combine(Path.Combine(PathManager.MainPath, "Themes"), theme.gameBackground);
 
-            string path = Path.Combine(Path.Combine(Application.persistentDataPath, "Packs", theme.packId ?? "", "Themes"), theme.gameBackground);
+            string path = Path.Combine(Path.Combine(PathManager.MainPath, "Packs", theme.packId ?? "", "Themes"), theme.gameBackground);
             BackgroundHandler.UseAsBackground(path);
             if (!string.IsNullOrEmpty(theme.gameBackground) && File.Exists(theme.gameBackground))
             {

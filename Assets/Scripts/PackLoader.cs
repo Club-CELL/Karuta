@@ -43,7 +43,7 @@ public class PackLoader : MonoBehaviour
 
 
 
-        string packsFolder = Path.Combine(Application.persistentDataPath, "Packs");
+        string packsFolder = Path.Combine(PathManager.MainPath, "Packs");
 
         if (!Directory.Exists(packsFolder))
         {
@@ -101,7 +101,7 @@ public class PackLoader : MonoBehaviour
 
     public void LoadBanner(SerializedDeckPack serializedPack)
     {
-        string path = Path.Combine(Application.persistentDataPath, "Packs", serializedPack.driveFolderId, serializedPack.banner);
+        string path = Path.Combine(PathManager.MainPath, "Packs", serializedPack.driveFolderId, serializedPack.banner);
         StartCoroutine(LoadBannerTexture(path, serializedPack.driveFolderId));
     }
     IEnumerator LoadBannerTexture(string path, string id)

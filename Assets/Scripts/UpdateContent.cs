@@ -58,7 +58,7 @@ public class UpdateContent : MonoBehaviour
     {
         get
         {
-            return pack != null ? Path.Combine(Application.persistentDataPath, "Packs", pack.driveFolderId) : Application.persistentDataPath;
+            return pack != null ? Path.Combine(PathManager.MainPath, "Packs", pack.driveFolderId) : PathManager.MainPath;
         }
     }
 
@@ -266,7 +266,7 @@ public class UpdateContent : MonoBehaviour
 
         string bannerImage = "banner.png";
         bool foundPackInfo = false;
-        string packDirectory = Path.Combine(Application.persistentDataPath, "Packs", folderId);
+        string packDirectory = Path.Combine(PathManager.MainPath, "Packs", folderId);
         string infoFilePath = Path.Combine(packDirectory, "pack.json");
         foreach (var onlineFile in files)
         {
@@ -360,7 +360,7 @@ public class UpdateContent : MonoBehaviour
                 {
                     Directory.CreateDirectory(packDirectory);
                 }
-                var stream = new FileStream(Path.Combine(Application.persistentDataPath,"Packs", folderId, onlineFile.Name), FileMode.Create);
+                var stream = new FileStream(Path.Combine(PathManager.MainPath,"Packs", folderId, onlineFile.Name), FileMode.Create);
                 request.Download(stream);
                 stream.Close();
                 break;
@@ -721,7 +721,7 @@ public class UpdateContent : MonoBehaviour
         }
         
         /*
-        string newKeyFilePath = Path.Combine(Application.persistentDataPath, keyFilePath);
+        string newKeyFilePath = Path.Combine(PathManager.MainPath, keyFilePath);
         File.WriteAllText(newKeyFilePath, jsonCredentials);
         
         GoogleCredential credential = GoogleCredential.FromStream(new FileStream(newKeyFilePath, FileMode.Open))
