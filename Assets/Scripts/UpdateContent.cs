@@ -4,12 +4,9 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using Google.Apis.Drive.v3;
-using System.Security.Cryptography.X509Certificates;
 using Google.Apis.Auth.OAuth2;
 using System.Threading;
-using Google.Apis.Util.Store;
 using Google.Apis.Services;
-using UnityEngine.Networking;
 
 public class UpdateContent : MonoBehaviour
 {
@@ -207,18 +204,16 @@ public class UpdateContent : MonoBehaviour
         {
             Awake();
         }
-        DeckPack pack = null;
 
+        FilesResource.ListRequest listRequest = new(service)
+        {
+            PageSize = 1000,
+            Fields = "nextPageToken, files(id, name, webContentLink, size)",
+            Q = $"'{folderId}' in parents and mimeType='application/vnd.google-apps.folder'"
+        };
+        //service.Files.List();
 
-        FilesResource.ListRequest listRequest = new FilesResource.ListRequest(service);//service.Files.List();
-        listRequest.PageSize = 1000;
-        listRequest.Fields = "nextPageToken, files(id, name, webContentLink, size)";
-        listRequest.Q = $"'{folderId}' in parents and mimeType='application/vnd.google-apps.folder'";
-
-
-
-
-        IList<Google.Apis.Drive.v3.Data.File> files = null;
+        IList<Google.Apis.Drive.v3.Data.File> files;
         try
         {
             files = listRequest.Execute().Files;

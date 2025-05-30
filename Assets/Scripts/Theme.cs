@@ -26,10 +26,6 @@ public class Theme
     public string gameBackground;
 
 
-
-
-    
-
     public string colorOptionButton;//
     public string colorOptionButtonText;//
     public string colorQuitButton;//
@@ -41,8 +37,6 @@ public class Theme
     public string colorPanelNumberPlayers;//
     public string colorCentralPanelNumberPlayers;//
     public string colorTextNumberPlayers;//
-
-
 
 
     public string colorOptionPanel;//
@@ -84,9 +78,6 @@ public class Theme
     public string colorTextCurrentPlayer;//
     public string colorDeckArrow;//
     public string colorDeckArrowText;//
-
-    
-
 
 
     public string colorThemesButton;

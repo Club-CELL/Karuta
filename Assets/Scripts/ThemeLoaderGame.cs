@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 public class ThemeLoaderGame : MonoBehaviour
@@ -26,6 +24,7 @@ public class ThemeLoaderGame : MonoBehaviour
 
     public Text cardsLeft;
     public Text animeTitle;
+    public Text startDelay;
 
     public void LoadTheme()
     {
@@ -42,6 +41,7 @@ public class ThemeLoaderGame : MonoBehaviour
 
             cardsLeft.color = GetColorFromString(theme.colorNumberOfCardsLeft, cardsLeft.color);
             animeTitle.color = GetColorFromString(theme.colorAnimeTitle, animeTitle.color);
+            startDelay.color = GetColorFromString(theme.mainTextColor, startDelay.color);
 
             playButton.sprite = playButtonBW;
             playButton.color = GetColorFromString(theme.colorPlayPause, playButton.color);
