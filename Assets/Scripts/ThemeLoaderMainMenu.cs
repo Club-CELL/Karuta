@@ -9,7 +9,6 @@ using TMPro;
 
 public class ThemeLoaderMainMenu : MonoBehaviour
 {
-
     public Theme theme;
 
     [Header("Black&White sprites")]
@@ -20,6 +19,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     public Sprite playButtonBW;
     public Sprite pauseButtonBW;
     public Sprite continueArrowBW;
+
     [Header("Base sprites")]
     public Sprite checkBoxColor;
     public Sprite checkBoxOnColor;
@@ -28,10 +28,6 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     public Sprite playButtonColor;
     public Sprite pauseButtonColor;
     public Sprite continueArrowColor;
-
-
-
-
 
     [Header("Objects to change")]
     public List<CheckBox> checkboxes;
@@ -47,6 +43,10 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     public Image sensitivitySliderBackground;
     public Image sensitivitySliderFill;
 
+    public Slider startdelaySlider;
+    public Image startdelaySliderHandle;
+    public Image startdelaySliderBackground;
+    public Image startdelaySliderFill;
 
     public Image optionsMenuBorder;
     public Image optionsMenuPanel;
@@ -85,9 +85,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     public TMP_Text newPackFolderCreateInstructionsLink;
     public TMP_Text newPackFolderAddInstructionsText;
     
-
-
-    List<Theme> themes = new List<Theme>();
+    List<Theme> themes = new();
 
     [Header("Theme selection")]
     public GameObject imageTheme;
@@ -97,10 +95,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
 
     public ScrollSnapRect themesScroll;
 
-
-
     //Colors
-
     Color classicMainColor;
     Color classicOptionPanelColor;
     Color classicOptionBorderColor;
@@ -114,9 +109,6 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     Color newPackFolderInputBackgroundColor;
     Color newPackFolderInputPlaceholderTextColor;
     Color newPackFolderCreateInstructionsLinkColor;
-
-
-
 
     string currentThemePackId;
     string currentTheme;
@@ -162,19 +154,16 @@ public class ThemeLoaderMainMenu : MonoBehaviour
 
             ColorBlock colorblock = sensitivitySlider.colors;
             colorblock.normalColor = GetColorFromString(theme.colorSliderHandle, sensitivitySlider.colors.normalColor);
+            
             sensitivitySlider.colors = colorblock;
-
-
-
             sensitivitySliderHandle.color = GetColorFromString(theme.colorSliderHandle, sensitivitySliderHandle.color);
             sensitivitySliderFill.color = GetColorFromString(theme.colorSliderFill, sensitivitySliderFill.color);
             sensitivitySliderBackground.color = GetColorFromString(theme.colorSliderBackground, sensitivitySliderBackground.color);
 
-
-
-
-
-
+            startdelaySlider.colors = colorblock;
+            startdelaySliderHandle.color = GetColorFromString(theme.colorSliderHandle, sensitivitySliderHandle.color);
+            startdelaySliderFill.color = GetColorFromString(theme.colorSliderFill, sensitivitySliderFill.color);
+            startdelaySliderBackground.color = GetColorFromString(theme.colorSliderBackground, sensitivitySliderBackground.color);
 
             foreach (Text text in playerNumbers)
             {
@@ -256,32 +245,19 @@ public class ThemeLoaderMainMenu : MonoBehaviour
                 packControl.nameText.color = GetColorFromString(theme.colorPackBannerText, packControl.nameText.color);
             }
 
-
-
             Camera.main.backgroundColor = GetColorFromString(theme.backgroundColorMainMenu, Camera.main.backgroundColor);
-
 
             string path = Path.Combine(Path.Combine(PathManager.MainPath, "Packs", theme.packId ?? "","Themes"), theme.mainMenuBackground);
             BackgroundHandler.UseAsBackground(path);
-            if (!string.IsNullOrEmpty(theme.mainMenuBackground) && File.Exists(path))
-            {
-            
-            }
         }
-        else///////////////////////////
+        else
         {
             
             foreach (CheckBox checkbox in checkboxes)
             {
                 Image checkBoxImage = checkbox.GetComponent<Image>();
-                if (checkbox.State)
-                {
-                    checkBoxImage.sprite = checkBoxOnColor;
-                }
-                else
-                {
-                    checkBoxImage.sprite = checkBoxColor;
-                }
+                checkBoxImage.sprite = checkbox.State ? checkBoxOnColor : checkBoxColor;
+
                 checkbox.boxOff = checkBoxColor;
                 checkbox.boxOn = checkBoxOnColor;
                 checkBoxImage.color = Color.white;
@@ -291,39 +267,31 @@ public class ThemeLoaderMainMenu : MonoBehaviour
 
             optionsButton.sprite = optionButtonColor;
             optionsButton.color = Color.white;
-
             optionsButtonText.color = Color.white;
-
 
             updateButton.sprite = optionButtonColor;
             updateButton.color = Color.white;
-
             updateButtonText.color = Color.white;
-
 
             optionsMenuBorder.color = classicOptionBorderColor;
             optionsMenuPanel.color = classicOptionPanelColor;
 
-
             sensitivitySlider.colors = classicSliderColorblock;
-
-
-
             sensitivitySliderHandle.color = classicSliderHandleColor;
             sensitivitySliderFill.color = classicSliderFillColor;
             sensitivitySliderBackground.color = classicSliderBackgroundColor;
 
-
-
-
-
-
+            startdelaySlider.colors = classicSliderColorblock;
+            startdelaySliderHandle.color = classicSliderHandleColor;
+            startdelaySliderFill.color = classicSliderFillColor;
+            startdelaySliderBackground.color = classicSliderBackgroundColor;
 
             foreach (Text text in playerNumbers)
             {
                 text.color = Color.white;
             }
             playerNumberQuestion.color = Color.white;
+            
             foreach (Text text in optionsText)
             {
                 text.color = GetColorFromString("#323232", text.color);
@@ -380,14 +348,11 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             packBackButton.color = Color.white;
             packBackButtonText.color = Color.white;
 
-
             newPackFolderInputBackground.color = newPackFolderInputBackgroundColor;
             newPackFolderInputText.color = Color.white;
             newPackFolderInputPlaceholderText.color = newPackFolderInputPlaceholderTextColor;
             newPackFolderCreateInstructionsLink.color = newPackFolderCreateInstructionsLinkColor;
             newPackFolderAddInstructionsText.color = Color.white;
-
-
 
             PackControl.bannerBackgroundColor = Color.black;
             PackControl.bannerTextColor = classicOptionPanelColor;
@@ -409,13 +374,11 @@ public class ThemeLoaderMainMenu : MonoBehaviour
 
     Color GetColorFromString(string s, Color defaultColor)
     {
-        Color color = defaultColor;
-        if(ColorUtility.TryParseHtmlString(s, out color))
+        if (ColorUtility.TryParseHtmlString(s, out Color color))
         {
             return color;
         }
         return defaultColor;
-
     }
 
 

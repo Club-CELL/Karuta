@@ -1069,7 +1069,7 @@ GameObject:
   - component: {fileID: 4096170934223055716}
   - component: {fileID: 4928762807349267677}
   m_Layer: 0
-  m_Name: AutoPlay Box
+  m_Name: Hide cards Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1155,7 +1155,7 @@ MonoBehaviour:
       m_Calls: []
   boxOn: {fileID: 21300000, guid: 26193b57b8db98d43b6185c01a00d8b2, type: 3}
   boxOff: {fileID: 21300000, guid: 64f9ce6a2008b834ea33948af6cd6e4b, type: 3}
-  variable: hidden
+  variable: hidecard
   text: {fileID: 5583425758180742795}
 --- !u!1 &3308391516588350514
 GameObject:
@@ -3077,7 +3077,7 @@ GameObject:
   - component: {fileID: 3998963054721972487}
   - component: {fileID: 172327556856183585}
   m_Layer: 0
-  m_Name: PauseSensitivitySlider
+  m_Name: StartDelaySlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

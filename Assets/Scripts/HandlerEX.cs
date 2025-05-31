@@ -10,18 +10,25 @@ public class HandlerEX : MonoBehaviour {
 
 	public List<Card> deck = new();
 
+    [Header("Debug")]
 	public int nb;
 	public int cardIndex;
 	public string Main_Folder;
+
+    [Header("Dependancies")]
 	public Transform card;
 	public Transform card2;
 	public Transform card3;
 	public GameObject arrowFound;
 	public GameObject arrowNotFound;
-	public GameObject answer;
+    public GameObject revealButton;
+    public Text answer;
 	public Text remaining;
     public Text startDelayText;
     public GameObject PauseIcon;
+    public Sprite defaultSprite;
+
+    [Header("Parameters")]
 	public float back_speed_x;
 	public float back_speed_y;
 	public float tresh_x;
@@ -32,40 +39,38 @@ public class HandlerEX : MonoBehaviour {
 	public float threshold;
 	public float validate_x;
 	public float y_diff_restart;
-
-	float x0;
+    public float x3_thres;
+    
+    //Game variables
+    float x0;
 	float y0;
-
 	float x_start_touch;
 	float y_start_touch;
-
 	float x3;
-	public float x3_thres;
 	float y3;
-	bool songLoaded;
 
 	Vector2 fingerStart = new(0,0);
 	Vector2 fingerEnd = new(0,0);
     
     IEnumerator coroutine;
-    bool hasMoved=false;
-    
+    bool hasMoved;
+    bool songLoaded;
+    bool clipstarted;
     bool paused;
     bool isStarting;
     float startClock;
 
-    //Option menu variables
-    bool autoplay;
-    bool playpause;
-    bool hidden;
-    float startdelay;
-    float pausesensitivity;
-
     string loadingSongPath;
     public string LoadingSongPath { get => loadingSongPath; }
 
-    public Sprite defaultSprite;
+    //Option menu variables
+    bool autoplay;
+    bool playpause;
+    bool hidecard;
+    float startdelay;
+    float pausesensitivity;
 
+    //Components
     Image carteImage;
     Image carte2Image;
     Image carte3Image;
@@ -79,8 +84,6 @@ public class HandlerEX : MonoBehaviour {
     Color flecheNonTrouveeImageColor;
     Color flecheTrouveeTextColor;
     Color flecheNonTrouveeTextColor;
-
-    GameObject revealButton;
     AudioSource source;
 
     private void Awake()
@@ -106,12 +109,12 @@ public class HandlerEX : MonoBehaviour {
 
         autoplay = PlayerPrefs.GetInt("autoplay", 1) == 1;
         playpause = PlayerPrefs.GetInt("playpause", 1) == 1;
-        hidden = PlayerPrefs.GetInt("hidden", 1) == 1;
+        hidecard = PlayerPrefs.GetInt("hidecard", 1) == 1;
         startdelay = PlayerPrefs.GetFloat("startdelay", 0);
         pausesensitivity = PlayerPrefs.GetFloat("pausesensitivity", 50);
 
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        revealButton.SetActive(hidden);
+        revealButton.SetActive(hidecard);
         arrowNotFound.SetActive(true);
         arrowFound.SetActive(true);
         startDelayText.gameObject.SetActive(startdelay > 0);
@@ -148,6 +151,7 @@ public class HandlerEX : MonoBehaviour {
                 startClock = startdelay;
                 startDelayText.gameObject.SetActive(false);
                 paused = false;
+                PlayClip();
             }
         }
         
@@ -160,8 +164,8 @@ public class HandlerEX : MonoBehaviour {
             }
             else
             {
-                if (!paused) PreparePause();
-                else PreparePlay();
+                if (!paused) SetPause();
+                else SetPlay();
             }
             
         }
@@ -244,8 +248,8 @@ public class HandlerEX : MonoBehaviour {
                 }
                 else
                 {
-                    if (!paused && playpause) PreparePause();
-                    if (paused) PreparePlay();
+                    if (!paused && playpause) SetPause();
+                    if (paused) SetPlay();
                 }
 
             }
@@ -393,6 +397,7 @@ public class HandlerEX : MonoBehaviour {
         Card cardInfo = deck[c];
         string cardName = cardInfo.name;
         Debug.Log($"Playing card: {cardName}");
+        answer.text = cardName;
 
         char[] forbiddenChar = new char[] { ':', '/', '"', '*', '\\', '|', '?', '<', '>' };
         foreach (var character in forbiddenChar)
@@ -400,51 +405,22 @@ public class HandlerEX : MonoBehaviour {
             cardName = cardName.Replace(character, ',');
         }
 
-        //for (int i = 0; i < cardName.Length; i++) {
-        //
-        //	char[] forbiddenChar = new char[] { ':', '/', '"', '*', '\\', '|', '?', '<', '>' };
-        //    foreach(var character in forbiddenChar)
-        //    {
-        //        cardName = cardName.Replace(character, ',');
-        //    }
-        //	int ind = HasIndex<char> (cardName [i],forbiddenChar);
-        //	if(ind != -1)
-        //	{
-        //		cardName = cardName.Substring (0, i) + "," + cardName.Substring (i+ 1, cardName.Length-i-1);
-        //		ind = HasIndex<char> (cardName [i], forbiddenChar);
-        //
-        //	}
-        //
-        //}
-
-        //string imPath = Path.Combine(Main_Folder , "Visuels/" + cardName +".png");
         Debug.Log($"imPath: {Main_Folder}{Path.DirectorySeparatorChar}Packs{cardInfo.packId}Visuals{cardName +  ".png"}");
         string imPath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName +  ".png");
         Debug.Log($"imPath: {imPath}");
 
-        answer.GetComponent<Text> ().text = cardName;
-
-        if (hidden) HideCard(true);
-
+        if (hidecard) HideCard(true);
         StartCoroutine(LoadImage(imPath, carte2Image));
 
-        //string songPath = Path.Combine(Main_Folder, "Son/" + cardName + ".mp3");
         string soundPath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Sounds", cardName + ".mp3");
-
         Debug.Log(soundPath);
 
-        if (carte2Image.enabled)
-        {
-            PauseIcon.transform.SetParent(card2);
-        }
-        else
-        {
-            PauseIcon.transform.SetParent(card);
-        }
-
+        clipstarted = false;
         isStarting = startdelay > 0;
         paused = !autoplay || startdelay > 0;
+
         PauseIcon.GetComponent<PlayPause>().playing = autoplay;
+        PauseIcon.transform.SetParent(carte2Image.enabled ? card2 : card);
         PauseIcon.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
         if (autoplay)
@@ -453,25 +429,24 @@ public class HandlerEX : MonoBehaviour {
             PauseIcon.GetComponent<Image>().color = new Color(pauseColor.r, pauseColor.g, pauseColor.b, 0);
         }
 
-        if (!File.Exists(soundPath))
-        {
-            answer.GetComponent<Text>().text = cardName + "\n<color=red>Sound not found</color>";
-            Debug.LogError($"Did not find sound at: {soundPath}");
-            return;
-        }
-
         if (startdelay > 0)
         {
             startClock = startdelay;
             startDelayText.gameObject.SetActive(true);
         }
 
+        if (!File.Exists(soundPath))
+        {
+            answer.text = cardName + "\n<color=red>Sound not found</color>";
+            Debug.LogError($"Did not find sound at: {soundPath}");
+            return;
+        }
         PlaySong (soundPath);
 	}
 
 	void Finish()
 	{
-		answer.GetComponent<Text> ().text = "Finished !";
+		answer.text = "Finished !";
 		remaining.text = "Remaining: " + nb.ToString ();
 		carteImage.enabled = false;
 		carte2Image.enabled = false;
@@ -486,11 +461,13 @@ public class HandlerEX : MonoBehaviour {
 		return clp;
 	}
 
-    public void HideCard(bool reveal)
+    public void HideCard(bool hide)
     {
-        carteImage.gameObject.SetActive(reveal);
-        carte2Image.gameObject.SetActive(reveal);
-        carte3Image.gameObject.SetActive(reveal);
+        revealButton.SetActive(hide);
+        answer.gameObject.SetActive(!hide);
+        carteImage.gameObject.SetActive(!hide);
+        carte2Image.gameObject.SetActive(!hide);
+        carte3Image.gameObject.SetActive(!hide);
     }
 
     IEnumerator LoadImage(string path, Image image)
@@ -509,25 +486,19 @@ public class HandlerEX : MonoBehaviour {
         Debug.Log($"Request for {path} is done ? {www.isDone} result: {www.result} error ? : {www.error ?? "null"} download handler done ? :{www.downloadHandler.isDone}");
 
         Texture2D texture = DownloadHandlerTexture.GetContent(www);
-
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.0f), 1.0f);
 
         image.sprite = sprite != null ? sprite : defaultSprite;
         image.preserveAspect = true;
-        //carteImage.preserveAspect = true;
         www.Dispose();
-
     }
 
     public void PlaySong(string path)
 	{
-		songLoaded=false;
+		songLoaded = false;
 		loadingSongPath = path;
         
-        if(coroutine != null)
-        {
-            StopCoroutine(coroutine);
-        }
+        if(coroutine != null) StopCoroutine(coroutine);
         
         coroutine = LoadSong(path);
         StartCoroutine(coroutine);
@@ -536,12 +507,9 @@ public class HandlerEX : MonoBehaviour {
 	IEnumerator LoadSong(string path)/*IEnumerator*/
 	{
         UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + path, AudioType.MPEG);
-
         yield return www.SendWebRequest();
         
         ((DownloadHandlerAudioClip)www.downloadHandler).streamAudio = true;
-
-
         source.clip = DownloadHandlerAudioClip.GetContent(www);
         
         songLoaded = true;
@@ -557,43 +525,32 @@ public class HandlerEX : MonoBehaviour {
     void PauseClip()
     {
         source.Pause();
-        PreparePause();
+        SetPause();
     }
 
     void PlayClip()
     {
-        source.Play();
-        PreparePlay();
+        if (!clipstarted) source.Play();
+        else source.UnPause();
+        clipstarted = true;
+        SetPlay();
     }
 
-    void PreparePlay() => SetPause(false);
-    void PreparePause() => SetPause(true);
+    void SetPlay() => SetPauseIcon(false);
+    void SetPause() => SetPauseIcon(true);
 
-    void SetPause(bool paused)
+    void SetPauseIcon(bool paused)
     {
         this.paused = paused;
-        if (carteImage.enabled)
-        {
-            PauseIcon.transform.SetParent(card);
-        }
-        else
-        {
-            PauseIcon.transform.SetParent(card2);
-        }
+        PauseIcon.transform.SetParent(carteImage.enabled ? card : card2);
         PauseIcon.GetComponent<PlayPause>().playing = !paused;
         PauseIcon.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 }
 
 /******************************************************************\ */
-/*
-affichage du nombre de cartes restantes
+/*Remarques
 choix des Decks: Random deck
-
-Remarques:
-2 cartes à la fin
-
-On peut sélectionner 2 fois le même deck: permettre de choisir de bloquer ça
 
 Menu de départ qui ne ressort pas assez
 Rendre flou/baisser la saturation de l'image de fond durant le jeu

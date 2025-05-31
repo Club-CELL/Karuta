@@ -44,23 +44,15 @@ public class Handler : MonoBehaviour {
 	float x3;
 	public float x3_thres;
 	float y3;
-	Vector2 fingerStart = new Vector2(0,0);
-	Vector2 fingerEnd = new Vector2 (0,0);
+	Vector2 fingerStart = new(0,0);
+	Vector2 fingerEnd = new(0,0);
 	AudioSource source;
     bool hasMoved = false;
     bool paused;
 
     public bool autoplay;
     public bool playpause;
-    bool startedPlaying;
-    bool songLoaded;
-
-	public bool StartedPlaying
-    {
-		get => startedPlaying;
-    }
-
-    
+    bool songLoaded;    
 
     void Start () {
         autoplay = PlayerPrefs.GetInt("autoplay", 1) == 1;
