@@ -1,96 +1,86 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using System;
-public class Retour : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPointerDownHandler {
 
+public class Retour : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPointerDownHandler
+{
+    public float scaleTouch;
+    public float scaleSpeed;
 
-
-	public float scaleTouch;
-
-	public bool activated;
-
-	float scale;
-	public float scaleSpeed;
-
-	float startScale;
-
-	bool execution=false;
+    float scale;
+    float startScale;
 
 	public float finX;
 	public float speedX;
-	float x0;
+
+    private bool selected;
+    private bool execute;
+    float x0;
 	Vector2 pos;
-	public void OnPointerDown(PointerEventData eventdata)
-	{
-		activated = true;
-	}
-	public void OnPointerExit(PointerEventData eventdata)
-	{
 
-		if (!execution) {
-			activated = false;
-		}
-
-	}
-	public void OnPointerUp(PointerEventData eventdata)
+	void Start ()
 	{
-		if (activated) {
-			execution = true;
-		}
-	}
-
-	// Use this for initialization
-	void Start () {
 		x0 = transform.position.x;
 		startScale=transform.localScale.x;
 	}
 
-	// Update is called once per frame
-	void Update () {
-		if (activated) {
-			Activate ();
-		} else {
-			Desactivate ();
-		}
-		if (execution) {
-			Execute ();
-		}
-	}
-
-
-
-	void Activate()
+	void Update ()
 	{
-		scale=transform.localScale.x;
-		if (scale < scaleTouch) {
-			scale = Math.Min(scaleTouch,scale+scaleSpeed);
-		}
-		transform.localScale = new Vector3(scale,scale,scale);
-	}
-	void Desactivate()
-	{
-		scale=transform.localScale.x;
-		if (scale > startScale) {
-			scale = Math.Max(startScale,scale-scaleSpeed);
-		}
-		transform.localScale = new Vector3(scale,scale,scale);
-	}
-	void Execute()
+		if (selected) Select();
+		else Unselect();
+
+        if (execute) Execute();
+    }
+
+    public void OnPointerDown(PointerEventData eventdata)
+    {
+        selected = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventdata)
+    {
+        selected = false;
+    }
+
+    public void OnPointerUp(PointerEventData eventdata)
+    {
+        if (selected) execute = true;
+    }
+
+    void Select()
+    {
+        scale = transform.localScale.x;
+        if (scale < scaleTouch)
+        {
+            scale = Math.Min(scaleTouch, scale + scaleSpeed);
+        }
+        transform.localScale = scale * Vector3.one;
+    }
+
+    void Unselect()
+    {
+        scale = transform.localScale.x;
+        if (scale > startScale)
+        {
+            scale = Math.Max(startScale, scale - scaleSpeed);
+        }
+        transform.localScale = scale * Vector3.one;
+    }
+
+    void Execute()
 	{
 		pos = transform.position;
-		if (pos.x - x0 > finX) {
-
+		if (pos.x - x0 > finX)
+		{
 			pos = new Vector2 (pos.x - speedX, pos.y);
 			transform.position = pos;
 
-		} else {
-			Global.Restart ();
-			SceneManager.LoadScene ("ChoixJoueurs");
-			execution = false;
-		}
+		} else
+		{
+            selected = false;
+            Global.Restart();
+            SceneManager.LoadScene("MainMenu");
+        }
 	}
 }

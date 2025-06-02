@@ -1,20 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using System;
 
 public class PlayerNumberValidateButton : ScaleMoveButton {
 
-
-	public GameObject choix;
+	public ChoixNbJoueurs choix;
 
 	override public void Execute()
 	{
 		Global.mainPath = PlayerPrefs.GetString("mainpath", Global.mainPath);
-		Global.nbJoueurs = choix.GetComponent<ChoixNbJoueurs>().nbJoueurs;
+		Global.nbJoueurs = choix.PlayerCount();
 		SceneManager.LoadScene("ChoixDecks");
 	}
 }

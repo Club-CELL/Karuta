@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/ChoixJoueurs.unity
+    path: Assets/Scenes/MainMenu.unity
     guid: 6c10dc26ff8d31847a54fa2679f0bd43
   - enabled: 1
     path: Assets/Scenes/ChoixDecks.unity
