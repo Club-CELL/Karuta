@@ -48,158 +48,93 @@ public class ThemeLoaderMainMenu : MonoBehaviour
 
     public void LoadTheme()
     {
-        if (theme != null)
+        if (theme == null)
         {
-            List<Text> texts = mainTexts.Concat(secondaryTexts).ToList();
-            foreach (Text text in texts)
-            {
-                text.color = GetColorFromString(theme.mainTextColor, text.color);
-                if (text.TryGetComponent<Outline>(out var outline))
-                {
-                    outline.effectColor = GetColorFromString(theme.textOutlineColor, outline.effectColor);
-                }
-            }
-
-            foreach (TMP_Text text in tmp_texts)
-            {
-                text.color = GetColorFromString(theme.mainTextColor, text.color);
-                if (text.TryGetComponent<Outline>(out var outline))
-                {
-                    outline.effectColor = GetColorFromString(theme.textOutlineColor, outline.effectColor);
-                }
-            }
-
-            foreach (Image button in buttons)
-            {
-                button.color = GetColorFromString(theme.buttonsColor, Color.white);
-                Text buttonText = button.GetComponentInChildren<Text>();
-                if (buttonText != null) buttonText.color = GetColorFromString(theme.mainTextColor, buttonText.color);
-            }
-
-            foreach (CheckBox checkbox in checkboxes)
-            {
-                Image checkBoxImage = checkbox.GetComponent<Image>();
-                checkBoxImage.color = GetColorFromString(theme.checkBoxColor, Color.white);
-            }
-
-            foreach (Slider slider in sliders)
-            {
-                SetSliderColor(slider, "Background" , theme.sliderBackgroundColor);
-                SetSliderColor(slider, "Fill Area/Fill" , theme.sliderFillColor);
-                SetSliderColor(slider, "Handle Slide Area/Handle" , theme.sliderHandleColor);
-
-                Text textValue = slider.GetComponent<SliderValue>().textValue;
-                textValue.color = GetColorFromString(theme.mainTextColor, textValue.color);
-            }
-
-            foreach (Image panel in panels)
-            {
-                panel.color = GetColorFromString(theme.panelsColor, Color.white);
-            }
-
-            foreach (Image border in panelBorders)
-            {
-                border.color = GetColorFromString(theme.panelBorderColor, Color.white);
-            }
-
-            themesScroll.selectedColor = GetColorFromString(theme.buttonsColor, themesScroll.selectedColor);
-            themesScroll.unselectedColor = GetColorFromString(theme.buttonInactiveColor, themesScroll.unselectedColor);
-            indicator.GetComponent<Image>().color = themesScroll.unselectedColor;
-            themesScroll.RefreshIndicators();
-
-            PackControl.bannerBackgroundColor = GetColorFromString(theme.gameBackground, PackControl.bannerBackgroundColor);
-            PackControl.bannerTextColor = GetColorFromString(theme.mainTextColor, PackControl.bannerTextColor);
-            PackControl.updateButtonColor = GetColorFromString(theme.buttonsColor, PackControl.updateButtonColor);
-            PackControl.updateButtonTextColor = GetColorFromString(theme.mainTextColor, PackControl.updateButtonTextColor);
-
-            Camera.main.backgroundColor = GetColorFromString(theme.mainMenuBackgroundColor, Camera.main.backgroundColor);
-
-            string path = Path.Combine(Path.Combine(PathManager.MainPath, "Packs", theme.packId ?? "","Themes"), theme.mainMenuBackground);
-            BackgroundHandler.UseAsBackground(path);
-        }
-        else
-        {
-            // === Theme not found or default theme ===
-
-            foreach (Text text in mainTexts)
-            {
-                text.color = mainTextColor;
-                if (text.TryGetComponent<Outline>(out var outline))
-                {
-                    outline.effectColor = GetColorFromString("#FFD0FF", outline.effectColor);
-                }
-            }
-
-            foreach (Text text in secondaryTexts)
-            {
-                text.color = secondaryTextColor;
-                if (text.TryGetComponent<Outline>(out var outline))
-                {
-                    outline.effectColor = GetColorFromString("#FFD0FF", outline.effectColor);
-                }
-            }
-
-            foreach (TMP_Text text in tmp_texts)
-            {
-                text.color = mainTextColor;
-                if (text.TryGetComponent<Outline>(out var outline))
-                {
-                    outline.effectColor = GetColorFromString("#FFD0FF", outline.effectColor);
-                }
-            }
-
-            foreach (CheckBox checkbox in checkboxes)
-            {
-                Image checkBoxImage = checkbox.GetComponent<Image>();
-                checkBoxImage.color = mainColor;
-            }
-
-            foreach (Image button in buttons)
-            {
-                button.color = mainColor;
-                Text buttonText = button.GetComponentInChildren<Text>();
-                if (buttonText != null) buttonText.color = GetColorFromString("white", buttonText.color);
-            }
-
-            foreach (Slider slider in sliders)
-            {
-                SetSliderColor(slider, "Background", "white");
-                SetSliderColor(slider, "Fill Area/Fill", mainColor.ToString());
-                SetSliderColor(slider, "Handle Slide Area/Handle", mainColor.ToString());
-
-                Text textValue = slider.GetComponent<SliderValue>().textValue;
-                textValue.color = GetColorFromString(secondaryTextColor.ToString(), textValue.color);
-            }
-
-            foreach (Image panel in panels)
-            {
-                panel.color = secondaryColor;
-            }
-
-            foreach (Image border in panelBorders)
-            {
-                border.color = mainColor;
-            }
-
-            indicator.GetComponent<Image>().color = themesScroll.selectedColor;
-            themesScroll.selectedColor = mainColor;
-            themesScroll.unselectedColor = Color.white;
-            themesScroll.RefreshIndicators();
-
-            PackControl.bannerBackgroundColor = Color.black;
-            PackControl.bannerTextColor = mainColor;
-            PackControl.updateButtonColor = Color.white;
-            PackControl.updateButtonTextColor = Color.white;
-
-            foreach (var packControl in contentHolder.GetComponentsInChildren<PackControl>())
-            {
-                packControl.bannerBackground.color = Color.black;
-                packControl.nameText.color = Color.white;
-            }
+            Theme defaultTheme = new("default", mainColor, mainTextColor, secondaryColor, secondaryTextColor);
+            defaultTheme.Check();
+            Global.theme = defaultTheme;
+            theme = defaultTheme;
 
             Camera.main.backgroundColor = mainColor;
             BackgroundHandler.DefaultBackground();
         }
+        else
+        {
+            Camera.main.backgroundColor = GetColorFromString(theme.mainMenuBackgroundColor, Camera.main.backgroundColor);
+
+            string path = Path.Combine(Path.Combine(PathManager.MainPath, "Packs", theme.packId ?? "", "Themes"), theme.mainMenuBackground);
+            BackgroundHandler.UseAsBackground(path);
+        }
+
+        foreach (Text text in mainTexts)
+        {
+            text.color = GetColorFromString(theme.mainTextColor, text.color);
+            if (text.TryGetComponent<Outline>(out var outline))
+            {
+                outline.effectColor = GetColorFromString(theme.textOutlineColor, outline.effectColor);
+            }
+        }
+
+        foreach (Text text in secondaryTexts)
+        {
+            text.color = GetColorFromString(theme.secondaryTextColor, text.color);
+            if (text.TryGetComponent<Outline>(out var outline))
+            {
+                outline.effectColor = GetColorFromString(theme.textOutlineColor, outline.effectColor);
+            }
+        }
+
+        foreach (TMP_Text text in tmp_texts)
+        {
+            text.color = GetColorFromString(theme.mainTextColor, text.color);
+            if (text.TryGetComponent<Outline>(out var outline))
+            {
+                outline.effectColor = GetColorFromString(theme.textOutlineColor, outline.effectColor);
+            }
+        }
+
+        foreach (Image button in buttons)
+        {
+            button.color = GetColorFromString(theme.buttonsColor, Color.white);
+            Text buttonText = button.GetComponentInChildren<Text>();
+            if (buttonText != null) buttonText.color = GetColorFromString(theme.mainTextColor, buttonText.color);
+        }
+
+        foreach (CheckBox checkbox in checkboxes)
+        {
+            Image checkBoxImage = checkbox.GetComponent<Image>();
+            checkBoxImage.color = GetColorFromString(theme.checkBoxColor, Color.white);
+        }
+
+        foreach (Slider slider in sliders)
+        {
+            SetSliderColor(slider, "Background", theme.sliderBackgroundColor);
+            SetSliderColor(slider, "Fill Area/Fill", theme.sliderFillColor);
+            SetSliderColor(slider, "Handle Slide Area/Handle", theme.sliderHandleColor);
+
+            Text textValue = slider.GetComponent<SliderValue>().textValue;
+            textValue.color = GetColorFromString(theme.mainTextColor, textValue.color);
+        }
+
+        foreach (Image panel in panels)
+        {
+            panel.color = GetColorFromString(theme.panelsColor, Color.white);
+        }
+
+        foreach (Image border in panelBorders)
+        {
+            border.color = GetColorFromString(theme.panelBorderColor, Color.white);
+        }
+
+        themesScroll.selectedColor = GetColorFromString(theme.buttonsColor, themesScroll.selectedColor);
+        themesScroll.unselectedColor = GetColorFromString(theme.buttonInactiveColor, themesScroll.unselectedColor);
+        indicator.GetComponent<Image>().color = themesScroll.unselectedColor;
+        themesScroll.RefreshIndicators();
+
+        PackControl.bannerBackgroundColor = GetColorFromString(theme.gameBackground, PackControl.bannerBackgroundColor);
+        PackControl.bannerTextColor = GetColorFromString(theme.mainTextColor, PackControl.bannerTextColor);
+        PackControl.updateButtonColor = GetColorFromString(theme.buttonsColor, PackControl.updateButtonColor);
+        PackControl.updateButtonTextColor = GetColorFromString(theme.mainTextColor, PackControl.updateButtonTextColor);
     }
 
     private void SetSliderColor(Slider slider, string part, string color)

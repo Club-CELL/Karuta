@@ -36,9 +36,12 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
 
             Camera.main.backgroundColor = GetColorFromString(theme.deckChoiceBackgroundColor, Camera.main.backgroundColor);
 
-            string packPath = Path.Combine(PathManager.MainPath, "Packs", theme.packId ?? "", "Themes");
-            string path = Path.Combine(packPath, theme.decksChoiceBackground);
-            BackgroundHandler.UseAsBackground(path);
+            if (theme.decksChoiceBackground != null)
+            {
+                string packPath = Path.Combine(PathManager.MainPath, "Packs", theme.packId ?? "", "Themes");
+                string path = Path.Combine(packPath, theme.decksChoiceBackground);
+                BackgroundHandler.UseAsBackground(path);
+            }
         }
     }
 

@@ -30,7 +30,7 @@ public class Theme
 
     public string panelsColor;
     public string panelBorderColor;
-    public float panelAlpha = 0.5f;
+    public float panelAlpha = 1f;
 
     public string buttonsColor;
     public string buttonInactiveColor;
@@ -43,10 +43,23 @@ public class Theme
     public string cardFoundColor;
     public string cardNotFoundColor;
 
+    public Theme(string name, Color main, Color text, Color second, Color secText)
+    {
+        this.name = name;
+        mainColor = "#" + ColorUtility.ToHtmlStringRGB(main);
+        secondaryColor = "#" + ColorUtility.ToHtmlStringRGB(second);
+        mainTextColor = "#" + ColorUtility.ToHtmlStringRGB(text);
+        secondaryTextColor = "#" + ColorUtility.ToHtmlStringRGB(secText);
+    }
+
     public void Check()
     {
         CheckValue(ref mainTextColor, "white");
         CheckValue(ref secondaryTextColor, mainColor);
+
+        CheckValue(ref mainMenuBackgroundColor, mainColor);
+        CheckValue(ref deckChoiceBackgroundColor, mainColor);
+        CheckValue(ref gameBackgroundColor, mainColor);
 
         CheckValue(ref mainMenuBackgroundColor, "black");
         CheckValue(ref deckChoiceBackgroundColor, "black");
