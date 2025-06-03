@@ -879,11 +879,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 230955470}
-  - component: {fileID: 230955475}
-  - component: {fileID: 230955474}
-  - component: {fileID: 230955473}
-  - component: {fileID: 230955472}
   - component: {fileID: 230955471}
+  - component: {fileID: 230955472}
+  - component: {fileID: 230955474}
+  - component: {fileID: 230955475}
+  - component: {fileID: 230955473}
   m_Layer: 0
   m_Name: ScrollSnapRect
   m_TagString: Untagged
@@ -925,6 +925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597770d2aef0eb6418c40f1b6019db28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoInit: 1
   startingPage: 0
   fastSwipeThresholdTime: 0.3
   fastSwipeThresholdDistance: 100

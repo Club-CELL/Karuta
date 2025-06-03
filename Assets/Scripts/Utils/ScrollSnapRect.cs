@@ -14,6 +14,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(ScrollRect))]
 public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
+    [SerializeField] private bool autoInit;
     [Tooltip("Set starting page index - starting from 0")]
     public int startingPage = 0;
     [Tooltip("Threshold time for fast swipe in seconds")]
@@ -79,18 +80,28 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         _pageCount = _container.childCount;
 
         // is it horizontal or vertical scrollrect
-        if (_scrollRectComponent.horizontal && !_scrollRectComponent.vertical) {
+        if (_scrollRectComponent.horizontal && !_scrollRectComponent.vertical)
+        {
             _horizontal = true;
-        } else if (!_scrollRectComponent.horizontal && _scrollRectComponent.vertical) {
+        }
+        else if (!_scrollRectComponent.horizontal && _scrollRectComponent.vertical)
+        {
             _horizontal = false;
-        } else {
+        }
+        else
+        {
             Debug.LogWarning("Confusing setting of horizontal/vertical direction. Default set to horizontal.");
             _horizontal = true;
         }
 
         _lerp = false;
+        if (autoInit) Init();
+    }
 
-        // init
+    public void Init()
+    {
+        _pageCount = _container.childCount;
+
         SetPagePositions();
         SetPage(startingPage);
         InitPageSelection();
@@ -102,7 +113,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
         if (prevButton)
             prevButton.GetComponent<Button>().onClick.AddListener(() => { PreviousScreen(); });
-	}
+    }
 
     void Update()
     {

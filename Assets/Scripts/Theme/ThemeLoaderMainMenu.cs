@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -236,7 +235,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             }
         }
 
-        foreach(Transform otherIndicator in indicator.transform.parent.GetComponentsInChildren<Transform>())
+        foreach(Transform otherIndicator in indicator.transform.parent)
         {
             if(otherIndicator.GetInstanceID() != indicator.transform.GetInstanceID() && 
                 otherIndicator.GetInstanceID() != indicator.transform.parent.GetInstanceID())

@@ -339,9 +339,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e23103ec1a32b94abe65450da4d760c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nb: 0
-  cardIndex: 0
-  Main_Folder: 
   card: {fileID: 408498426}
   card2: {fileID: 1832201208}
   card3: {fileID: 677309893}
@@ -1310,11 +1307,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc92ced175cd7d349b0e056dd160171f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playing: 0
+  disappearSpeed: 2
+  alphaMax: 1
   play: {fileID: 21300000, guid: b1183ddbbdbe6944e93d473bb6174adb, type: 3}
   pause: {fileID: 21300000, guid: e367a8ba8d06f394689ee71e07642c84, type: 3}
-  disappearSpeed: 2
-  alphaMax: 0.8
 --- !u!1 &1732152625
 GameObject:
   m_ObjectHideFlags: 0

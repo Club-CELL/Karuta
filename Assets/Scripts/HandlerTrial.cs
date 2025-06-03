@@ -1,28 +1,37 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
-using System.IO;
-using System;
-using UnityEngine.Networking;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class HandlerTrial : MonoBehaviour {
 
     [Header("Dependancies")]
-    public Text selected;
-	public Text remainingText;
-	public Text score;
-	public Text streak;
-    public Slider musicSlider;
-    public GameObject PauseIcon;
-    public Sprite defaultSprite;
+    [SerializeField] private Text selected;
+	[SerializeField] private Text remainingText;
+	[SerializeField] private Text score;
+	[SerializeField] private Text streak;
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private PlayPause pauseButton;
+    [SerializeField] private Sprite defaultSprite;
+
+    [Header("Cards display")]
+    [SerializeField] private GameObject cardImage;
+    [SerializeField] private GameObject indicator;
+    [SerializeField] private Transform indicatorContainer;
+    [SerializeField] private Transform contentHolder;
+    [SerializeField] private ScrollSnapRect cardsScroll;
 
     //Game variables
+    private int answerPool;
     private int remaining;
     private int deckSize;
     private int cardIndex;
     private string Main_Folder;
+
     readonly List<Card> deck = new();
+    readonly System.Random rng = new();
 
     IEnumerator coroutine;
     bool songLoaded;
@@ -46,6 +55,7 @@ public class HandlerTrial : MonoBehaviour {
 
         Main_Folder = Global.mainPath;
         Main_Folder =  PathManager.MainPath;
+        answerPool = Global.trialChoices == int.MaxValue ? deckSize : Global.trialChoices;
         remaining = Global.trialLength;
         remainingText.text = "Remaining: " + remaining.ToString();
 
@@ -97,13 +107,9 @@ public class HandlerTrial : MonoBehaviour {
 		Next ();
 	}
 
-	void First() //Next, but without the swap
+	void First()
 	{
-		if (deckSize > 0)
-        {
-			cardIndex = UnityEngine.Random.Range (0, deckSize);
-			Playcard (cardIndex);
-        }
+		if (deckSize > 0) CreateCards();
         else Finish ();
 	}
 
@@ -113,58 +119,121 @@ public class HandlerTrial : MonoBehaviour {
         {
             remaining--;
 			remainingText.text = "Remaining: " + remaining.ToString ();
-			cardIndex = UnityEngine.Random.Range (0, deckSize);
-			Playcard (cardIndex);
+			
+            CreateCards();
 			Resources.UnloadUnusedAssets ();
         }
         else Finish ();
     }
 
-	void Playcard(int c)
+    void CreateCards()
+    {
+        cardIndex = Random.Range(0, deckSize);
+        List<int> cards = new() { cardIndex };
+
+        int rand;
+        for (int i = 1; i < answerPool; i++)
+        {
+            do rand = Random.Range(0, deckSize);
+            while (cards.Contains(rand));
+
+            cards.Add(rand);
+        }
+        Shuffle(cards);
+
+        Debug.Log($"Pool contains {cards.Count} cards");
+        for (int i = 1; i < answerPool; i++)
+        {
+            if (cards[i] == cardIndex) PlayCard(cardIndex);
+            else AddCardImage(cards[i]);
+        }
+
+        AddCardIndicators();
+        cardsScroll.Init();
+        cardsScroll.RefreshIndicators();
+    }
+
+	void PlayCard(int cardIndex)
 	{
-        Card cardInfo = deck[c];
+        Card cardInfo = deck[cardIndex];
         string cardName = cardInfo.name;
-        Debug.Log($"Playing card: {cardName}");
 
         char[] forbiddenChar = new char[] { ':', '/', '"', '*', '\\', '|', '?', '<', '>' };
         foreach (var character in forbiddenChar)
         {
             cardName = cardName.Replace(character, ',');
         }
-
-        Debug.Log($"imPath: {Main_Folder}{Path.DirectorySeparatorChar}Packs{cardInfo.packId}Visuals{cardName +  ".png"}");
-        string imPath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName +  ".png");
-        Debug.Log($"imPath: {imPath}");
-
-        //StartCoroutine(LoadImage(imPath, carte2Image));
-
         string soundPath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Sounds", cardName + ".mp3");
-        Debug.Log(soundPath);
+        string imagePath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName + ".png");
+
+        Debug.Log("Add card for " + cardName);
+        GameObject imageHolder = Instantiate(cardImage, contentHolder);
+        StartCoroutine(LoadImage(imagePath, imageHolder.GetComponent<Image>()));
 
         clipstarted = false;
-        PauseIcon.GetComponent<PlayPause>().playing = true;
-        PauseIcon.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-
-        Color pauseColor = PauseIcon.GetComponent<Image>().color;
-        PauseIcon.GetComponent<Image>().color = new Color(pauseColor.r, pauseColor.g, pauseColor.b, 0);
+        pauseButton.ChangeState(true);
 
         if (!File.Exists(soundPath))
         {
-            //answer.text = cardName + "\n<color=red>Sound not found</color>";
             Debug.LogError($"Did not find sound at: {soundPath}");
             return;
         }
         PlaySong (soundPath);
 	}
 
-	void Finish()
+    private void AddCardImage(int cardIndex)
+    {
+        Card cardInfo = deck[cardIndex];
+        string cardName = cardInfo.name;
+
+        char[] forbiddenChar = new char[] { ':', '/', '"', '*', '\\', '|', '?', '<', '>' };
+        foreach (var character in forbiddenChar)
+        {
+            cardName = cardName.Replace(character, ',');
+        }
+        string imagePath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName + ".png");
+
+        Debug.Log("Add card for " + cardName);
+        GameObject imageHolder = Instantiate(cardImage, contentHolder);
+        StartCoroutine(LoadImage(imagePath, imageHolder.GetComponent<Image>()));
+    }
+
+    private void Shuffle(List<int> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            (list[n], list[k]) = (list[k], list[n]);
+        }
+    }
+
+    private void AddCardIndicators()
+    {
+        foreach (Transform otherIndicator in indicatorContainer)
+        {
+            Destroy(otherIndicator.gameObject);
+        }
+
+        indicator.GetComponent<Image>().color = cardsScroll.selectedColor;
+        for (int i = 0; i < answerPool; i++)
+        {
+            GameObject newIndicator = Instantiate(indicator);
+            newIndicator.transform.SetParent(indicatorContainer, false);
+        }
+
+        Debug.Log($"Panel contains {indicatorContainer.childCount} indicators");
+    }
+
+    void Finish()
 	{
         remainingText.text = "Finished ! ";
     }
 
 	public AudioClip SongLoadResources(string path)
 	{
-		AudioClip clp = (AudioClip)Resources.Load (path, typeof(AudioClip));
+		AudioClip clp = (AudioClip) Resources.Load(path, typeof(AudioClip));
 		return clp;
 	}
 
@@ -176,6 +245,7 @@ public class HandlerTrial : MonoBehaviour {
             image.preserveAspect = true;
             yield break;
         }
+
         image.sprite = null;
         UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
         Debug.Log("<color=yellow>file://" + path+"</color>");
@@ -202,7 +272,7 @@ public class HandlerTrial : MonoBehaviour {
         StartCoroutine(coroutine);
 	}
 
-	IEnumerator LoadSong(string path)/*IEnumerator*/
+	IEnumerator LoadSong(string path)
 	{
         UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + path, AudioType.MPEG);
         yield return www.SendWebRequest();
@@ -240,7 +310,6 @@ public class HandlerTrial : MonoBehaviour {
     void SetPauseIcon(bool paused)
     {
         this.paused = paused;
-        PauseIcon.GetComponent<PlayPause>().playing = !paused;
-        PauseIcon.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        pauseButton.ChangeState(!paused);
     }
 }

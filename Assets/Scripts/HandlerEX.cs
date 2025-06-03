@@ -417,7 +417,7 @@ public class HandlerEX : MonoBehaviour {
         isStarting = startdelay > 0;
         paused = !autoplay || startdelay > 0;
 
-        PauseIcon.GetComponent<PlayPause>().playing = autoplay;
+        PauseIcon.GetComponent<PlayPause>().ChangeState(autoplay);
         PauseIcon.transform.SetParent(carte2Image.enabled ? card2 : card);
         PauseIcon.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
@@ -541,7 +541,7 @@ public class HandlerEX : MonoBehaviour {
     {
         this.paused = paused;
         PauseIcon.transform.SetParent(carteImage.enabled ? card : card2);
-        PauseIcon.GetComponent<PlayPause>().playing = !paused;
+        PauseIcon.GetComponent<PlayPause>().ChangeState(!paused);
         PauseIcon.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 }

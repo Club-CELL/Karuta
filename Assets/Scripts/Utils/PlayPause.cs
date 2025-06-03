@@ -1,26 +1,43 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-public class PlayPause : MonoBehaviour {
 
-    public bool playing;
-    public Sprite play;
-    public Sprite pause;
-    public float disappearSpeed;
-    public float alphaMax;
+public class PlayPause : MonoBehaviour
+{
+    [Header("Parameters")]
+    [SerializeField] private float disappearSpeed;
+    [SerializeField] private float alphaMax;
 
-	void Update () {
+    [Header("Sprites")]
+    [SerializeField] private Sprite play;
+    [SerializeField] private Sprite pause;
 
-		if(playing)
+    private bool playing;
+    private Image image;
+
+    private void Awake()
+    {
+        image = GetComponent<Image>();
+    }
+
+    void Update()
+    {
+
+        if (playing)
         {
-            Color c = GetComponent<Image>().color;
-            GetComponent<Image>().sprite=play;
-            GetComponent<Image>().color = new Color(c.r, c.g, c.b, Mathf.Max(0, c.a - disappearSpeed * Time.deltaTime));
+            Color c = image.color;
+            image.color = new Color(c.r, c.g, c.b, Mathf.Max(0, c.a - disappearSpeed * Time.deltaTime));
         }
         else
         {
-            GetComponent<Image>().sprite = pause;
-            Color c = GetComponent<Image>().color;
-            GetComponent<Image>().color = new Color(c.r, c.g, c.b, alphaMax);
+            Color c = image.color;
+            image.color = new Color(c.r, c.g, c.b, alphaMax);
         }
-	}
+    }
+
+
+    public void ChangeState(bool state)
+    {
+        playing = state;
+        image.sprite = playing ? play : pause;
+    }
 }
