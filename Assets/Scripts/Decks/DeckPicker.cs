@@ -44,4 +44,10 @@ public class DeckPicker : MonoBehaviour
         }
         else SceneManager.LoadScene("Game");
     }
+
+    public static void PreviousPlayer()
+    {
+        player--;
+        Instance.title.text = "Player " + player.ToString();
+    }
 }

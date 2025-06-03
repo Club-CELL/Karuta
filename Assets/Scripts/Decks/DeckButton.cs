@@ -11,14 +11,21 @@ public class DeckButton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
 
     private Deck deck;
     private bool mirror;
+
+    private bool added;
     private bool selected;
     private float scale;
     private float startScale;
+
     private Text buttonText;
+    private Image buttonImage;
+    private Color baseColor;
+    private Color activeColor;
 
     void Awake ()
 	{
         buttonText = GetComponentInChildren<Text>();
+        buttonImage = GetComponent<Image>();
 		mirror = PlayerPrefs.GetInt("mirror") != 0;
         startScale = transform.localScale.x;
     }
@@ -33,6 +40,12 @@ public class DeckButton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
     {
         this.deck = deck;
         buttonText.text = name;
+    }
+
+    public void SetColors(Color activeColor)
+    {
+        baseColor = buttonImage.color;
+        this.activeColor = activeColor;
     }
 
     public void OnPointerDown(PointerEventData eventdata)
@@ -74,6 +87,13 @@ public class DeckButton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
         Global.AddDeck(deck);
         DeckPicker.NextPlayer();
 
-        if (!mirror) gameObject.SetActive(false);
+        if (!mirror)
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            buttonImage.color = activeColor;
+        }
     }
 }

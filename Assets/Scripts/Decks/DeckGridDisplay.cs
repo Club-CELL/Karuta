@@ -7,12 +7,18 @@ public class DeckGridDisplay : MonoBehaviour
 {
     private List<string> deckPaths;
     private readonly List<Deck> decks = new();
+    private ThemeLoaderDecksChoice themeLoader;
 
     [Header("Dependancies")]
     [SerializeField] private Transform content;
     [SerializeField] private GameObject packGrid;
     [SerializeField] private GameObject packBanner;
     [SerializeField] private GameObject deckButton;
+
+    private void OnEnable()
+    {
+        themeLoader = GameObject.FindGameObjectWithTag("ThemeLoader").GetComponent<ThemeLoaderDecksChoice>();
+    }
 
     private GameObject CreateDeckButton(string text, Transform parent)
     {
@@ -62,6 +68,11 @@ public class DeckGridDisplay : MonoBehaviour
                         GameObject button = CreateDeckButton(name, grid.transform);
                         DeckButton deckButton = button.GetComponent<DeckButton>();
                         deckButton.SetButtonInfo(name, newDeck);
+                    }
+
+                    foreach(Image image in grid.GetComponentsInChildren<Image>())
+                    {
+                        themeLoader.SetButtonColor(image);
                     }
                 }
             }

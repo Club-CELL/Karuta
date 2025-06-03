@@ -16,6 +16,11 @@ public class Global : MonoBehaviour
 		}
 	}
 
+	public static void RemoveDeck(Deck newDeck)
+	{
+		deck.RemoveRange(deck.Count - newDeck.cards.Count, newDeck.cards.Count);
+	}
+
 	public static void Restart()
 	{
 		deck.Clear();

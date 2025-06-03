@@ -36,11 +36,6 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     private List<Theme> themes = new();
     private Theme theme;
 
-    //Colors
-    Color classicMainColor;
-    Color classicOptionPanelColor;
-    Color classicColorSelectedTheme;
-
     string currentThemePackId;
     string currentTheme;
 
@@ -187,12 +182,12 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             }
 
             indicator.GetComponent<Image>().color = themesScroll.selectedColor;
-            themesScroll.selectedColor = classicColorSelectedTheme;
+            themesScroll.selectedColor = mainColor;
             themesScroll.unselectedColor = Color.white;
             themesScroll.RefreshIndicators();
 
             PackControl.bannerBackgroundColor = Color.black;
-            PackControl.bannerTextColor = classicOptionPanelColor;
+            PackControl.bannerTextColor = mainColor;
             PackControl.updateButtonColor = Color.white;
             PackControl.updateButtonTextColor = Color.white;
 
@@ -202,7 +197,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
                 packControl.nameText.color = Color.white;
             }
 
-            Camera.main.backgroundColor = classicMainColor;
+            Camera.main.backgroundColor = mainColor;
             BackgroundHandler.DefaultBackground();
         }
     }
@@ -241,23 +236,6 @@ public class ThemeLoaderMainMenu : MonoBehaviour
                 break;
             }
         }
-    }
-
-    public void SerializeTheme()
-    {
-        Theme newTheme = new()
-        {
-            mainColor = "cyan",
-            secondaryColor = "green",
-            mainTextColor = "black",
-
-            mainMenuBackgroundColor = "cyan",
-            deckChoiceBackgroundColor = "cyan",
-            gameBackgroundColor = "cyan"
-        };
-
-        newTheme.Check();
-        JsonSerialization.WriteToJsonResource<Theme>("theme", newTheme);
     }
 
     void GetThemes()
@@ -357,7 +335,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
                 content = Path.Combine(themeDirectory, theme.decksChoiceBackground);
                 if (string.IsNullOrEmpty(content) || !File.Exists(content))
                 {
-                    content = Path.Combine(themeDirectory, theme.decksChoiceBackground); //theme.gameBackground;
+                    content = Path.Combine(themeDirectory, theme.decksChoiceBackground);
                 }
             }
 

@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 431723446}
   m_Layer: 0
   m_Name: Handler
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -779,10 +779,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1948169730}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -870}
-  m_SizeDelta: {x: 350, y: 200}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 220}
+  m_SizeDelta: {x: 350, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &904754051
 MonoBehaviour:
@@ -1308,8 +1308,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playing: 0
-  play: {fileID: 21300000, guid: 58e1f48e8b2f399429d4201602b77260, type: 3}
-  pause: {fileID: 21300000, guid: ab21109ce4b5dca479f9cde29cf47272, type: 3}
+  play: {fileID: 21300000, guid: b1183ddbbdbe6944e93d473bb6174adb, type: 3}
+  pause: {fileID: 21300000, guid: e367a8ba8d06f394689ee71e07642c84, type: 3}
   disappearSpeed: 2
   alphaMax: 0.8
 --- !u!1 &1732152625
@@ -1324,7 +1324,7 @@ GameObject:
   - component: {fileID: 1732152626}
   m_Layer: 0
   m_Name: ThemeLoader
-  m_TagString: Untagged
+  m_TagString: ThemeLoader
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1341,84 +1341,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354f5d94944c07a42b070d36eded3c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  theme:
-    packId: 
-    mainColor: 
-    mainTextColor: 
-    secondaryColor: 
-    backgroundColorMainMenu: 
-    backgroundColorDecksChoice: 
-    backgroundColorGame: 
-    mainMenuBackground: 
-    decksChoiceBackground: 
-    gameBackground: 
-    colorOptionButton: 
-    colorOptionButtonText: 
-    colorQuitButton: 
-    colorPlayPause: 
-    colorCheckBox: 
-    colorTextNumberPlayersQuestion: 
-    colorPanelNumberPlayersQuestion: 
-    colorPanelNumberPlayers: 
-    colorCentralPanelNumberPlayers: 
-    colorTextNumberPlayers: 
-    colorOptionPanel: 
-    colorOptionPanelBorder: 
-    colorOptionsText: 
-    colorOptionsTextOutline: 
-    colorSliderHandle: 
-    colorSliderBackground: 
-    colorSliderFill: 
-    colorUpdateButton: 
-    colorUpdateButtonText: 
-    colorPackBannerBackground: 
-    colorPackBannerText: 
-    colorPackButton: 
-    colorPackButtonText: 
-    colorAddPackButton: 
-    colorAddPackButtonText: 
-    colorNewPackButton: 
-    colorNewPackButtonText: 
-    colorPacksTitleText: 
-    colorPacksTitleBackground: 
-    colorPackBackButton: 
-    colorPackBackButtonText: 
-    colorNewPackFolderInputBackground: 
-    colorNewPackFolderInputText: 
-    colorNewPackFolderInputPlaceholderText: 
-    colorNewPackFolderCreateInstructionsLink: 
-    colorNewPackFolderAddInstructionsText: 
-    colorContinueArrow: 
-    colorBackArrow: 
-    colorPanelCurrentPlayer: 
-    colorTextCurrentPlayer: 
-    colorDeckArrow: 
-    colorDeckArrowText: 
-    colorThemesButton: 
-    colorThemesQuitButton: 
-    colorThemesPanel: 
-    colorThemesTitleText: 
-    colorThemeSelectedIndicator: 
-    colorThemeUnselectedIndicator: 
-    colorNumberOfCardsLeft: 
-    colorAnimeTitle: 
-    colorCardFoundArrow: 
-    colorCardFoundText: 
-    colorCardNotFoundArrow: 
-    colorCardNotFoundText: 
-  backArrowBW: {fileID: 21300000, guid: 9e5bfe99fb68add46982e91b2676718b, type: 3}
-  playButtonBW: {fileID: 21300000, guid: b1183ddbbdbe6944e93d473bb6174adb, type: 3}
-  pauseButtonBW: {fileID: 21300000, guid: e367a8ba8d06f394689ee71e07642c84, type: 3}
-  backArrow: {fileID: 1059017729}
-  arrowFound: {fileID: 2048433959}
-  arrowFoundText: {fileID: 1753058405}
-  arrowNotFound: {fileID: 814502777}
-  arrowNotFoundText: {fileID: 1019723012}
+  backButton: {fileID: 1059017729}
+  foundCard: {fileID: 2048433959}
+  notFoundCard: {fileID: 814502777}
   playButton: {fileID: 1364519263}
   playPause: {fileID: 1364519265}
-  cardsLeft: {fileID: 1267373963}
-  animeTitle: {fileID: 2015489984}
-  startDelay: {fileID: 904754051}
+  texts:
+  - {fileID: 2015489984}
+  - {fileID: 1267373963}
+  - {fileID: 904754051}
 --- !u!4 &1732152627
 Transform:
   m_ObjectHideFlags: 0
@@ -1823,11 +1754,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 0388edc36f5d1f94eb76f73e4a40caf3, type: 3}
-    m_FontSize: 35
+    m_FontSize: 36
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 3
-    m_MaxSize: 35
+    m_MinSize: 0
+    m_MaxSize: 45
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1

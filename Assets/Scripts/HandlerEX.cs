@@ -125,16 +125,9 @@ public class HandlerEX : MonoBehaviour {
         Main_Folder = Global.mainPath;
         Main_Folder =  PathManager.MainPath;
 
-        flecheTrouveeImageColor = flecheTrouveeImage.color;
-        flecheNonTrouveeImageColor = flecheNonTrouveeImage.color;
-        flecheTrouveeTextColor = flecheTrouveeText.color;
-        flecheNonTrouveeTextColor = flecheNonTrouveeText.color;
-
         ReadDecks ();
 		First ();
 		remaining.text = "Remaining: " + nb.ToString ();
-
-
     }
 	
 	// Update is called once per frame
@@ -267,6 +260,14 @@ public class HandlerEX : MonoBehaviour {
             LetCard();
         }
         return new Vector2(0, 0);
+    }
+
+    public void SetButtonColors()
+    {
+        flecheTrouveeImageColor = flecheTrouveeImage.color;
+        flecheNonTrouveeImageColor = flecheNonTrouveeImage.color;
+        flecheTrouveeTextColor = flecheTrouveeText.color;
+        flecheNonTrouveeTextColor = flecheNonTrouveeText.color;
     }
 
     void SwapCards()

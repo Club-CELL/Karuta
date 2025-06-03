@@ -21,12 +21,12 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
         LoadTheme();
     }
 
-    public void GetTheme()
+    void GetTheme()
     {
         theme = Global.theme;
     }
 
-    public void LoadTheme()
+    void LoadTheme()
     {
         if (theme != null)
         {
@@ -40,6 +40,15 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
             string path = Path.Combine(packPath, theme.decksChoiceBackground);
             BackgroundHandler.UseAsBackground(path);
         }
+    }
+
+    public void SetButtonColor(Image button)
+    {
+        button.color = GetColorFromString(theme.buttonsColor, button.color);
+        Text buttonText = button.GetComponentInChildren<Text>();
+        buttonText.color = GetColorFromString(theme.mainTextColor, buttonText.color);
+
+        button.GetComponent<DeckButton>().SetColors(GetColorFromString(theme.secondaryColor, Color.white));
     }
 
     Color GetColorFromString(string s, Color defaultColor)

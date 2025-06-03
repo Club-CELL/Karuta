@@ -599,7 +599,7 @@ GameObject:
   - component: {fileID: 386790001}
   m_Layer: 0
   m_Name: ThemeLoader
-  m_TagString: Untagged
+  m_TagString: ThemeLoader
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

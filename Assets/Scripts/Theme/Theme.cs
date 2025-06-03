@@ -5,6 +5,7 @@ public class Theme
 {
     public string packId;
     string name;
+
     public void SetName(string name)
     {
         this.name = name;
@@ -27,45 +28,50 @@ public class Theme
     public string deckChoiceBackgroundColor;
     public string gameBackgroundColor;
 
+    public string panelsColor;
+    public string panelBorderColor;
+    public float panelAlpha = 0.5f;
+
     public string buttonsColor;
     public string buttonInactiveColor;
     public string checkBoxColor;
-    public string panelsColor;
-    public string panelBorderColor;
     public string textOutlineColor;
     public string sliderHandleColor;
-    public string sliderBackgroundColor;
     public string sliderFillColor;
+    public string sliderBackgroundColor;
 
     public string cardFoundColor;
     public string cardNotFoundColor;
 
-    public float panelAlpha = 0.5f;
-
     public void Check()
     {
-        DefaultToColorString(ref secondaryTextColor, mainColor);
-        DefaultToColorString(ref buttonsColor, mainColor);
-        DefaultToColorString(ref checkBoxColor, mainColor);
-        DefaultToColorString(ref panelBorderColor, mainColor);
-        DefaultToColorString(ref textOutlineColor, mainColor);
+        CheckValue(ref mainTextColor, "white");
+        CheckValue(ref secondaryTextColor, mainColor);
 
-        DefaultToColorString(ref sliderHandleColor, mainColor);
-        DefaultToColorString(ref sliderFillColor, mainColor);
-        DefaultToColorString(ref cardFoundColor, mainColor);
-        DefaultToColorString(ref cardNotFoundColor, mainColor);
+        CheckValue(ref mainMenuBackgroundColor, "black");
+        CheckValue(ref deckChoiceBackgroundColor, "black");
+        CheckValue(ref gameBackgroundColor, "black");
 
-        DefaultToColorString(ref panelsColor, secondaryColor, panelAlpha);
-        DefaultToColorString(ref sliderBackgroundColor, "white");
-        DefaultToColorString(ref buttonInactiveColor, "white");
+        CheckValue(ref panelsColor, secondaryColor, panelAlpha);
+        CheckValue(ref panelBorderColor, mainColor, panelAlpha);
+
+        CheckValue(ref buttonsColor, mainColor);
+        CheckValue(ref checkBoxColor, mainColor);
+        CheckValue(ref textOutlineColor, mainColor);
+        CheckValue(ref sliderHandleColor, mainColor);
+        CheckValue(ref sliderFillColor, mainColor);
+        CheckValue(ref sliderBackgroundColor, "white");
+        CheckValue(ref buttonInactiveColor, "white");
+
+        CheckValue(ref cardFoundColor, "green");
+        CheckValue(ref cardNotFoundColor, "red");
     }
 
-    public void DefaultToColorString(ref string s, string defaultString, float alpha = 1)
+    private void CheckValue(ref string s, string defaultString, float alpha = 1)
     {
         if (!ColorUtility.TryParseHtmlString(s, out _))
         {
-            s = defaultString;
-            ColorUtility.TryParseHtmlString(s, out Color newColor);
+            ColorUtility.TryParseHtmlString(defaultString, out Color newColor);
             newColor.a = alpha;
             s = "#" + ColorUtility.ToHtmlStringRGBA(newColor);
         }
