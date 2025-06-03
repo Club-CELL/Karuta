@@ -8,6 +8,7 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
     [SerializeField] private Image currentPlayerPanel;
     [SerializeField] private Text currentPlayerText;
     [SerializeField] private Image returnButton;
+    [SerializeField] private StartTrialButton startButton;
 
     private Theme theme;
 
@@ -33,6 +34,7 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
             currentPlayerText.color = GetColorFromString(theme.mainTextColor, currentPlayerText.color);
             currentPlayerPanel.color = GetColorFromString(theme.panelsColor, currentPlayerPanel.color);
             returnButton.color = GetColorFromString(theme.buttonsColor, returnButton.color);
+            if (startButton != null) startButton.SetActiveColor(GetColorFromString(theme.buttonsColor, Color.white));
 
             Camera.main.backgroundColor = GetColorFromString(theme.deckChoiceBackgroundColor, Camera.main.backgroundColor);
 
@@ -51,7 +53,10 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
         Text buttonText = button.GetComponentInChildren<Text>();
         buttonText.color = GetColorFromString(theme.mainTextColor, buttonText.color);
 
-        button.GetComponent<DeckButton>().SetColors(GetColorFromString(theme.secondaryColor, Color.white));
+        if (button.TryGetComponent<DeckButton>(out var deck))
+        {
+            deck.SetColors(GetColorFromString(theme.secondaryColor, Color.white));
+        }
     }
 
     Color GetColorFromString(string s, Color defaultColor)

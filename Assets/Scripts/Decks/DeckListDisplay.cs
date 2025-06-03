@@ -42,7 +42,7 @@ public class DeckListDisplay : MonoBehaviour
                 if (paths.Length > 0)
                 {
                     var packId = new DirectoryInfo(packDirectory).Name;
-                    CreatePackBanner(packId);
+                    GameObject banner = CreatePackBanner(packId);
 
                     foreach (var path in paths)
                     {
@@ -67,6 +67,13 @@ public class DeckListDisplay : MonoBehaviour
                         GameObject button = CreateDeckButton(name);
                         DeckButton deckButton = button.GetComponent<DeckButton>();
                         deckButton.SetButtonInfo(name, newDeck);
+                        
+                        if (Global.gameMode == Global.GameModes.Trial)
+                        {
+                            banner.GetComponent<PackTrialButton>().AddDeck(deckButton);
+                            Button bannerButton = banner.GetComponentInChildren<Button>();
+                            themeLoader.SetButtonColor(bannerButton.gameObject.GetComponent<Image>());
+                        }
 
                         themeLoader.SetButtonColor(button.GetComponent<Image>());
                     }
@@ -75,7 +82,7 @@ public class DeckListDisplay : MonoBehaviour
         }
     }
 
-    private void CreatePackBanner(string packId)
+    private GameObject CreatePackBanner(string packId)
     {
         GameObject newBanner = Instantiate(packBanner, content);
         var packControl = newBanner.GetComponent<PackControl>();
@@ -106,6 +113,6 @@ public class DeckListDisplay : MonoBehaviour
             }
         }
         packControl.Setup();
-        return;
+        return newBanner;
     }
 }

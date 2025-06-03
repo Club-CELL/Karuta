@@ -43,7 +43,8 @@ public class DeckGridDisplay : MonoBehaviour
                 if (paths.Length > 0)
                 {
                     var packId = new DirectoryInfo(packDirectory).Name;
-                    GameObject grid = CreatePackGrid(packId);
+                    GameObject banner = CreatePackBanner(packId);
+                    GameObject grid = CreatePackGrid();
 
                     foreach (var path in paths)
                     {
@@ -74,18 +75,24 @@ public class DeckGridDisplay : MonoBehaviour
                     {
                         themeLoader.SetButtonColor(image);
                     }
+
+                    if (Global.gameMode == Global.GameModes.Trial)
+                    {
+                        banner.GetComponent<PackTrialButton>().AddDecks(grid.transform);
+                        Button bannerButton = banner.GetComponentInChildren<Button>();
+                        themeLoader.SetButtonColor(bannerButton.gameObject.GetComponent<Image>());
+                    }
                 }
             }
         }
     }
 
-    private GameObject CreatePackGrid(string packId)
+    private GameObject CreatePackGrid()
     {
-        CreatePackBanner(packId);
         return Instantiate(packGrid, content);
     }
 
-    private void CreatePackBanner(string packId)
+    private GameObject CreatePackBanner(string packId)
     {
         GameObject newBanner = Instantiate(packBanner, content);
         var packControl = newBanner.GetComponent<PackControl>();
@@ -116,6 +123,6 @@ public class DeckGridDisplay : MonoBehaviour
             }
         }
         packControl.Setup();
-        return;
+        return newBanner;
     }
 }

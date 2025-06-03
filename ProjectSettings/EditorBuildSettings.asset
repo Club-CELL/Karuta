@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 512fb3bd01b7be14ba1628f8dc4456e5
+  - enabled: 1
+    path: Assets/Scenes/TrialDecks.unity
+    guid: c9e8486e94eebd046840f288e4d990ce
+  - enabled: 1
+    path: Assets/Scenes/TrialGame.unity
+    guid: ea2a4b104320d144294f28414603db81
   m_configObjects: {}

@@ -2973,9 +2973,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ChoixNbJoueurs, Assembly-CSharp
-        m_MethodName: AddPlayer
+      - m_Target: {fileID: 1797956618}
+        m_TargetAssemblyTypeName: TrialParamButton, Assembly-CSharp
+        m_MethodName: Add
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4509,9 +4509,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ChoixNbJoueurs, Assembly-CSharp
-        m_MethodName: AddPlayer
+      - m_Target: {fileID: 1669073668}
+        m_TargetAssemblyTypeName: TrialParamButton, Assembly-CSharp
+        m_MethodName: Add
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5784,9 +5784,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ChoixNbJoueurs, Assembly-CSharp
-        m_MethodName: RemovePlayer
+      - m_Target: {fileID: 1797956618}
+        m_TargetAssemblyTypeName: TrialParamButton, Assembly-CSharp
+        m_MethodName: Remove
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7199,6 +7199,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1669073667}
+  - component: {fileID: 1669073668}
   m_Layer: 0
   m_Name: Trial length
   m_TagString: Untagged
@@ -7229,6 +7230,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1669073668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669073666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a63d0634c71e9e429991932610f5f04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  values:
+  - 15
+  - 30
+  - 45
+  - 60
+  - MAX
+  startIndex: 1
+  paramText: {fileID: 269406704}
 --- !u!1 &1698597100
 GameObject:
   m_ObjectHideFlags: 0
@@ -7753,6 +7774,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1797956617}
+  - component: {fileID: 1797956618}
   m_Layer: 0
   m_Name: Trial difficulty
   m_TagString: Untagged
@@ -7783,6 +7805,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -150}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1797956618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797956616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a63d0634c71e9e429991932610f5f04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  values:
+  - 4
+  - 9
+  - ALL
+  startIndex: 0
+  paramText: {fileID: 1052969350}
 --- !u!1 &1834149989
 GameObject:
   m_ObjectHideFlags: 0
@@ -8440,9 +8480,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1980105849}
+  - component: {fileID: 1980105850}
   - component: {fileID: 1980105852}
   - component: {fileID: 1980105851}
-  - component: {fileID: 1980105850}
   - component: {fileID: 1980105853}
   m_Layer: 0
   m_Name: Continue
@@ -8482,14 +8522,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b358ef8c937b17428990886bbf22320, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleTouch: 1.3
+  scaleTouch: 1.2
   scaleSpeed: 0.05
   finX: 700
   speedX: 70
   onExecute:
     m_PersistentCalls:
       m_Calls: []
-  choix: {fileID: 711999703}
+  nbPlayer: {fileID: 711999703}
+  trialLength: {fileID: 1669073668}
+  trialDifficulty: {fileID: 1797956618}
 --- !u!114 &1980105851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8762,9 +8804,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ChoixNbJoueurs, Assembly-CSharp
-        m_MethodName: RemovePlayer
+      - m_Target: {fileID: 1669073668}
+        m_TargetAssemblyTypeName: TrialParamButton, Assembly-CSharp
+        m_MethodName: Remove
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

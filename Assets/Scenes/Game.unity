@@ -1030,10 +1030,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 044acd3bd21191045a27cdcd5cd60d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleTouch: 0.9
+  scaleTouch: 1.2
   scaleSpeed: 0.05
-  finX: -500
+  finX: -700
   speedX: 70
+  onExecute:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1059017729
 MonoBehaviour:
   m_ObjectHideFlags: 0

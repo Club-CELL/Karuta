@@ -81,19 +81,36 @@ public class DeckButton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
         transform.localScale = scale * Vector3.one;
 	}
 
-	void AddDeck()
+	public void AddDeck()
 	{
         selected = false;
-        Global.AddDeck(deck);
-        DeckPicker.NextPlayer();
 
         if (!mirror)
         {
-            gameObject.SetActive(false);
+            added = !added;
+            if (added)
+            {
+                Global.AddDeck(deck);
+                buttonImage.color = activeColor;
+            }
+            else
+            {
+                Global.RemoveDeck(deck);
+                buttonImage.color = baseColor;
+            }
         }
         else
         {
+            added = true;
             buttonImage.color = activeColor;
+            Global.AddDeck(deck);
         }
+
+        if (Global.gameMode == Global.GameModes.Classic)
+        {
+            if (added) DeckPicker.NextPlayer();
+            else DeckPicker.PreviousPlayer();
+        }
+        else TrialDeckPicker.Instance.DeckChange();
     }
 }

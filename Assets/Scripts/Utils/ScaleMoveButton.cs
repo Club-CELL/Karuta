@@ -21,23 +21,23 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 	protected float x0;
 	protected Vector2 pos;
 
-    protected bool hover;
+    protected bool selected;
     protected bool execution = false;
 	protected bool activated;
 
 	public void OnPointerDown(PointerEventData eventdata)
 	{
-		hover = true;
+		selected = true;
 	}
 
 	public void OnPointerExit(PointerEventData eventdata)
 	{
-		if (!execution) hover = false;
+		if (!execution) selected = false;
 	}
 
 	public void OnPointerClick(PointerEventData eventdata)
 	{
-		if (hover) execution = true;
+		if (selected) execution = true;
 	}
 
 	protected void Start () {
@@ -46,13 +46,13 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 	}
 
 	protected void Update () {
-		if (hover) OnHover ();
-		else OnLeave ();
+		if (selected) OnSelect ();
+		else Unselect ();
 		
 		if (execution && !activated) LaunchExecution();
 	}
 
-    protected void OnHover()
+    protected void OnSelect()
 	{
 		scale = transform.localScale.x;
 		if (scale < scaleTouch) scale = Math.Min(scaleTouch,scale + scaleSpeed);
@@ -60,7 +60,7 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 		transform.localScale = scale * Vector3.one;
 	}
 
-	protected void OnLeave()
+	protected void Unselect()
 	{
 		scale = transform.localScale.x;
 		if (scale > startScale) scale = Math.Max(startScale, scale - scaleSpeed);
@@ -86,7 +86,7 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 	{
 		onExecute.Invoke();
 		execution = false;
-		hover = false;
+		selected = false;
 		activated = true;
     }
 }

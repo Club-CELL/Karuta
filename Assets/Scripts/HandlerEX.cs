@@ -8,13 +8,6 @@ using System.Collections.Generic;
 
 public class HandlerEX : MonoBehaviour {
 
-	public List<Card> deck = new();
-
-    [Header("Debug")]
-	public int nb;
-	public int cardIndex;
-	public string Main_Folder;
-
     [Header("Dependancies")]
 	public Transform card;
 	public Transform card2;
@@ -40,8 +33,13 @@ public class HandlerEX : MonoBehaviour {
 	public float validate_x;
 	public float y_diff_restart;
     public float x3_thres;
-    
+
     //Game variables
+    private int nb;
+    private int cardIndex;
+    private string Main_Folder;
+    readonly List<Card> deck = new();
+
     float x0;
 	float y0;
 	float x_start_touch;
@@ -98,7 +96,6 @@ public class HandlerEX : MonoBehaviour {
         flecheTrouveeText = arrowFound.GetComponentInChildren<Text>(true);
         flecheNonTrouveeText = arrowNotFound.GetComponentInChildren<Text>(true);
 
-        Debug.Log($"Fleche trouvee image is null ? {flecheTrouveeImage == null}");
         source = GetComponent<AudioSource>();
     }
 

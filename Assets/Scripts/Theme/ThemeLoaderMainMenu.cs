@@ -211,7 +211,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         Global.theme = null;
 
         int selected = 0;
-        for (int i=0;i<themeFiles.Count;i++)
+        for (int i = 0; i < themeFiles.Count; i++)
         {
             string themeFile = themeFiles[i];
             Theme newTheme = JsonSerialization.ReadFromJson<Theme>(themeFile);
@@ -245,10 +245,10 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             }
         }
 
-        for(int i=0;i<themes.Count;i++)
+        for(int i = 0; i < themes.Count; i++)
         {
             GameObject newIndicator = Instantiate(indicator);
-            if(selected == i+1)
+            if (selected == i+1)
             {
                 newIndicator.GetComponent<Image>().color = themesScroll.selectedColor;
             }

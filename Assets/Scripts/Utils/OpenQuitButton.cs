@@ -9,6 +9,6 @@ public class OpenQuitButton : ScaleMoveButton {
         base.Execute();
         objectToOpenOrQuit.SetActive(open);
         execution = false;
-        hover = false;
+        selected = false;
     }
 }
