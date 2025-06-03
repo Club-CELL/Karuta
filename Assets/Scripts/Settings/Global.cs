@@ -4,7 +4,12 @@ using UnityEngine;
 public class Global : MonoBehaviour
 {	
     public static string mainPath;
+	public enum GameModes { Classic, Trial }
+
+	public static GameModes gameMode;
 	public static int nbJoueurs = 2;
+	public static int trialLength = 30;
+	public static int trialChoices = 4;
 	public static List<Card> deck = new();
     public static Theme theme = null;
 

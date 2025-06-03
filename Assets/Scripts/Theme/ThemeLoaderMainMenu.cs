@@ -27,6 +27,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     [SerializeField] private List<Text> mainTexts;
     [SerializeField] private List<Text> secondaryTexts;
     [SerializeField] private List<TMP_Text> tmp_texts;
+    [SerializeField] private List<GameModeButton> gameModes;
     [SerializeField] private List<Image> buttons;
     [SerializeField] private List<CheckBox> checkboxes;
     [SerializeField] private List<Slider> sliders;
@@ -93,9 +94,18 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             }
         }
 
+        Color buttonColor = GetColorFromString(theme.buttonsColor, Color.white);
+        Color secondColor = GetColorFromString(theme.secondaryColor, Color.white);
+        foreach (GameModeButton button in gameModes)
+        {
+            button.Set(buttonColor, secondColor, button.GameMode == Global.GameModes.Classic);
+            Text buttonText = button.GetComponentInChildren<Text>();
+            buttonText.color = GetColorFromString(theme.mainTextColor, buttonText.color);
+        }
+
         foreach (Image button in buttons)
         {
-            button.color = GetColorFromString(theme.buttonsColor, Color.white);
+            button.color = buttonColor;
             Text buttonText = button.GetComponentInChildren<Text>();
             if (buttonText != null) buttonText.color = GetColorFromString(theme.mainTextColor, buttonText.color);
         }
