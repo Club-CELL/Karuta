@@ -5,13 +5,20 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class HandlerTrial : MonoBehaviour {
+public class HandlerTrial : MonoBehaviour
+{
+    [Header("Parameters")]
+    [SerializeField] private int answerPts;
+    [SerializeField] private int streakBonus;
+    [SerializeField] private int maxIndicators = 10;
+    [SerializeField] private float answerDisplayTime;
 
     [Header("Dependancies")]
-    [SerializeField] private Text selected;
 	[SerializeField] private Text remainingText;
-	[SerializeField] private Text score;
-	[SerializeField] private Text streak;
+	[SerializeField] private Text scoreText;
+	[SerializeField] private Text streakText;
+    [SerializeField] private GameObject validPanel;
+    [SerializeField] private GameObject incorrectPanel;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private PlayPause pauseButton;
     [SerializeField] private Sprite defaultSprite;
@@ -28,13 +35,19 @@ public class HandlerTrial : MonoBehaviour {
     private int remaining;
     private int deckSize;
     private int cardIndex;
+    private int cardScrollIndex;
+    
+    private int score;
+    private int streak;
     private string Main_Folder;
 
     readonly List<Card> deck = new();
     readonly System.Random rng = new();
 
     IEnumerator coroutine;
+    bool questionReady;
     bool songLoaded;
+    bool waitingToPlay;
     bool clipstarted;
     bool paused;
 
@@ -47,29 +60,57 @@ public class HandlerTrial : MonoBehaviour {
     private void Awake()
     {
         source = GetComponent<AudioSource>();
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
+        Main_Folder = Global.mainPath;
+        Main_Folder = PathManager.MainPath;
+        answerPool = Global.trialChoices == int.MinValue ? Global.deck.Count : Global.trialChoices;
+        remaining = Global.trialLength;
+
+        AddCardIndicators();
     }
 
     private void Start ()
     {
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
-
-        Main_Folder = Global.mainPath;
-        Main_Folder =  PathManager.MainPath;
-        answerPool = Global.trialChoices == int.MaxValue ? deckSize : Global.trialChoices;
-        remaining = Global.trialLength;
         remainingText.text = "Remaining: " + remaining.ToString();
 
         ReadDecks();
 		First();
     }
 	
-	void Update ()
+	private void Update ()
     {
+        if (questionReady && waitingToPlay)
+        {
+            waitingToPlay = false;
+            if (!paused) PlayClip();
+            else PauseClip();
+        }
+
         if (clipstarted)
         {
             musicSlider.value = source.time / source.clip.length;
         }
 	}
+
+    private void ReadDecks()
+    {
+        deck.Clear();
+
+        foreach (var s in Global.deck)
+        {
+            deck.Add(s);
+        }
+
+        deckSize = deck.Count;
+    }
+
+    private void First()
+    {
+        questionReady = true;
+        if (deckSize > 0) CreateCards();
+        else Finish();
+    }
 
     public void PlayPauseAction()
     {
@@ -85,54 +126,80 @@ public class HandlerTrial : MonoBehaviour {
         }
     }
 
-	void ReadDecks()
-	{
-        deck.Clear();
-        
-        foreach(var s in Global.deck)
+    public void Answer()
+    {
+        if (questionReady && clipstarted)
         {
-            deck.Add(s);
+            clipstarted = false;
+            questionReady = false;
+
+            if (cardsScroll.PageIndex == cardScrollIndex)
+            {
+                if (deckSize > 0)
+                {
+                    deck.RemoveAt(cardIndex);
+                    deckSize--;
+                }
+
+                int scoreIncrease = answerPts + streakBonus * streak;
+                score += scoreIncrease;
+                streak++;
+
+                scoreText.text = "Score: " + score;
+                streakText.text = "Streak: " + streak;
+
+                validPanel.SetActive(true);
+                validPanel.GetComponentInChildren<Text>().text = "Correct!\nScore +" + scoreIncrease;
+            }
+            else
+            {
+                streak = 0;
+                incorrectPanel.SetActive(true);
+                streakText.text = "Streak: 0";
+            }
+
+            StartCoroutine(PrepareNextCards());
+            StartCoroutine(DisplayAnswer());
         }
-		deckSize = deck.Count;
-	}
-
-	void Trouvee()
-	{
-		if (deckSize > 0)
-        {
-            deck.RemoveAt(cardIndex);
-			deckSize--;
-		}
-
-		Next ();
-	}
-
-	void First()
-	{
-		if (deckSize > 0) CreateCards();
-        else Finish ();
-	}
-
-	void Next()
-	{
-		if (remaining > 0)
-        {
-            remaining--;
-			remainingText.text = "Remaining: " + remaining.ToString ();
-			
-            CreateCards();
-			Resources.UnloadUnusedAssets ();
-        }
-        else Finish ();
     }
 
-    void CreateCards()
+    private IEnumerator PrepareNextCards()
+    {
+        foreach (Transform card in contentHolder)
+        {
+            Destroy(card.gameObject);
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        if (remaining > 0)
+        {
+            remaining--;
+            remainingText.text = "Remaining: " + remaining.ToString();
+
+            CreateCards();
+            Resources.UnloadUnusedAssets();
+        }
+        else Finish();
+    }
+
+	private IEnumerator DisplayAnswer()
+	{
+        yield return new WaitForSeconds(answerDisplayTime);
+
+        validPanel.SetActive(false);
+        incorrectPanel.SetActive(false);
+        questionReady = true;
+    }
+
+    private void CreateCards()
     {
         cardIndex = Random.Range(0, deckSize);
         List<int> cards = new() { cardIndex };
 
         int rand;
-        for (int i = 1; i < answerPool; i++)
+        int maxAnswers = Mathf.Min(answerPool, deckSize);
+        for (int i = 1; i < maxAnswers; i++)
         {
             do rand = Random.Range(0, deckSize);
             while (cards.Contains(rand));
@@ -141,19 +208,21 @@ public class HandlerTrial : MonoBehaviour {
         }
         Shuffle(cards);
 
-        Debug.Log($"Pool contains {cards.Count} cards");
-        for (int i = 1; i < answerPool; i++)
+        for (int i = 0; i < maxAnswers; i++)
         {
-            if (cards[i] == cardIndex) PlayCard(cardIndex);
+            if (cards[i] == cardIndex)
+            {
+                cardScrollIndex = i;
+                PlayCard(cardIndex);
+            }
             else AddCardImage(cards[i]);
         }
 
-        AddCardIndicators();
         cardsScroll.Init();
         cardsScroll.RefreshIndicators();
     }
 
-	void PlayCard(int cardIndex)
+	private void PlayCard(int cardIndex)
 	{
         Card cardInfo = deck[cardIndex];
         string cardName = cardInfo.name;
@@ -166,11 +235,9 @@ public class HandlerTrial : MonoBehaviour {
         string soundPath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Sounds", cardName + ".mp3");
         string imagePath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName + ".png");
 
-        Debug.Log("Add card for " + cardName);
         GameObject imageHolder = Instantiate(cardImage, contentHolder);
         StartCoroutine(LoadImage(imagePath, imageHolder.GetComponent<Image>()));
 
-        clipstarted = false;
         pauseButton.ChangeState(true);
 
         if (!File.Exists(soundPath))
@@ -193,7 +260,6 @@ public class HandlerTrial : MonoBehaviour {
         }
         string imagePath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName + ".png");
 
-        Debug.Log("Add card for " + cardName);
         GameObject imageHolder = Instantiate(cardImage, contentHolder);
         StartCoroutine(LoadImage(imagePath, imageHolder.GetComponent<Image>()));
     }
@@ -211,23 +277,26 @@ public class HandlerTrial : MonoBehaviour {
 
     private void AddCardIndicators()
     {
-        foreach (Transform otherIndicator in indicatorContainer)
-        {
-            Destroy(otherIndicator.gameObject);
-        }
+        if (answerPool > maxIndicators) return;
 
-        indicator.GetComponent<Image>().color = cardsScroll.selectedColor;
         for (int i = 0; i < answerPool; i++)
         {
             GameObject newIndicator = Instantiate(indicator);
+            if (i == 0) newIndicator.GetComponent<Image>().color = cardsScroll.selectedColor;
             newIndicator.transform.SetParent(indicatorContainer, false);
         }
-
-        Debug.Log($"Panel contains {indicatorContainer.childCount} indicators");
     }
 
-    void Finish()
+    private void Finish()
 	{
+        validPanel.SetActive(true);
+        string finishText = "Finished!\nScore: " + score;
+        if (score > PlayerPrefs.GetInt("score", 0))
+        {
+            finishText += "\nHighscore!";
+            PlayerPrefs.SetInt("score", score);
+        }
+        validPanel.GetComponentInChildren<Text>().text = finishText;
         remainingText.text = "Finished ! ";
     }
 
@@ -283,8 +352,7 @@ public class HandlerTrial : MonoBehaviour {
         songLoaded = true;
 		if (source.clip.loadState == AudioDataLoadState.Loaded)
         {
-            if (!paused) PlayClip();
-            else PauseClip();
+            waitingToPlay = true;
 		}
 
         www.Dispose();

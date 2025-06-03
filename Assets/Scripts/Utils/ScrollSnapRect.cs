@@ -246,6 +246,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             // also container with selection images must be defined and must have exatly the same amount of items as pages container
             if (pageSelectionIcons == null || pageSelectionIcons.childCount != _pageCount) {
                 Debug.LogWarning("Different count of pages and selection icons - will not show page selection");
+                Debug.LogWarning($"indicators: {pageSelectionIcons.childCount}, page count: {_pageCount} ");
                 _showPageSelection = false;
             } else {
                 _previousPageSelectionIndex = -1;

@@ -15,7 +15,7 @@ public class TrialParamButton : MonoBehaviour
 
     public int Param()
     {
-        if (valueIndex == values.Length - 1) return int.MaxValue;
+        if (valueIndex == values.Length - 1) return int.MinValue;
         else return int.Parse(values[valueIndex]);
     }
 
