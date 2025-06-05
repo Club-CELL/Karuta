@@ -97,7 +97,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
         Color secondColor = GetColorFromString(theme.secondaryColor, Color.white);
         foreach (GameModeButton button in gameModes)
         {
-            button.Set(buttonColor, secondColor, button.GameMode == Global.GameModes.Classic);
+            button.Set(buttonColor, secondColor, button.GameMode == Global.gameMode);
             Text buttonText = button.GetComponentInChildren<Text>();
             buttonText.color = GetColorFromString(theme.mainTextColor, buttonText.color);
         }

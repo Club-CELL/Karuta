@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,8 +11,7 @@ public class ThemeLoaderGame : MonoBehaviour
     public Image foundCard;
     public Image notFoundCard;
     public Image playButton;
-    public PlayPause playPause;
-    public List<Text> texts;
+    public List<TextMeshProUGUI> texts;
 
     private Theme theme;
 
@@ -34,7 +34,7 @@ public class ThemeLoaderGame : MonoBehaviour
     {
         if (theme != null)
         {
-            foreach(Text text in texts)
+            foreach(var text in texts)
             {
                 text.color = GetColorFromString(theme.mainTextColor, text.color);
             }

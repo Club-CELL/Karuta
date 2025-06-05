@@ -20,6 +20,12 @@ public class GameModeButton : ScaleMoveButton
         image = GetComponent<Image>();
     }
 
+    private new void Start()
+    {
+        base.Start();
+        SetState(gameMode == Global.gameMode);
+    }
+
     public void Set(Color active, Color inactive, bool state)
     {
         activeColor = active;
@@ -29,9 +35,9 @@ public class GameModeButton : ScaleMoveButton
         image.color = state ? activeColor : inactiveColor;
     }
 
-    public void ChangeState()
+    private void SetState(bool state)
     {
-        state = !state;
+        this.state = state;
         image.color = state ? activeColor : inactiveColor;
         if (state) Global.gameMode = gameMode;
 
@@ -39,6 +45,12 @@ public class GameModeButton : ScaleMoveButton
         {
             param.SetActive(state);
         }
+    }
+
+    public void ChangeState()
+    {
+        state = !state;
+        SetState(state);
     }
 
     public override void Execute()

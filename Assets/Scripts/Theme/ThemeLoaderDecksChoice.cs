@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using TMPro;
 
 public class ThemeLoaderDecksChoice : MonoBehaviour
 {
@@ -50,7 +51,7 @@ public class ThemeLoaderDecksChoice : MonoBehaviour
     public void SetButtonColor(Image button)
     {
         button.color = GetColorFromString(theme.buttonsColor, button.color);
-        Text buttonText = button.GetComponentInChildren<Text>();
+        TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
         buttonText.color = GetColorFromString(theme.mainTextColor, buttonText.color);
 
         if (button.TryGetComponent<DeckButton>(out var deck))

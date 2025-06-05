@@ -2,6 +2,7 @@
 using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
+using TMPro;
 
 public class DeckButton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,IPointerDownHandler
 {
@@ -17,14 +18,14 @@ public class DeckButton : MonoBehaviour, IPointerUpHandler,IPointerExitHandler,I
     private float scale;
     private float startScale;
 
-    private Text buttonText;
+    private TextMeshProUGUI buttonText;
     private Image buttonImage;
     private Color baseColor;
     private Color activeColor;
 
     void Awake ()
 	{
-        buttonText = GetComponentInChildren<Text>();
+        buttonText = GetComponentInChildren<TextMeshProUGUI>();
         buttonImage = GetComponent<Image>();
 		mirror = PlayerPrefs.GetInt("mirror") != 0;
         startScale = transform.localScale.x;

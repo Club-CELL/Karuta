@@ -47,8 +47,8 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 	}
 
 	protected void Update () {
-		if (selected) OnSelect ();
-		else Unselect ();
+		if (selected) OnSelect();
+		else Unselect();
 		
 		if (execution && !activated) LaunchExecution();
 	}

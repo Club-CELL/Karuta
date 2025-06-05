@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.IO;
 using System.Collections.Generic;
+using TMPro;
 
 public class DeckListDisplay : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class DeckListDisplay : MonoBehaviour
     private GameObject CreateDeckButton(string text)
     {
         GameObject newBouton = Instantiate(deckButton, content);
-        newBouton.GetComponentInChildren<Text>().text = text;
+        newBouton.GetComponentInChildren<TextMeshProUGUI>().text = text;
         newBouton.SetActive(true);
 
         return newBouton;

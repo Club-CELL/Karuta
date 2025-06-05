@@ -5,6 +5,7 @@ using System.IO;
 using System;
 using UnityEngine.Networking;
 using System.Collections.Generic;
+using TMPro;
 
 public class HandlerEX : MonoBehaviour {
 
@@ -15,9 +16,9 @@ public class HandlerEX : MonoBehaviour {
 	public GameObject arrowFound;
 	public GameObject arrowNotFound;
     public GameObject revealButton;
-    public Text answer;
-	public Text remaining;
-    public Text startDelayText;
+    public TextMeshProUGUI answer;
+	public TextMeshProUGUI remaining;
+    public TextMeshProUGUI startDelayText;
     public GameObject PauseIcon;
     public Sprite defaultSprite;
 
