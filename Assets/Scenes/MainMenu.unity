@@ -2556,9 +2556,9 @@ GameObject:
   m_Component:
   - component: {fileID: 514933031}
   - component: {fileID: 514933034}
+  - component: {fileID: 514933035}
   - component: {fileID: 514933033}
   - component: {fileID: 514933032}
-  - component: {fileID: 514933035}
   m_Layer: 0
   m_Name: FondVideo
   m_TagString: Untagged
@@ -2663,7 +2663,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 514933030}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
   m_Name: 
