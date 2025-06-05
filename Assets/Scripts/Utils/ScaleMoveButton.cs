@@ -38,7 +38,7 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 
 	public void OnPointerClick(PointerEventData eventdata)
 	{
-		if (selected && !disabled) execution = true;
+		if (selected && !activated) execution = true;
 	}
 
 	protected void Start () {
@@ -50,7 +50,7 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 		if (selected) OnSelect();
 		else Unselect();
 		
-		if (execution && !activated) LaunchExecution();
+		if (execution) LaunchExecution();
 	}
 
     protected void OnSelect()
@@ -73,8 +73,10 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 	public void LaunchExecution()
 	{
 		pos = transform.position;
-		if (pos.x - x0 < finX) {
-
+		bool translate = (finX > 0 && pos.x - x0 < finX) || 
+						 (finX < 0 && pos.x - x0 > finX);
+        if (translate)
+		{
 			pos = new Vector2 (pos.x + speedX, pos.y);
 			transform.position = pos;
 			

@@ -1430,8 +1430,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleTouch: 1.2
   scaleSpeed: 0.05
-  finX: -700
-  speedX: 70
+  finX: -500
+  speedX: -50
   onExecute:
     m_PersistentCalls:
       m_Calls: []
