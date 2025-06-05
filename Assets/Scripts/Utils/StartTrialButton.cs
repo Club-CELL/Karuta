@@ -12,6 +12,7 @@ public class StartTrialButton : ScaleMoveButton
     {
         image = GetComponent<Image>();
         image.color = disabledColor;
+        disabled = true;
     }
 
 
@@ -22,7 +23,8 @@ public class StartTrialButton : ScaleMoveButton
 
     public void UpdateButton()
     {
-        image.color = Global.deck.Count >= Global.trialLength ? activeColor : disabledColor;
+        disabled = Global.deck.Count < Global.trialLength;
+        image.color = disabled ? disabledColor : activeColor;
     }
 
     public override void Execute()

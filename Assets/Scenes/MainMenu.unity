@@ -2602,7 +2602,7 @@ VideoPlayer:
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: _MainTex
   m_RenderMode: 2
-  m_AspectRatio: 4
+  m_AspectRatio: 2
   m_DataSource: 1
   m_TimeUpdateMode: 2
   m_PlaybackSpeed: 1
@@ -6279,7 +6279,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cfb6349e4d5c38b4cb24376e24d6c13c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2a36a191d6365a74c8fcc57c7cb3b124, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -10577,7 +10577,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 382.8, y: -862.78296}
+  m_AnchoredPosition: {x: 382.8, y: -998.2329}
   m_SizeDelta: {x: 665.6, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3126762977195783661
@@ -10984,7 +10984,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 715.6, y: -198.969}
+  m_AnchoredPosition: {x: 715.6, y: -218.319}
   m_SizeDelta: {x: 665.6, y: 80}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &3848635286336783704
@@ -11549,7 +11549,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 382.8, y: -634.845}
+  m_AnchoredPosition: {x: 382.8, y: -731.595}
   m_SizeDelta: {x: 680, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &5043102229878036166
@@ -11778,7 +11778,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 715.6, y: -307.938}
+  m_AnchoredPosition: {x: 715.6, y: -346.638}
   m_SizeDelta: {x: 665.6, y: 80}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &5629126514783390953
@@ -12165,7 +12165,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Allow mirror matches
+  m_Text: Allow multiples of same deck
 --- !u!114 &6890772641788891155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12237,7 +12237,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 715.6, y: -416.90698}
+  m_AnchoredPosition: {x: 715.6, y: -474.957}
   m_SizeDelta: {x: 665.6, y: 80}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &7130675991561544029
@@ -12346,7 +12346,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 382.8, y: -743.81396}
+  m_AnchoredPosition: {x: 382.8, y: -859.91394}
   m_SizeDelta: {x: 680, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7655611210142474870
@@ -12809,7 +12809,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 715.6, y: -525.876}
+  m_AnchoredPosition: {x: 715.6, y: -603.276}
   m_SizeDelta: {x: 665.6, y: 80}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!1 &8637085590798517782

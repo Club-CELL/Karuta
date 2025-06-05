@@ -22,12 +22,13 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 	protected Vector2 pos;
 
     protected bool selected;
-    protected bool execution = false;
+    protected bool execution;
 	protected bool activated;
+	protected bool disabled;
 
 	public void OnPointerDown(PointerEventData eventdata)
 	{
-		selected = true;
+		if (!disabled) selected = true;
 	}
 
 	public void OnPointerExit(PointerEventData eventdata)
@@ -37,7 +38,7 @@ public class ScaleMoveButton : MonoBehaviour, IPointerClickHandler, IPointerExit
 
 	public void OnPointerClick(PointerEventData eventdata)
 	{
-		if (selected) execution = true;
+		if (selected && !disabled) execution = true;
 	}
 
 	protected void Start () {
