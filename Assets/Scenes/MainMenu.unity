@@ -7955,7 +7955,7 @@ MonoBehaviour:
   values:
   - 4
   - 9
-  - ALL
+  - MAX
   startIndex: 0
   paramText: {fileID: 1052969350}
 --- !u!1 &1834149989

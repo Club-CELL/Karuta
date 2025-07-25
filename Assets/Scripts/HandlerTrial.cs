@@ -19,6 +19,7 @@ public class HandlerTrial : MonoBehaviour
 	[SerializeField] private Text streakText;
     [SerializeField] private GameObject validPanel;
     [SerializeField] private GameObject incorrectPanel;
+    [SerializeField] private Image panelAnswer;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private PlayPause pauseButton;
     [SerializeField] private Sprite defaultSprite;
@@ -40,6 +41,7 @@ public class HandlerTrial : MonoBehaviour
     private int score;
     private int streak;
     private string Main_Folder;
+    private Sprite answerSprite;
 
     readonly List<Card> deck = new();
     readonly System.Random rng = new();
@@ -64,10 +66,10 @@ public class HandlerTrial : MonoBehaviour
 
         Main_Folder = Global.mainPath;
         Main_Folder = PathManager.MainPath;
-        answerPool = Global.trialChoices == int.MinValue ? Global.deck.Count : Global.trialChoices;
+        answerPool = Global.trialChoices == int.MinValue ? Mathf.Min(30, Global.deck.Count) : Global.trialChoices;
         remaining = Global.trialLength;
 
-        AddCardIndicators();
+        AddCardIndicators(answerPool);
     }
 
     private void Start ()
@@ -155,6 +157,8 @@ public class HandlerTrial : MonoBehaviour
             {
                 streak = 0;
                 incorrectPanel.SetActive(true);
+                panelAnswer.GetComponentInChildren<Image>().sprite = answerSprite;
+
                 streakText.text = "Streak: 0";
             }
 
@@ -172,11 +176,11 @@ public class HandlerTrial : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
+        remaining--;
+        remainingText.text = "Remaining: " + remaining.ToString();
+
         if (remaining > 0)
         {
-            remaining--;
-            remainingText.text = "Remaining: " + remaining.ToString();
-
             CreateCards();
             Resources.UnloadUnusedAssets();
         }
@@ -199,6 +203,12 @@ public class HandlerTrial : MonoBehaviour
 
         int rand;
         int maxAnswers = Mathf.Min(answerPool, deckSize);
+
+        if (maxAnswers < answerPool)
+        {
+            AddCardIndicators(maxAnswers);
+        }
+
         for (int i = 1; i < maxAnswers; i++)
         {
             do rand = Random.Range(0, deckSize);
@@ -236,7 +246,7 @@ public class HandlerTrial : MonoBehaviour
         string imagePath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName + ".png");
 
         GameObject imageHolder = Instantiate(cardImage, contentHolder);
-        StartCoroutine(LoadImage(imagePath, imageHolder.GetComponent<Image>()));
+        StartCoroutine(LoadImage(imagePath, imageHolder.GetComponent<Image>(), true));
 
         pauseButton.ChangeState(true);
 
@@ -261,7 +271,7 @@ public class HandlerTrial : MonoBehaviour
         string imagePath = Path.Combine(Main_Folder, "Packs", cardInfo.packId, "Visuals", cardName + ".png");
 
         GameObject imageHolder = Instantiate(cardImage, contentHolder);
-        StartCoroutine(LoadImage(imagePath, imageHolder.GetComponent<Image>()));
+        StartCoroutine(LoadImage(imagePath, imageHolder.GetComponent<Image>(), false));
     }
 
     private void Shuffle(List<int> list)
@@ -275,11 +285,16 @@ public class HandlerTrial : MonoBehaviour
         }
     }
 
-    private void AddCardIndicators()
+    private void AddCardIndicators(int indicatorCount)
     {
-        if (answerPool > maxIndicators) return;
+        foreach (Transform child in indicatorContainer)
+        {
+            Destroy(child.gameObject);
+        }
 
-        for (int i = 0; i < answerPool; i++)
+        if (indicatorCount > maxIndicators) return;
+
+        for (int i = 0; i < indicatorCount; i++)
         {
             GameObject newIndicator = Instantiate(indicator);
             if (i == 0) newIndicator.GetComponent<Image>().color = cardsScroll.selectedColor;
@@ -306,7 +321,7 @@ public class HandlerTrial : MonoBehaviour
 		return clp;
 	}
 
-    IEnumerator LoadImage(string path, Image image)
+    IEnumerator LoadImage(string path, Image image, bool answer)
     {
         if(!File.Exists(path))
         {
@@ -325,6 +340,7 @@ public class HandlerTrial : MonoBehaviour
         Texture2D texture = DownloadHandlerTexture.GetContent(www);
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.0f), 1.0f);
 
+        if (answer) answerSprite = sprite;
         image.sprite = sprite != null ? sprite : defaultSprite;
         image.preserveAspect = true;
         www.Dispose();
