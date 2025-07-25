@@ -174,6 +174,11 @@ public class HandlerTrial : MonoBehaviour
             Destroy(card.gameObject);
         }
 
+        if (deckSize < answerPool)
+        {
+            AddCardIndicators(deckSize);
+        }
+
         yield return new WaitForEndOfFrame();
 
         remaining--;
@@ -203,11 +208,6 @@ public class HandlerTrial : MonoBehaviour
 
         int rand;
         int maxAnswers = Mathf.Min(answerPool, deckSize);
-
-        if (maxAnswers < answerPool)
-        {
-            AddCardIndicators(maxAnswers);
-        }
 
         for (int i = 1; i < maxAnswers; i++)
         {
