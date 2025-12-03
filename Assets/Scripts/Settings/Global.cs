@@ -10,6 +10,7 @@ public class Global : MonoBehaviour
 	public static int nbJoueurs = 2;
 	public static int trialLength = 30;
 	public static int trialChoices = 4;
+	public static int trialLives = 3;
 	public static List<Card> deck = new();
     public static Theme theme = null;
 

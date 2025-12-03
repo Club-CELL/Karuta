@@ -14,9 +14,9 @@ public class HandlerTrial : MonoBehaviour
     [SerializeField] private float answerDisplayTime;
 
     [Header("Dependancies")]
-	[SerializeField] private Text remainingText;
+    [SerializeField] private LivesDisplay livesDisplay;
+    [SerializeField] private Text remainingText;
 	[SerializeField] private Text scoreText;
-	[SerializeField] private Text streakText;
     [SerializeField] private GameObject validPanel;
     [SerializeField] private GameObject incorrectPanel;
     [SerializeField] private Image panelAnswer;
@@ -40,6 +40,7 @@ public class HandlerTrial : MonoBehaviour
     
     private int score;
     private int streak;
+    private int lives;
     private string Main_Folder;
     private Sprite answerSprite;
 
@@ -66,7 +67,8 @@ public class HandlerTrial : MonoBehaviour
 
         Main_Folder = Global.mainPath;
         Main_Folder = PathManager.MainPath;
-        answerPool = Global.trialChoices == int.MinValue ? Mathf.Min(30, Global.deck.Count) : Global.trialChoices;
+        answerPool = Global.trialChoices == int.MinValue ? 30 : Global.trialChoices;
+        lives = Global.trialLives == int.MinValue ? 99 : Global.trialLives;
         remaining = Global.trialLength;
 
         AddCardIndicators(answerPool);
@@ -76,6 +78,7 @@ public class HandlerTrial : MonoBehaviour
     {
         remainingText.text = "Remaining: " + remaining.ToString();
 
+        livesDisplay.UpdateLives(lives);
         ReadDecks();
 		First();
     }
@@ -143,23 +146,24 @@ public class HandlerTrial : MonoBehaviour
                     deckSize--;
                 }
 
-                int scoreIncrease = answerPts + streakBonus * streak;
+                int scoreIncrease = (answerPts + streakBonus * streak) * answerPool;
                 score += scoreIncrease;
                 streak++;
-
                 scoreText.text = "Score: " + score;
-                streakText.text = "Streak: " + streak;
 
                 validPanel.SetActive(true);
                 validPanel.GetComponentInChildren<Text>().text = "Correct!\nScore +" + scoreIncrease;
             }
             else
             {
+                if (lives < 99) lives--;
+                if (lives <= 0) remaining = 0;
+
                 streak = 0;
+                livesDisplay.UpdateLives(lives);
+
                 incorrectPanel.SetActive(true);
                 panelAnswer.GetComponentInChildren<Image>().sprite = answerSprite;
-
-                streakText.text = "Streak: 0";
             }
 
             StartCoroutine(PrepareNextCards());
@@ -195,6 +199,7 @@ public class HandlerTrial : MonoBehaviour
 	private IEnumerator DisplayAnswer()
 	{
         yield return new WaitForSeconds(answerDisplayTime);
+        if (remaining == 0) yield break;
 
         validPanel.SetActive(false);
         incorrectPanel.SetActive(false);
@@ -312,7 +317,7 @@ public class HandlerTrial : MonoBehaviour
             PlayerPrefs.SetInt("score", score);
         }
         validPanel.GetComponentInChildren<Text>().text = finishText;
-        remainingText.text = "Finished ! ";
+        remainingText.text = "Finished! ";
     }
 
 	public AudioClip SongLoadResources(string path)
@@ -332,10 +337,8 @@ public class HandlerTrial : MonoBehaviour
 
         image.sprite = null;
         UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
-        Debug.Log("<color=yellow>file://" + path+"</color>");
+        Debug.Log("Requesting file: <color=yellow>" + path+"</color>");
         yield return www.SendWebRequest();
-
-        Debug.Log($"Request for {path} is done ? {www.isDone} result: {www.result} error ? : {www.error ?? "null"} download handler done ? :{www.downloadHandler.isDone}");
 
         Texture2D texture = DownloadHandlerTexture.GetContent(www);
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.0f), 1.0f);

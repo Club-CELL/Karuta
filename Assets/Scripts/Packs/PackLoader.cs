@@ -36,7 +36,6 @@ public class PackLoader : MonoBehaviour
         var resourcePacks = Resources.LoadAll<DeckPack>("Packs");
         foreach (var pack in resourcePacks)
         {
-            //packs.Add(pack);
             packPerId.Add(pack.driveFolderId, pack);
             Debug.Log($"[PacksMenu] Added Pack from Resources: {pack.title}");
         }
@@ -107,11 +106,12 @@ public class PackLoader : MonoBehaviour
     IEnumerator LoadBannerTexture(string path, string id)
     {
         UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
-        Debug.Log("<color=yellow>file://" + path + "</color>");
         yield return www.SendWebRequest();
 
-        Debug.Log($"Request for {path} is done ? {www.isDone} result: {www.result} error ? : {www.error ?? "null"} download handler done ? :{www.downloadHandler.isDone}");
-
+        if (www.error != null)
+        {
+            Debug.LogError($"[PackLoader] - Error loading banner for pack {id} from path {path} : {www.error}");
+        }
 
         Texture2D texture = DownloadHandlerTexture.GetContent(www);
         packPerId[id].banner = texture;

@@ -79,7 +79,6 @@ public class BackgroundHandler : MonoBehaviour
 
     static void UseVideoAsBackground(string videoPath)
     {
-        Debug.Log("It's a video: " + videoPath);
         instance.StartCoroutine(instance.LoadVideo(videoPath));
     }
 
@@ -95,20 +94,22 @@ public class BackgroundHandler : MonoBehaviour
                 lastDeactivatedBackground = fond;
             }
 
-            Debug.Log($"About to get texture for: {path}");
             yield return null;
             UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
             yield return null;
-            Debug.Log($"About to send web request for: {path}");
+
             yield return www.SendWebRequest();
 
-            Debug.Log($"Request for {path} is done ? {www.isDone} result: {www.result} error ? : {www.error ?? "null"} download handler done ? :{www.downloadHandler.isDone}");
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error while loading image background: " + www.error);
+                www.Dispose();
+                yield break;
+            }
 
             yield return null;
 
-
             Texture2D texture = DownloadHandlerTexture.GetContent(www);
-
             imageBackground.GetComponent<RawImage>().texture = texture;
 
             currentImagePath = path;
@@ -154,7 +155,6 @@ public class BackgroundHandler : MonoBehaviour
 
     IEnumerator LoadVideo(string path)
     {
-        Debug.Log("Trying to load a video: " + path);
         if (File.Exists(path) && path !=currentVideoPath )
         {
             GameObject fond = GameObject.Find("Fond");
@@ -217,7 +217,7 @@ public class BackgroundHandler : MonoBehaviour
             }
             videoBackground.SetActive(false);
             imageBackground.SetActive(false);
-            Debug.Log("This file does not exist: " + path);
+            Debug.LogError("This file does not exist: " + path);
         }
     }
 

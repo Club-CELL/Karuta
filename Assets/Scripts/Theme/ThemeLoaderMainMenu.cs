@@ -185,13 +185,11 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     void GetThemes()
     {
         themes = new List<Theme>();
-        Debug.Log("Getting theme files");
 
         List<string> themeFiles = new();
         var packDirectories = Directory.GetDirectories(Path.Combine(PathManager.MainPath, "Packs"));
         foreach(var packDirectory in packDirectories)
         {
-            Debug.Log($"Pack: {packDirectory}");
             var packThemeDirectory = Path.Combine(packDirectory, "Themes");
             if (!Directory.Exists(packThemeDirectory))
             {
@@ -200,6 +198,7 @@ public class ThemeLoaderMainMenu : MonoBehaviour
             }
             string[] packThemeFiles = Directory.GetFiles(packThemeDirectory, "*.json");
             Debug.Log($"Pack: {packDirectory} has {packThemeFiles.Length} theme files");
+            
             foreach (var themeFile in packThemeFiles)
             {
                 themeFiles.Add(themeFile);
@@ -343,22 +342,15 @@ public class ThemeLoaderMainMenu : MonoBehaviour
     {
         if (File.Exists(path))
         {
-            Debug.Log($"About to get texture for: {path}");
             yield return null;
-
             UnityWebRequest www = UnityWebRequestTexture.GetTexture("file://" + path);
             yield return null;
 
-            Debug.Log($"About to send web request for: {path}");
             yield return www.SendWebRequest();
 
-            if (www.isDone)
+            if (www.isDone && !string.IsNullOrEmpty(www.error))
             {
-                bool success = www.result == UnityWebRequest.Result.Success;
-                bool handlerDone = www.downloadHandler.isDone;
-                string errorstring = (www.error ?? "no error");
-
-                Debug.Log($"Request for {path} is done: {success && handlerDone} - Error: {errorstring}");
+                Debug.LogError($"Error during request for {path} {www.error}");
             }
             yield return null;
 

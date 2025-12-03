@@ -47,16 +47,10 @@ public class GameModeButton : ScaleMoveButton
         }
     }
 
-    public void ChangeState()
-    {
-        state = !state;
-        SetState(state);
-    }
-
     public override void Execute()
     {
         base.Execute();
-        ChangeState();
-        otherButton.ChangeState();
+        SetState(true);
+        otherButton.SetState(false);
     }
 }
